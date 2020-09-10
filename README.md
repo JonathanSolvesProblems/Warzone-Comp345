@@ -1,4 +1,4 @@
-# Concordia University\ Department of Computer Science and Software Engineering\ Advanced Program Design with C++\ COMP 345 --- Fall 2020\
+# Concordia University  Department of Computer Science and Software Engineering  Advanced Program Design with C++  COMP 345 --- Fall 2020
 
 # Project Description
 
@@ -34,17 +34,17 @@ they are executed by the game engine: The orders are:
 1. Deployment orders
 2. Advance orders
 3. Special orders resulting from using cards:
-	3a. **Deploy**: Place some armies on one of the current player's territories.
-	3b. **Advance**: Move some armies from one of the current player's territories (source) to an adjacent
+	- **Deploy**: Place some armies on one of the current player's territories.
+	- **Advance**: Move some armies from one of the current player's territories (source) to an adjacent
 		territory. If the target territory belongs to another player, then the armies are moved to the
 		target territory. If the target territory belongs to another player, an attack happens between the
 		two territories.
-	3c. **Bomb**: Destroy half of the armies located on an opponent's territory that is adjacent to one of
+	- **Bomb**: Destroy half of the armies located on an opponent's territory that is adjacent to one of
 		the current player's territories.
-	3d. **Blockade**: Triple the number of armies on one of the current player's territories and make it a
+	- **Blockade**: Triple the number of armies on one of the current player's territories and make it a
 		neutral territory.
-	3e. **Airlift**: Advance some armies from one of the current player's territories to any other territory.
-	3f. **Negociate**: Prevent attacks between the current player and another player until the end of the turn.
+	- **Airlift**: Advance some armies from one of the current player's territories to any other territory.
+	- **Negociate**: Prevent attacks between the current player and another player until the end of the turn.
 
 Each player, in round-robin turn order, give one of their orders. Once all the players have signified that
 they don't have any more orders for this turn, the game engine executes all the orders. At the beginning of
@@ -77,5 +77,5 @@ Any other player that does not control at least one territory is removed from th
 of the players owns all the territories in the map.
 
 ## References
-https://www.warzone.com/
+https://www.warzone.com/  
 http://domination.sourceforge.net/getmaps.shtml
