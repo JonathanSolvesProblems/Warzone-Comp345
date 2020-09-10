@@ -357,7 +357,7 @@ MigrationBackup/
 .ionide/
 
 # VS Community/Enterprise Project Files and Folders
-.vs/
+Warzone/.vs/
 x64/
 Warzone/Debug/
 Warzone.sln
