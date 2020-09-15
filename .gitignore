@@ -357,11 +357,11 @@ MigrationBackup/
 .ionide/
 
 # VS Community/Enterprise Project Files and Folders
-Warzone/.vs/
+**/.vs/
 x64/
-Warzone/Debug/
-Warzone.sln
-Warzone.vcxproj
-Warzone.vcxproj.filters
+**/Debug/
+*.sln
+*.vcxproj
+*.vcxproj.filters
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
