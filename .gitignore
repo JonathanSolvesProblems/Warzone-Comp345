@@ -360,7 +360,6 @@ MigrationBackup/
 **/.vs/
 x64/
 **/Debug/
-*.sln
 *.vcxproj
 *.vcxproj.filters
 
