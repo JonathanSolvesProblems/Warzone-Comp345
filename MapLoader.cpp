@@ -8,63 +8,49 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale>
-using namespace std;
-#include "MapLoader.h"
 
+#include "MapLoader.h"
+using namespace std;
 // ths map loader detects the files nto by headers or correct formting of the file but tby the sequence
 // of the strings that make up a line
 // for instance a line may be all ints and that will imply it belongs to the border vector
 
-class MapLoader
-{
 
-public:
+
     vector<string> continents;
     vector<string> borders;
     vector<string> countries;
-    string line;
-
-    // invalid vectors to be decided depending on the way Nora want the erro handling to be done
-    vector<string> continents_I;
-    vector<string> borders_I;
-    vector<string> countries_I;
-
-    // use the test to identify the length of the vector and to see
-    // what positions give you what data type
-    vector<string> test_I;
+ 
 
     // booleans to determine if the line is a continent
-    bool foundContinents1; // checks for str
-    bool foundContinents2; // checks for int
-    bool foundContinents3; // checks for str
+    //bool foundContinents1; // checks for str
+    //bool foundContinents2; // checks for int
+    //bool foundContinents3; // checks for str
 
     // booleans to determine if the line is a countries
-    bool foundCountries1; // check for int
-    bool foundCountries2; // check for str
-    bool foundCountries3; // check for int
-    bool foundCountries4; // check for int
-    bool foundCountries5; // check for int
+    //bool foundCountries1; // check for int
+    //bool foundCountries2; // check for str
+    //bool foundCountries3; // check for int
+    //bool foundCountries4; // check for int
+    //bool foundCountries5; // check for int
 
     // boolean to determine if the line is a border checks if theyre all ints
-    bool foundBorders;
+    // bool foundBorders;
 
     // arrays to store the contents of the line seperated by a space delimiter
-    string continentsArr[3];
-    string countriesArr[5];
-    string bordersArr[999];
+    //string continentsArr[3];
+    //string countriesArr[5];
+    //string bordersArr[999];
 
-    // variables to determine the number of strings in a line
-    int *i;
-    int *y;
-    int *x;
-    int z;
-
-    // constructor that takes the string as a filepath
-    MapLoader(string filePath)
+   
+    // methods that takes the string as a filepath
+   void loadFile(string filePath)
     {
+           string line;
 
         //opens the file
         ifstream mapFile(filePath);
+     
         if (mapFile.is_open())
         {
             //reads every line in the selected file through the variable line
@@ -90,14 +76,14 @@ public:
                 {
                     continue;
                 }
+
                 // checks to see if the line is a Border
                 isBorder(line);
-
                 // checks to see if the line is a Country
                 isCountry(line);
 
                 // checks to see if the line is a Continent
-                isContinent(line);
+               isContinent(line);
             }
             mapFile.close();
         }
@@ -109,22 +95,26 @@ public:
     // method that stores the contents of the given line should it be a Border (all ints)
     void isBorder(string line)
     {
+        // stores the parsed string into array elements
+    string bordersArr[999];
+    // boolean to determine if the line is a border checks if theyre all ints
+    bool foundBorders;
 
-        int x2 = 0; //a variable to set our pointer to determine the number of strings
-        x = &x2;
+        int x = 0; //a variable to set our pointer to determine the number of strings
+       
 
         // gets the string
         stringstream ssin(line);
         // determines number of strings in the line
         while (ssin.good())
         {
-            ssin >> bordersArr[*x];
-            ++x2;
+            ssin >> bordersArr[x];
+            ++x;
         }
 
         // set the size of the array to check the strs
-        string bordersArr2[*x];
-        x2 = 0; // sets size variable back to zero
+        string bordersArr2[x];
+        x = 0; // sets size variable back to zero
 
         // stores the contents of the line into another array bordersArr2
         for (int r = 0; r < sizeof(bordersArr2) / sizeof(bordersArr2[0]); r++)
@@ -158,17 +148,25 @@ public:
     // isContinent method which checks to see if the string is a continent and adds it to the map
     void isContinent(string line)
     {
-        int i2 = 0; //a variable to set our pointer to determine the number of strings
-        i = &i2;
+
+  // arrays to store the contents of the line seperated by a space delimiter
+    string continentsArr[3];
+    // booleans to determine if the line is a continent
+    bool foundContinents1; // checks for str
+    bool foundContinents2; // checks for int
+    bool foundContinents3; // checks for str
+
+        int i= 0; //a variable to set our pointer to determine the number of strings
+       
         // gets the string
         stringstream ssin(line);
         // parses all the contents of the line
-        while (ssin.good() && *i < 3)
+        while (ssin.good() && i < 3)
         {
-            ssin >> continentsArr[*i];
-            ++i2;
+            ssin >> continentsArr[i];
+            ++i;
         }
-        i2 = 0;
+        i = 0;
 
         // checks to see if this array index is a string
         try
@@ -221,8 +219,18 @@ public:
     // isCountry method whcih checks if the string is a Country to be added to the map
     void isCountry(string line)
     {
-        int y2 = 0; //a variable to set our pointer to determine the number of strings
-        y = &y2;
+// stores the string into the elements in the array 
+    string countriesArr[5];
+
+// booleans to determine if the line is a countries
+    bool foundCountries1; // check for int
+    bool foundCountries2; // check for str
+    bool foundCountries3; // check for int
+    bool foundCountries4; // check for int
+    bool foundCountries5; // check for int
+
+        int y = 0; //a variable to set our pointer to determine the number of strings
+       
 
         // test input  1 s1 1 66 28
 
@@ -230,12 +238,12 @@ public:
         stringstream ssin(line);
 
         // parses the string into an array
-        while (ssin.good() && *y < 5)
+        while (ssin.good() && y < 5)
         {
-            ssin >> countriesArr[*y];
-            ++y2;
+            ssin >> countriesArr[y];
+            y++;
         }
-        y2 = 0; // resets the counter to 0
+        y= 0; // resets the counter to 0
 
         // tests to see if the first entry is a int
         try
@@ -304,12 +312,13 @@ public:
         if (foundCountries1 == true && foundCountries2 == true && foundCountries3 == true && foundCountries4 == true && foundCountries5 == true)
             countries.push_back(line); // change this one line for the method to add to map
     };
-};
+
 
 int main()
 {
 
-    MapLoader map("hello.txt");
+    mapLoader map;
+    map.loadFile("hello.txt");
 
     // remove 2 at the end
     cout << "Contients  " << map.continents.size() << " \n";
