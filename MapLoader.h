@@ -11,6 +11,7 @@
 using namespace std;
 
 
+
 class mapLoader {
   public:
   
@@ -19,13 +20,7 @@ class mapLoader {
   vector<string> countries;       
  
 
-public: void loadFile(string filePath){
-    string line;
-    isBorder(line);
-    isCountry(line);
-    isContinent(line);
-
-};
+public: void loadFile(string filePath);
 // loadFile method which loads/checks the mapfile for all the contents (reads line by line)
 public: void isBorder(string line);// isBorder method which checks if the string is a border
 // we can first start by checkng array content 

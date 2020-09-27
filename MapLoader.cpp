@@ -44,8 +44,13 @@ using namespace std;
 
    
     // methods that takes the string as a filepath
-   void loadFile(string filePath)
+    void mapLoader::loadFile(string filePath)
     {
+        
+           bool continentsFound;
+           bool countriesFound;
+           bool bordersFound;
+
            string line;
 
         //opens the file
@@ -62,45 +67,113 @@ using namespace std;
                     continue;
                 }
 
+
+    // checks to see if there is the continents banner and checks and stores them all 
                 if (line == "[continents]")
                 {
-                    continue;
+                    continentsFound = true;
+           
+
+            while ( getline(mapFile,line))
+                {
+
+                 // end of the file stop the loop
+                if (line.length() == 0)
+                {
+                   break;
                 }
 
+            else{
+               // checks to see if the line is a Continent
+               isContinent(line);
+                 }
+
+                }
+
+                }
+
+
+
+    // checks to see if there is the border banner and checks and stores them all 
                 if (line == "[borders]")
                 {
-                    continue;
+           
+              bordersFound = true;
+
+
+            while ( getline(mapFile,line))
+                {
+
+                 // end of the file stop the loop
+                if (line.length() == 0)
+                {
+                   break;
                 }
 
+            else{
+               // checks to see if the line is a Continent
+               isBorder(line);
+                 }
+
+                }
+
+                }
+
+
+
+
+    // checks to see if there is the countries banner and checks and stores them all 
                 if (line == "[countries]")
                 {
-                    continue;
+
+                countriesFound = true;
+           
+
+            while ( getline(mapFile,line))
+                {
+
+                 // end of the file stop the loop
+                if (line.length() == 0)
+                {
+                   break;
                 }
 
-                // checks to see if the line is a Border
-                isBorder(line);
-                // checks to see if the line is a Country
-                isCountry(line);
+            else{
+               // checks to see if the line is a Continent
+               isCountry(line);
+                 }
 
-                // checks to see if the line is a Continent
-               isContinent(line);
+                }
+
+                }
+
+               
+              
             }
+
             mapFile.close();
         }
 
         else
             cout << "Unable to open file... Please check your syntax and restart the program. ";
+
+        if(continentsFound == false || countriesFound == false || bordersFound == false ){
+             cout << "Invalid Map File... Program Terminating... Please make sure all header banners [borders], [countries], [continents] are correct";
+             exit(3);
+        }
+         
+
     };
 
     // method that stores the contents of the given line should it be a Border (all ints)
-    void isBorder(string line)
+    void mapLoader::isBorder(string line)
     {
         // stores the parsed string into array elements
     string bordersArr[999];
     // boolean to determine if the line is a border checks if theyre all ints
     bool foundBorders;
 
-        int x = 0; //a variable to set our pointer to determine the number of strings
+    int x = 0; //a variable to set our pointer to determine the number of strings
        
 
         // gets the string
@@ -143,14 +216,20 @@ using namespace std;
         // if only ints were found then we add it to the map
         if (foundBorders == true)
             borders.push_back(line);
+        
+        else{
+            cout << "Invalid Map File... Program Terminating... Please make sure all syntax is correct under the border banner";
+             exit(3);
+        }
+
     };
 
     // isContinent method which checks to see if the string is a continent and adds it to the map
-    void isContinent(string line)
+    void mapLoader::isContinent(string line)
     {
 
   // arrays to store the contents of the line seperated by a space delimiter
-    string continentsArr[3];
+    string continentsArr[99];
     // booleans to determine if the line is a continent
     bool foundContinents1; // checks for str
     bool foundContinents2; // checks for int
@@ -161,12 +240,12 @@ using namespace std;
         // gets the string
         stringstream ssin(line);
         // parses all the contents of the line
-        while (ssin.good() && i < 3)
+        while (ssin.good())
         {
             ssin >> continentsArr[i];
             ++i;
         }
-        i = 0;
+   
 
         // checks to see if this array index is a string
         try
@@ -194,6 +273,13 @@ using namespace std;
         {
             // put the bool variable to false
             //cout << " Not an Int this is not what we want  " << '\n';
+
+              //  cout << " Not an Int this is not what we want  " << '\n';
+            if(continentsArr[1].length() == 0){
+             foundContinents2 = false;
+
+            }
+            else
             foundContinents2 = false;
         }
 
@@ -206,18 +292,29 @@ using namespace std;
         catch (std::exception &e)
         {
             //  cout << " Not an Int this is not what we want  " << '\n';
+            if(continentsArr[2].length() == 0){
+             foundContinents3 = false;
+            }
+            else
             foundContinents3 = true;
         }
 
         // if it follows the string int string comvination then we store into the map
-        if (foundContinents1 == true && foundContinents2 == true && foundContinents3 == true)
+        if (foundContinents1 == true && foundContinents2 == true && foundContinents3 == true && i ==3)
         {
             continents.push_back(line); // store into a map
         }
+
+        else{
+            cout << "Invalid Map File... Program Terminating... Please make sure all syntax is correct under the continent banner make sure there are no spaces after the last element";
+             exit(3);
+        }
+
+     i = 0; // resets counter variable
     };
 
     // isCountry method whcih checks if the string is a Country to be added to the map
-    void isCountry(string line)
+    void mapLoader::isCountry(string line)
     {
 // stores the string into the elements in the array 
     string countriesArr[5];
@@ -238,12 +335,11 @@ using namespace std;
         stringstream ssin(line);
 
         // parses the string into an array
-        while (ssin.good() && y < 5)
+        while (ssin.good())
         {
             ssin >> countriesArr[y];
             y++;
         }
-        y= 0; // resets the counter to 0
 
         // tests to see if the first entry is a int
         try
@@ -266,6 +362,10 @@ using namespace std;
         }
         catch (std::exception &e)
         {
+             if(countriesArr[1].length() == 0){
+             foundCountries2= false;
+            }
+            else
             foundCountries2 = true;
         }
 
@@ -309,10 +409,17 @@ using namespace std;
         }
 
         // if all the strings follow the proper sequence of a country add it to the map
-        if (foundCountries1 == true && foundCountries2 == true && foundCountries3 == true && foundCountries4 == true && foundCountries5 == true)
+        if (foundCountries1 == true && foundCountries2 == true && foundCountries3 == true && foundCountries4 == true && foundCountries5 == true && y==5)
             countries.push_back(line); // change this one line for the method to add to map
-    };
 
+        
+        else{
+            cout << "Invalid Map File... Program Terminating... Please make sure all syntax is correct under the country banner make sure there are no spaces after the last element";
+             exit(3);
+        }
+                y= 0; // resets the counter to 0
+
+    };
 
 int main()
 {
