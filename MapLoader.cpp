@@ -92,7 +92,7 @@ using namespace std;
 
                 }
 
-
+                /**/
 
     // checks to see if there is the border banner and checks and stores them all 
                 if (line == "[borders]")
@@ -183,12 +183,14 @@ using namespace std;
         // determines number of strings in the line
 
         /*   */
-        while (ssin.good())
+        while (ssin.good() && x<11)
         {
-            ssin<<bordersArr[0];
+            ssin>>bordersArr[0];
           bordersArrReborn.push_back(bordersArr[0]);
+
         }
 
+        x = 0;
         /*
         // set the size of the array to check the strs
         string bordersArr2[x];
@@ -204,7 +206,7 @@ using namespace std;
         
         // run a for loop ad basically have 1 variable if it is not a int then have it
         // go to an if statement where the boolean is false and then break the loop
-        for (int q = 0; q < sizeof(bordersArrReborn) / sizeof(bordersArrReborn); q++)
+        for (int q = 0; q < bordersArrReborn.size(); q++)
         {
 
             try
@@ -441,12 +443,13 @@ int main()
         cout << map.continents[s] << endl;
     }
 
+    
     cout << "borders" << map.borders.size() << "\n";
     for (int s = 0; s < map.borders.size(); s++)
     {
         cout << map.borders[s] << endl;
     }
-
+    
     cout << "countries" << map.countries.size() << "\n";
     for (int s = 0; s < map.countries.size(); s++)
     {
