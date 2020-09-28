@@ -342,7 +342,7 @@ if(line == "[borders]"){
            
 cout << "size of x tfgyhjkmjhgf "<< x;
             // set the size of the array to check the strs
-            string bordersArr2[x];
+            string bordersArr2[5];
             x=0;
  // puts the string in appropriate array
     

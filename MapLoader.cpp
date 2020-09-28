@@ -169,41 +169,48 @@ using namespace std;
     void mapLoader::isBorder(string line)
     {
         // stores the parsed string into array elements
-    string bordersArr[999];
+        vector<string> bordersArrReborn;
+
+    string bordersArr[1];
     // boolean to determine if the line is a border checks if theyre all ints
     bool foundBorders;
 
-    int x = 0; //a variable to set our pointer to determine the number of strings
+     int x = 0; //a variable to set our pointer to determine the number of strings
        
 
         // gets the string
         stringstream ssin(line);
         // determines number of strings in the line
+
+        /*   */
         while (ssin.good())
         {
-            ssin >> bordersArr[x];
-            ++x;
+            ssin<<bordersArr[0];
+          bordersArrReborn.push_back(bordersArr[0]);
         }
 
+        /*
         // set the size of the array to check the strs
         string bordersArr2[x];
         x = 0; // sets size variable back to zero
 
         // stores the contents of the line into another array bordersArr2
-        for (int r = 0; r < sizeof(bordersArr2) / sizeof(bordersArr2[0]); r++)
+        for (int r = 0; r < sizeof(bordersArrReborn) / sizeof(bordersArrReborn); r++)
         {
             bordersArr2[r] = bordersArr[r];
         }
 
+        */
+        
         // run a for loop ad basically have 1 variable if it is not a int then have it
         // go to an if statement where the boolean is false and then break the loop
-        for (int q = 0; q < sizeof(bordersArr2) / sizeof(bordersArr2[0]); q++)
+        for (int q = 0; q < sizeof(bordersArrReborn) / sizeof(bordersArrReborn); q++)
         {
 
             try
             {
 
-                int val0 = std::stoi(bordersArr2[q]);
+                int val0 = std::stoi(bordersArrReborn[q]);
                 foundBorders = true;
             }
             catch (std::exception &e)
