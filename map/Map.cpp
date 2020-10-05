@@ -36,13 +36,19 @@ namespace map {
     this->territories->push_back(territory);
   }
 
+  void Map::connectTerritories(Territory *territory_a, Territory *territory_b)
+  {
+    if (territory_a && territory_b)
+    {
+      territory_a->addNeighbour(territory_b);
+    }
+  }
+
   void Map::connectTerritories(int id_a, int id_b) {
     Territory *territory_a = getTerritory(id_a);
     Territory *territory_b = getTerritory(id_b);
 
-    if (territory_a && territory_b) {
-      territory_a->addNeighbour(territory_b);
-    }
+    connectTerritories(territory_a, territory_b);
   }
 
   Territory* Map::getTerritory(int id) const {
@@ -95,6 +101,13 @@ namespace map {
 
   std::string Map::toString() const {
     return "(Map)";
+  }
+
+  std::ostream &
+  operator<<(std::ostream &os, const Map &map)
+  {
+    os << map.toString();
+    return os;
   }
 
 }

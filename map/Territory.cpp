@@ -101,6 +101,7 @@ namespace map
         return (*it);
       }
     }
+    return nullptr;
   }
 
   void Territory::deleteNeighbour(Territory* territory) {

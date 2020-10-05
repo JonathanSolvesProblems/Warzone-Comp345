@@ -25,6 +25,7 @@ public:
   
   void addTerritory(Territory*);
 
+  void connectTerritories(Territory*, Territory*);
   void connectTerritories(int, int);
 
   Territory* getTerritory(int) const;
@@ -37,6 +38,7 @@ public:
 
   std::string toString() const;
 
+  friend std::ostream &operator<<(std::ostream &, const Map &);
 };
 
 }

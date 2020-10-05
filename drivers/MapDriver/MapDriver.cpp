@@ -54,6 +54,35 @@ void test_territory () {
 	std::cout << "Neighbours after deleting: " << territory.getNeighbourCount() << std::endl;
 }
 
+void test_map () {
+	map::Map* map = new map::Map();
+	std::cout << *map << std::endl;	
+
+	map->addContinent(new map::Continent(0, "test continent", 3));
+	std::cout << "Added Test Continent" << std::endl;
+	map->addTerritory(new map::Territory(0, "territory A", *(map->getContinent("test continent"))));
+	std::cout << "Added Test Territory A" << std::endl;
+
+	map->addTerritory(new map::Territory(1, "territory B", *(map->getContinent("test continent"))));
+	std::cout << "Added Test Territory B" << std::endl;
+
+	map->addTerritory(new map::Territory(2, "territory C", *(map->getContinent("test continent"))));
+	std::cout << "Added Test Territory C" << std::endl;
+
+	map->connectTerritories(map->getTerritory("territory A"), map->getTerritory("territory B"));
+	std::cout << "Connected A to B" << std::endl;
+
+	map->connectTerritories(1, 2);
+	std::cout << "Connected B to C" << std::endl;
+
+	map->connectTerritories(0, 2);
+	std::cout << "Connected C to A (A to C)" << std::endl;
+
+	std::cout << "A <-> B " << map->getTerritory("territory A")->hasNeighbour(1) << std::endl;
+	std::cout << "B <-> C " << map->getTerritory("territory B")->hasNeighbour(2) << std::endl;
+	std::cout << "A <-> C " << map->getTerritory("territory C")->hasNeighbour(0) << std::endl;
+}
+
 int main() {
 	std::cout << "Testing Continent Class" << std::endl
 						<< std::endl;
@@ -62,6 +91,10 @@ int main() {
 	std::cout << "Testing Territory Class" << std::endl
 						<< std::endl;
 	test_territory();
-	
+
+	std::cout << "Testing Map Class" << std::endl
+						<< std::endl;
+	test_map();
+
 	return 0;
 }
