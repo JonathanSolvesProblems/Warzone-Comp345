@@ -6,6 +6,8 @@
 #include <locale>
 #include "MapLoader.h"
 
+// THIS IS THE OFFICIAL FILE
+
 using namespace std;
 // ths map loader detects the files nto by headers or correct formting of the file but tby the sequence
 // of the strings that make up a line
@@ -19,7 +21,7 @@ vector<string> countries;
 
 
 
-// methods that takes the string as a filepath
+// methods that takes the string as a filepath a map, continent, and territory objects 
 void mapLoader::loadFile(string filePath, map::Map &test, map::Continent& continent, map::Territory& territory)
 {
 
@@ -167,16 +169,7 @@ void mapLoader::isBorder(string line, map::Map& test, map::Territory& territory,
     }
 
     x = 0;
-    /*
-    // set the size of the array to check the strs
-    string bordersArr2[x];
-    x = 0; // sets size variable back to zero
-    // stores the contents of the line into another array bordersArr2
-    for (int r = 0; r < sizeof(bordersArrReborn) / sizeof(bordersArrReborn); r++)
-    {
-        bordersArr2[r] = bordersArr[r];
-    }
-    */
+   
 
     // run a for loop ad basically have 1 variable if it is not a int then have it
     // go to an if statement where the boolean is false and then break the loop
@@ -224,9 +217,10 @@ void mapLoader::isBorder(string line, map::Map& test, map::Territory& territory,
 
 };
 
-// isContinent method which checks to see if the string is a continent and adds it to the map
+// isContinent method which checks to see if the string is a continent and adds it to the map by creating a continent obj 
 void mapLoader::isContinent(string line, map::Map &test, map::Continent& continent)
 {
+    // a continent ID which follows standard syntax OF ALL FILES, which is to start at 1, and goes up to N continents
     static int continentID = 1;
     // arrays to store the contents of the line seperated by a space delimiter
     string continentsArr[99];
@@ -304,14 +298,11 @@ void mapLoader::isContinent(string line, map::Map &test, map::Continent& contine
     {
         continents.push_back(line); // store into a map
         
-        // test 
-        // has to be name number hugh but incorrect syntax so we add a random number for now 
-       
+      
+// creates a continent object to be added to the list of continents        
         map::Continent *continent = new map::Continent(continentID, continentsArr[0], val1);
         continentID++;
-        cout << continentID;
         test.addContinent(continent);
-       cout<< test.getContinent(val1);
 
        // deallocate the pointers 
        continent = NULL;
@@ -326,12 +317,13 @@ void mapLoader::isContinent(string line, map::Map &test, map::Continent& contine
     i = 0; // resets counter variable
 };
 
-// isCountry method whcih checks if the string is a Country to be added to the map
+// isCountry method whcih checks if the string is a Country to be added to the map by using the territory class
 void mapLoader::isCountry(string line ,map::Map& test, map::Territory& territory, map::Continent& continent)
 {
     // stores the string into the elements in the array 
     string countriesArr[5];
     int val0 = 0;
+    int val2 = 0;
     // booleans to determine if the line is a countries
     bool foundCountries1; // check for int
     bool foundCountries2; // check for str
@@ -370,7 +362,7 @@ void mapLoader::isCountry(string line ,map::Map& test, map::Territory& territory
     try
     {
 
-        int val0 = std::stoi(countriesArr[1]);
+        int val1 = std::stoi(countriesArr[1]);
         foundCountries2 = false;
     }
     catch (std::exception& e)
@@ -386,7 +378,7 @@ void mapLoader::isCountry(string line ,map::Map& test, map::Territory& territory
     try
     {
 
-        int val0 = std::stoi(countriesArr[2]);
+        int val2 = std::stoi(countriesArr[2]);
         foundCountries3 = true;
     }
 
@@ -399,7 +391,7 @@ void mapLoader::isCountry(string line ,map::Map& test, map::Territory& territory
     try
     {
 
-        int val0 = std::stoi(countriesArr[3]);
+        int val3 = std::stoi(countriesArr[3]);
         foundCountries4 = true;
     }
 
@@ -412,7 +404,7 @@ void mapLoader::isCountry(string line ,map::Map& test, map::Territory& territory
     try
     {
 
-        int val0 = std::stoi(countriesArr[4]);
+        int val4 = std::stoi(countriesArr[4]);
         foundCountries5 = true;
     }
 
@@ -425,14 +417,19 @@ void mapLoader::isCountry(string line ,map::Map& test, map::Territory& territory
     if (foundCountries1 == true && foundCountries2 == true && foundCountries3 == true && foundCountries4 == true && foundCountries5 == true && y == 5)
     {
         countries.push_back(line); // change this one line for the method to add to map
-        // test  
+       
 
         // do the third array string for the Continent ID
 
+       // stores the territory into the proper class  
+
+  
+       
+       //cout << *test.getContinent(std::stoi(countriesArr[2]));
         
-        map::Territory* territory = new map::Territory(val0, countriesArr[1], continent);
+
+       map::Territory* territory = new map::Territory(val0, countriesArr[1], *test.getContinent(std::stoi(countriesArr[2])));
         test.addTerritory(territory);
-        cout << countriesArr[2];
         
 
         // deallocate the pointers 
@@ -459,46 +456,23 @@ int main()
 
     map::Map test;
     mapLoader map;
-    map.loadFile("hello.txt", test,continent,territory);
+    map.loadFile("solar.map", test,continent,territory);
 
     // remove 2 at the end
-    cout << "Contients  " << map.continents.size() << " \n";
+    cout << "Continents  " << map.continents.size() << " \n";
     for (int s = 0; s < map.continents.size(); s++)
     {
-        cout << map.continents[s] << endl;
+        cout <<  *test.getContinent(s+1) << endl;
     }
 
 
-    cout << "borders" << map.borders.size() << "\n";
+    cout << "Countries and Borders" << map.borders.size() << "\n";
     for (int s = 0; s < map.borders.size(); s++)
     {
-        cout << map.borders[s] << endl;
+        cout << "Country: " << *test.getTerritory(s + 1) << " Has This many "<< test.getTerritory(s+1)->getNeighbourCount() << " Neighbouring Countries And Belongs to "<< test.getTerritory(s + 1)->getContinent() <<endl;
     }
 
-    cout << "countries" << map.countries.size() << "\n";
-    for (int s = 0; s < map.countries.size(); s++)
-    {
-        cout << map.countries[s] << endl;
-    }
-
-    cout << "continent test:" << endl;
-//cout<<*test.getContinent("Egypt"); // for somereason its not returning anything
-    
-// stores continents  
-cout<<*test.getContinent(1);
-cout << *test.getContinent(2);
-cout << *test.getContinent(18);
-cout << *test.getContinent("Britian");
-cout << *test.getContinent("Epypt");
-// end of continents
-
-
-// tessts out territories
-cout << *test.getTerritory(1);
-
-// test our the borders and who its connected 
-cout << test.getTerritory(180)->getNeighbourCount();
-
+   
 
 
     return 0;

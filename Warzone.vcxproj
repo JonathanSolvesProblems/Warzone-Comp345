@@ -137,6 +137,9 @@
     <ClInclude Include="map\Map.h" />
     <ClInclude Include="map\Territory.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="solar.map" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
