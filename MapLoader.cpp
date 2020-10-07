@@ -2,13 +2,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <string.h>
 #include <sstream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
 #include <locale>
-
 #include "MapLoader.h"
 
 using namespace std;
@@ -22,26 +17,6 @@ vector<string> continents;
 vector<string> borders;
 vector<string> countries;
 
-
-// booleans to determine if the line is a continent
-//bool foundContinents1; // checks for str
-//bool foundContinents2; // checks for int
-//bool foundContinents3; // checks for str
-
-// booleans to determine if the line is a countries
-//bool foundCountries1; // check for int
-//bool foundCountries2; // check for str
-//bool foundCountries3; // check for int
-//bool foundCountries4; // check for int
-//bool foundCountries5; // check for int
-
-// boolean to determine if the line is a border checks if theyre all ints
-// bool foundBorders;
-
-// arrays to store the contents of the line seperated by a space delimiter
-//string continentsArr[3];
-//string countriesArr[5];
-//string bordersArr[999];
 
 
 // methods that takes the string as a filepath
