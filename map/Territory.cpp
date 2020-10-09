@@ -72,6 +72,9 @@ namespace map
     return neighbours;
   }
 
+ 
+
+
   bool Territory::hasNeighbour(int neighbour_id) const {
     return getNeighbour(neighbour_id) != nullptr;
   }

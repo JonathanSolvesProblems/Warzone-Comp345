@@ -127,6 +127,7 @@
     <ClCompile Include="map\Continent.cpp" />
     <ClCompile Include="map\Map.cpp" />
     <ClCompile Include="map\Territory.cpp" />
+    <ClCompile Include="MapLoaderDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="hello.txt" />
@@ -138,6 +139,9 @@
     <ClInclude Include="map\Territory.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="artic.map" />
+    <None Include="brasil.map" />
+    <None Include="france.map" />
     <None Include="solar.map" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -10,7 +10,7 @@ namespace map
 
   class Territory
   {
-  private:
+  public:
     int* id {nullptr};
     std::string* name {nullptr};
     Continent* continent {nullptr};

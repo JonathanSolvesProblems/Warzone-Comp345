@@ -22,20 +22,20 @@ class mapLoader {
 
 
   public:
-  
+
   vector<string> continents; 
   vector<string> borders;    
   vector<string> countries;       
  
   // map test 
-public: void loadFile(string filePath, map::Map& test);
+public: bool loadFile(string filePath, map::Map& test);
 // loadFile method which loads/checks the mapfile for all the contents (reads line by line)
-public: void isBorder(string line, map::Map& test);// isBorder method which checks if the string is a border
+public: bool isBorder(string line, map::Map& test, bool &isValid);// isBorder method which checks if the string is a border
 // we can first start by checkng array content 
 // in this case we can just check to see if the sequence of strings follow the pattern
-public: void isCountry(string line, map::Map& test);// isCountry method whih checks if the string is a country 
+public: bool isCountry(string line, map::Map& test, bool &isValid);// isCountry method whih checks if the string is a country 
 // isContinent method whcih checks if the strings is a continent 
-public: void isContinent(string line, map::Map& test);
+public: bool isContinent(string line, map::Map& test, bool &isValid);
 
 
 

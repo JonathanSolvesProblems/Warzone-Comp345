@@ -6,6 +6,7 @@
 #include <locale>
 #include "MapLoader.h"
 
+
 // THIS IS THE OFFICIAL FILE
 
 using namespace std;
@@ -22,13 +23,13 @@ vector<string> countries;
 
 
 // methods that takes the string as a filepath a map, continent, and territory objects 
-void mapLoader::loadFile(string filePath, map::Map &test)
+bool mapLoader::loadFile(string filePath, map::Map &test)
 {
 
     bool continentsFound;
     bool countriesFound;
     bool bordersFound;
-
+   static bool isValid =true;
     string line;
 
     //opens the file
@@ -63,7 +64,11 @@ void mapLoader::loadFile(string filePath, map::Map &test)
 
                     else {
                         // checks to see if the line is a Continent
-                        isContinent(line, test);
+
+                        if (isContinent(line, test, isValid)==false  ) {
+                            isValid = false;
+                        }
+
                     }
 
                 }
@@ -90,7 +95,11 @@ void mapLoader::loadFile(string filePath, map::Map &test)
 
                     else {
                         // checks to see if the line is a Continent
-                        isBorder(line, test);
+
+                        if (isBorder(line, test,isValid) == false) {
+                            isValid = false;
+                        }
+
                     }
 
                 }
@@ -118,7 +127,10 @@ void mapLoader::loadFile(string filePath, map::Map &test)
 
                     else {
                         // checks to see if the line is a Continent
-                        isCountry(line,test);
+                        if (isCountry(line, test,isValid) == false) {
+                            isValid = false;
+                        }
+
                     }
 
                 }
@@ -132,19 +144,23 @@ void mapLoader::loadFile(string filePath, map::Map &test)
         mapFile.close();
     }
 
-    else
-        cout << "Unable to open file... Please check your syntax and restart the program. ";
-
-    if (continentsFound == false || countriesFound == false || bordersFound == false) {
-        cout << "Invalid Map File... Program Terminating... Please make sure all header banners [borders], [countries], [continents] are correct";
-        exit(3);
+    else {
+        return false;
     }
+    
+
+    if (continentsFound == false || countriesFound == false || bordersFound == false || isValid == false) {
+        return false;
+    }
+
+    else
+        return true;
 
 
 };
 
 // method that stores the contents of the given line should it be a Border (all ints)
-void mapLoader::isBorder(string line, map::Map& test)
+bool mapLoader::isBorder(string line, map::Map& test, bool &isValid)
 {
     // stores the parsed string into array elements
     vector<string> bordersArrReborn;
@@ -189,6 +205,13 @@ void mapLoader::isBorder(string line, map::Map& test)
         }
     }
 
+    // if its an invalid file just exit the this method right away by setting the y variable to 0 and all the booleands to false 
+    if (isValid == false) {
+        foundBorders = true;
+        return false;
+    }
+
+
     // if only ints were found then we add it to the map
     if (foundBorders == true) {
 
@@ -203,22 +226,22 @@ void mapLoader::isBorder(string line, map::Map& test)
 
 
             test.connectTerritories(land1, land2);
-          
+          // have to add neighbour
+            test.getTerritory(land1)->addNeighbour(test.getTerritory(land2));
         }
 
-
+        return true;
     }
        
 
     else {
-        cout << "Invalid Map File... Program Terminating... Please make sure all syntax is correct under the border banner";
-        exit(3);
+        return false;
     }
 
 };
 
 // isContinent method which checks to see if the string is a continent and adds it to the map by creating a continent obj 
-void mapLoader::isContinent(string line, map::Map &test)
+bool mapLoader::isContinent(string line, map::Map &test, bool &isValid)
 {
     // a continent ID which follows standard syntax OF ALL FILES, which is to start at 1, and goes up to N continents
     static int continentID = 1;
@@ -240,6 +263,7 @@ void mapLoader::isContinent(string line, map::Map &test)
         ++i;
     }
 
+  
 
     // checks to see if this array index is a string
     try
@@ -269,11 +293,7 @@ void mapLoader::isContinent(string line, map::Map &test)
         //cout << " Not an Int this is not what we want  " << '\n';
 
           //  cout << " Not an Int this is not what we want  " << '\n';
-        if (continentsArr[1].length() == 0) {
-            foundContinents2 = false;
-
-        }
-        else
+    
             foundContinents2 = false;
     }
 
@@ -285,17 +305,23 @@ void mapLoader::isContinent(string line, map::Map &test)
     }
     catch (std::exception& e)
     {
-        //  cout << " Not an Int this is not what we want  " << '\n';
-        if (continentsArr[2].length() == 0) {
-            foundContinents3 = false;
-        }
-        else
+    
+        
             foundContinents3 = true;
+    }
+
+
+    // if its an invalid file just exit the this method right away by setting the y variable to 0 and all the booleands to false 
+    if (isValid == false) {
+        i= 0;
+        foundContinents3 = false;
+        return false;
     }
 
     // if it follows the string int string comvination then we store into the map
     if (foundContinents1 == true && foundContinents2 == true && foundContinents3 == true && i == 3)
     {
+        i = 0; // resets counter variable
         continents.push_back(line); // store into a map
         
       
@@ -307,21 +333,24 @@ void mapLoader::isContinent(string line, map::Map &test)
        // deallocate the pointers 
        continent = NULL;
        delete continent;
+      return true;
     }
 
     else {
-        cout << "Invalid Map File... Program Terminating... Please make sure all syntax is correct under the continent banner make sure there are no spaces after the last element";
-        exit(3);
+        i = 0; // resets counter variable
+       return false;
     }
 
-    i = 0; // resets counter variable
+ 
 };
 
 // isCountry method whcih checks if the string is a Country to be added to the map by using the territory class
-void mapLoader::isCountry(string line ,map::Map& test)
+bool mapLoader::isCountry(string line ,map::Map& test, bool &isValid)
 {
+   
     // stores the string into the elements in the array 
-    string countriesArr[5];
+   string countriesArrStore[1];
+    vector<string> countriesArr;
     int val0 = 0;
     int val2 = 0;
     // booleans to determine if the line is a countries
@@ -334,17 +363,37 @@ void mapLoader::isCountry(string line ,map::Map& test)
     int y = 0; //a variable to set our pointer to determine the number of strings
 
 
+
+
+
+
+
     // test input  1 s1 1 66 28
 
     // gets the string
     stringstream ssin(line);
 
+ 
+
     // parses the string into an array
     while (ssin.good())
     {
-        ssin >> countriesArr[y];
-        y++;
+        ssin >> countriesArrStore[0];
+        string l = countriesArrStore[0];
+      
+        if (l.length() ==0) {
+         
+            continue;
+      }
+        else {
+            countriesArr.push_back(countriesArrStore[0]);
+            y++;
+        }
+        
+           
     }
+
+  
 
     // tests to see if the first entry is a int
     try
@@ -367,10 +416,7 @@ void mapLoader::isCountry(string line ,map::Map& test)
     }
     catch (std::exception& e)
     {
-        if (countriesArr[1].length() == 0) {
-            foundCountries2 = false;
-        }
-        else
+        
             foundCountries2 = true;
     }
 
@@ -410,8 +456,17 @@ void mapLoader::isCountry(string line ,map::Map& test)
 
     catch (std::exception& e)
     {
+      
         foundCountries5 = false;
     }
+
+    // if its an invalid file just exit the this method right away by setting the y variable to 0 and all the booleands to false 
+    if (isValid == false) {
+        y = 0;
+        foundCountries1 = false;
+        return false;
+    }
+
 
     // if all the strings follow the proper sequence of a country add it to the map
     if (foundCountries1 == true && foundCountries2 == true && foundCountries3 == true && foundCountries4 == true && foundCountries5 == true && y == 5)
@@ -436,40 +491,18 @@ void mapLoader::isCountry(string line ,map::Map& test)
         territory = NULL;
         delete territory;
 
+        y = 0;
+        return true;
+
     }
 
 
     else {
-        cout << "Invalid Map File... Program Terminating... Please make sure all syntax is correct under the country banner make sure there are no spaces after the last element";
-        exit(3);
+        y = 0; // resets the counter to 0
+        // invalid map file
+ 
+        return false;
     }
-    y = 0; // resets the counter to 0
 
 };
 
-int main()
-{
-
-    map::Map test;
-    mapLoader map;
-    map.loadFile("solar.map", test);
-
-    // remove 2 at the end
-    cout << "Continents  " << map.continents.size() << " \n";
-    for (int s = 0; s < map.continents.size(); s++)
-    {
-        cout <<  *test.getContinent(s+1) << endl;
-    }
-
-
-    cout << "Countries and Borders" << map.borders.size() << "\n";
-    for (int s = 0; s < map.borders.size(); s++)
-    {
-        cout << "Country: " << *test.getTerritory(s + 1) << " Has This many "<< test.getTerritory(s+1)->getNeighbourCount() << " Neighbouring Countries And Belongs to "<< test.getTerritory(s + 1)->getContinent() <<endl;
-    }
-
-   
-
-
-    return 0;
-}
