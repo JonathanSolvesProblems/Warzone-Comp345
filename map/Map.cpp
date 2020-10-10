@@ -113,7 +113,7 @@ namespace map
 
   bool Map::validate()
   {
-    return isConnectedGraph() && everyContinentIsConnectedSubgraph(); // && eachTerritoryHasSingleContinent();
+    return isConnectedGraph() && everyContinentIsConnectedSubgraph() && eachTerritoryHasSingleContinent();
   }
 
   bool Map::isConnectedGraph()
@@ -155,9 +155,27 @@ namespace map
         [](Continent *continent) { return continent->isConnectedSubGraph(); });
   }
 
+  // TODO Is this the correct interpretation of this requirement?
+  // Also, this property is guaranteed if the Map is constructed using only public methods.
   bool Map::eachTerritoryHasSingleContinent()
   {
-    return true;
+    std::unordered_set<int> territories_with_continents = std::unordered_set<int>();
+    bool valid = true;
+    territories_with_continents.reserve(territories->size());
+    
+    for (Continent* continent : *continents) {
+      for (Territory* territory : continent->getTerritories()) {
+        if (!territories_with_continents.count(territory->getID())) {
+          territories_with_continents.insert(territory->getID());
+        } else {
+          valid = false;
+          goto escape_nested_loop;
+        }
+      }
+    }
+    escape_nested_loop:
+
+    return valid;
   }
 
   void Map::traverseGraph(Territory *territory, std::unordered_map<int, bool> &territory_ids_visited_map)
@@ -433,6 +451,10 @@ namespace map
     it = std::find(territories->begin(), territories->end(), territory);
 
     return it != territories->end();
+  }
+
+  const std::vector<Territory *> Continent::getTerritories() {
+    return *territories;
   }
 
   void Continent::addTerritory(Territory *territory)

@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <unordered_map>
+#include <unordered_set>
 #include <algorithm>
 #include <utility>
 
@@ -116,6 +117,8 @@ public : Continent(int, std::string, int);
   int getID() const;
   std::string getName() const;
   int getBonus() const;
+
+  const std::vector<Territory*> getTerritories();
 
   bool hasTerritory(Territory*);
   void addTerritory(Territory*);
