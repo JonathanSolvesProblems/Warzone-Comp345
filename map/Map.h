@@ -1,4 +1,5 @@
 #pragma once
+#define DEBUG // Remove this to disabled debugging
 #include <vector>
 #include <string>
 #include <iostream>

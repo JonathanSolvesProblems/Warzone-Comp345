@@ -118,20 +118,28 @@ namespace map
 
   bool Map::isConnectedGraph()
   {
+#ifdef DEBUG
     std::cout << "CHECKING IF CONNECTED GRAPH" << std::endl;
+#endif
     std::unordered_map<int, bool> territory_ids_visited_map = std::unordered_map<int, bool>();
     territory_ids_visited_map.reserve(territories->size());
 
+#ifdef DEBUG
     std::cout << "INSERTING TERRITORIES" << std::endl;
+#endif
     for (Territory *territory : *territories)
     {
       territory_ids_visited_map.insert(std::make_pair(territory->getID(), false));
     }
+#ifdef DEBUG
     std::cout << "INSERTED TERRITORIES" << std::endl;
     std::cout << "BEGIN " << **(territories->begin()) << std::endl;
+#endif
     traverseGraph(*(territories->begin()), territory_ids_visited_map);
 
+#ifdef DEBUG
     std::cout << "TRAVERSED GRAPH" << std::endl;
+#endif
 
     return std::all_of(
         territory_ids_visited_map.begin(),
@@ -159,7 +167,9 @@ namespace map
     {
       if (!territory_ids_visited_map[neighbour->getID()])
       {
+        #ifdef DEBUG
         std::cout << "GOING TO " << *neighbour << " FROM" << *territory << std::endl;
+        #endif
         traverseGraph(neighbour, territory_ids_visited_map);
       }
     }
@@ -455,7 +465,9 @@ namespace map
 
   bool Continent::isConnectedSubGraph()
   {
+    #ifdef DEBUG
     std::cout << "CHECKING SUBGRAPH " << *this << std::endl;
+    #endif
     std::unordered_map<int, bool> territory_ids_visited_map = std::unordered_map<int, bool>();
     territory_ids_visited_map.reserve(territories->size());
     for (Territory *territory : *territories)
@@ -478,7 +490,9 @@ namespace map
     {
       if (neighbour->getContinent()->getID() == getID() && !territory_ids_visited_map[neighbour->getID()])
       {
+        #ifdef DEBUG
         std::cout << "GOING TO " << *neighbour << " FROM" << *territory << std::endl;
+        #endif
         traverseContinentWithoutLeaving(neighbour, territory_ids_visited_map);
       }
     }

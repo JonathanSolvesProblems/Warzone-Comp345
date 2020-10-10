@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "/map/Map.h"
+#include "map/Map.h"
 
 
 void test_continent () {
