@@ -81,6 +81,8 @@ void test_map () {
 	std::cout << "A <-> B " << map->getTerritory("territory A")->hasNeighbour(1) << std::endl;
 	std::cout << "B <-> C " << map->getTerritory("territory B")->hasNeighbour(2) << std::endl;
 	std::cout << "A <-> C " << map->getTerritory("territory C")->hasNeighbour(0) << std::endl;
+
+	std::cout << map->validate() << std::endl;
 }
 
 int main() {
