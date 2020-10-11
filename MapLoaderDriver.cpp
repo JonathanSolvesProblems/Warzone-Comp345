@@ -44,6 +44,11 @@ int main()
 
         // try to figure out how to send a vector containign the IDs of the neighborung territoryeis 
 
+        // to get the list of neighbours you can do a forloop  with a try catch and store the successful ones in the vector
+        // so the sequence is we display the terrotories the user has 
+        // then we prompt for them to select a territory to make a decision on
+        // then we run this for loop to get the list of places you could attack  
+        cout<< *test.getTerritory(1)->getNeighbour(39);
 
     }
 
