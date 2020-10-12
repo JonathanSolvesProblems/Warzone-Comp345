@@ -15,13 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="map\Continent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="map\Map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="map\Territory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="drivers\MapDriver\MapDriver.cpp">
@@ -29,13 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="map\Continent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="map\Map.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="map\Territory.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

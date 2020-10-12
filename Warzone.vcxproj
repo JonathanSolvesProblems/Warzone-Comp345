@@ -124,14 +124,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="drivers\MapDriver\MapDriver.cpp" />
-    <ClCompile Include="map\Continent.cpp" />
     <ClCompile Include="map\Map.cpp" />
-    <ClCompile Include="map\Territory.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="map\Continent.h" />
     <ClInclude Include="map\Map.h" />
-    <ClInclude Include="map\Territory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
