@@ -219,6 +219,15 @@ namespace map
     this->neighbours = new std::vector<Territory *>();
   }
 
+  Territory::Territory(const Territory &other)
+  {
+    this->id = new int(other.getID());
+    this->name = new std::string(other.getName());
+    this->continent = other.continent;
+    this->neighbours = new std::vector<Territory *>();
+    this->neighbours->assign(other.neighbours->begin(), other.neighbours->end());
+  }
+
   Territory::~Territory()
   {
     delete id;
@@ -237,6 +246,10 @@ namespace map
     {
       continent->removeTerritory(this);
     }
+  }
+
+  Territory Territory::operator=(const Territory &other) {
+    return Territory(other);
   }
 
   std::string Territory::toString() const

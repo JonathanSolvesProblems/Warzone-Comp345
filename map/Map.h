@@ -68,7 +68,10 @@ private:
 
 public:
   Territory(int, std::string, Continent &);
+  Territory(const Territory &);
   ~Territory();
+
+  Territory operator=(const Territory &);
 
   std::string toString() const;
 
