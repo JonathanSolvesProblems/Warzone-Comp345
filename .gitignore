@@ -364,6 +364,8 @@ MigrationBackup/
 /MapDriver.exe
 /CardDriver
 /CardDriver.exe
+/PlayerDriver
+/PlayerDriver.exe
 /OrdersDriver
 /OrdersDriver.exe
 /MapLoaderDriver
