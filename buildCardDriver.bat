@@ -1,5 +1,5 @@
 echo Creating build/CardDriver Directory
-mkdir -p build/CardDriver
+mkdir build/CardDriver
 
 echo Compiling Card.cpp to object file
 g++ -I ./headers -o build/CardDriver/Card.o -c src/Card.cpp

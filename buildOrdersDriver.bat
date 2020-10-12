@@ -1,5 +1,5 @@
 echo Creating build/OrdersDriver Directory
-mkdir -p build/OrdersDriver
+mkdir build/OrdersDriver
 
 echo Compiling Orders.cpp to object file
 g++ -I ./headers -o build/OrdersDriver/Orders.o -c src/Orders.cpp

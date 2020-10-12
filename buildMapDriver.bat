@@ -1,5 +1,5 @@
 echo Creating build/MapDriver Directory
-mkdir -p build/MapDriver
+mkdir build/MapDriver
 
 echo Compiling Map.cpp to object file
 g++ -I ./headers -o build/MapDriver/Map.o -c src/Map.cpp

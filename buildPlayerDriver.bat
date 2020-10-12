@@ -1,5 +1,5 @@
 echo Creating build/PlayerDriver Directory
-mkdir -p build/PlayerDriver
+mkdir build/PlayerDriver
 
 echo Compiling Player.cpp, Card.cpp, Orders.cpp, Map.cpp and MapLoader.cpp to object file
 g++ -I ./headers -o build/PlayerDriver/Player.o -c src/Player.cpp
