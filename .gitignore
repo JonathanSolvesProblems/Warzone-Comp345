@@ -362,3 +362,5 @@ MigrationBackup/
 /build
 /MapDriver
 /MapDriver.exe
+/MapLoaderDriver
+/MapLoaderDriver.exe
