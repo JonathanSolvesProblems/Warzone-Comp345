@@ -11,10 +11,10 @@ int main()
 {
 
     map::Map test;
-    mapLoader map;
+    MapLoader map;
 
 
-    if (map.loadFile("exampleMaps/france.map", test) == true) {
+    if (map.loadFile("exampleMaps/solar.map", test) == true) {
 
 
         // remove 2 at the end

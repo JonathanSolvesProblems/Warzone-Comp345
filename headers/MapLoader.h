@@ -14,7 +14,7 @@ using namespace std;
 
 
 
-class mapLoader {
+class MapLoader {
 
 
 

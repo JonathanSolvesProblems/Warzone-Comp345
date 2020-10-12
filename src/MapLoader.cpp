@@ -17,7 +17,7 @@ vector<string> countries;
 
 
 // methods that takes the string as a filepath a map, continent, and territory objects 
-bool mapLoader::loadFile(string filePath, map::Map &test)
+bool MapLoader::loadFile(string filePath, map::Map &test)
 {
 
     bool continentsFound;
@@ -154,7 +154,7 @@ bool mapLoader::loadFile(string filePath, map::Map &test)
 };
 
 // method that stores the contents of the given line should it be a Border (all ints)
-bool mapLoader::isBorder(string line, map::Map& test, bool &isValid)
+bool MapLoader::isBorder(string line, map::Map& test, bool &isValid)
 {
     // stores the parsed string into array elements
     vector<string> bordersArrReborn;
@@ -235,7 +235,7 @@ bool mapLoader::isBorder(string line, map::Map& test, bool &isValid)
 };
 
 // isContinent method which checks to see if the string is a continent and adds it to the map by creating a continent obj 
-bool mapLoader::isContinent(string line, map::Map &test, bool &isValid)
+bool MapLoader::isContinent(string line, map::Map &test, bool &isValid)
 {
     // a continent ID which follows standard syntax OF ALL FILES, which is to start at 1, and goes up to N continents
     static int continentID = 1;
@@ -339,7 +339,7 @@ bool mapLoader::isContinent(string line, map::Map &test, bool &isValid)
 };
 
 // isCountry method whcih checks if the string is a Country to be added to the map by using the territory class
-bool mapLoader::isCountry(string line ,map::Map& test, bool &isValid)
+bool MapLoader::isCountry(string line ,map::Map& test, bool &isValid)
 {
    
     // stores the string into the elements in the array 
