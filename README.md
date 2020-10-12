@@ -1,9 +1,8 @@
 # Concordia University  Department of Computer Science and Software Engineering  Advanced Program Design with C++  COMP 345 --- Fall 2020
 
 # Requirements
-```
-g++ (MinGW on Windows)
-```
+
+- g++: MinGw on Windows (http://www.codebind.com/cprogramming/install-mingw-windows-10-gcc/)
 
 # Building and Running
 Each driver (and corresponding `main` function) has a .sh (or .bat for Windows) script for building the executable. The build
