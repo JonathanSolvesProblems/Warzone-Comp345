@@ -9,13 +9,6 @@ using namespace std;
 // for instance a line may be all ints and that will imply it belongs to the border vector
 
 
-
-vector<string> continents;
-vector<string> borders;
-vector<string> countries;
-
-
-
 // methods that takes the string as a filepath a map, continent, and territory objects 
 bool MapLoader::loadFile(string filePath, map::Map &test)
 {
