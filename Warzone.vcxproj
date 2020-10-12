@@ -124,9 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MapLoader.cpp" />
-    <ClCompile Include="map\Continent.cpp" />
     <ClCompile Include="map\Map.cpp" />
-    <ClCompile Include="map\Territory.cpp" />
     <ClCompile Include="MapLoaderDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -134,9 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapLoader.h" />
-    <ClInclude Include="map\Continent.h" />
     <ClInclude Include="map\Map.h" />
-    <ClInclude Include="map\Territory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="artic.map" />
