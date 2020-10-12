@@ -14,7 +14,7 @@ int main()
     MapLoader map;
 
 
-    if (map.loadFile("exampleMaps/france.map", test) == true) {
+    if (map.loadFile("exampleMaps/solar.map", test) == true) {
 
 
         // remove 2 at the end
@@ -28,7 +28,7 @@ int main()
         cout << "Countries and Neighbours: " << "\n";
         for (int s = 0; s < map.borders.size(); s++)
         {
-            cout << "Country: " << *test.getTerritory(s + 1) << " Has " << test.getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << test.getTerritory(s + 1)->getContinent() << endl;
+            cout << "Country: " << *test.getTerritory(s + 1) << " Has " << test.getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(test.getTerritory(s + 1)->getContinent()) << endl;
         }
 
         // have to run a forloop through all the neighbors to display if it is a neighbour 
