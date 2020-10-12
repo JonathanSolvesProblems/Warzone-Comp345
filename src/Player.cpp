@@ -1,4 +1,8 @@
+#include "map/Territory.h"
+#include "map/Map.h"
 #include "Player.h"
+#include "Orders.h"
+#include "Card.h"
 #include <iostream>
 #include <vector>
 #include <string>

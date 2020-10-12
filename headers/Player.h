@@ -1,11 +1,13 @@
 #pragma once
-#include "Map.h"
-#include "Card.h"
+#include "map/Territory.h"
+#include "map/Map.h"
+#include "Player.h"
 #include "Orders.h"
-
+#include "Card.h"
 #include <iostream>
 #include <vector>
 #include <string>
+#include "MapLoader.h"
 
 using namespace std;
 

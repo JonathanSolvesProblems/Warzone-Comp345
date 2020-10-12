@@ -1,7 +1,7 @@
 #include <iostream>
+#include "map/Map.h"
+#include "map/Territory.h"
 #include "Player.h"
-#include "MapLoader.h"
-
 using map::Territory;
 
 int main() {
@@ -10,9 +10,9 @@ int main() {
 	vector<int> ID;
 
 	map::Map test;
-	MapLoader map;
-	map.loadFile("exampleMaps/solar.map", test);
-	
+	mapLoader map;
+	map.loadFile("solar.map", test);
+
 	// remove 2 at the end
 	cout << "Continents  " << map.continents.size() << " \n";
 	for (int s = 0; s < map.continents.size(); s++)
