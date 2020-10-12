@@ -11,7 +11,7 @@ int main() {
 
 	map::Map test;
 	mapLoader map;
-	map.loadFile("solar.map", test);
+	map.loadFile("exampleMaps/solar.map", test);
 
 	// remove 2 at the end
 	cout << "Continents  " << map.continents.size() << " \n";
