@@ -1,7 +1,6 @@
 #include <iostream>
 
-#include "map/Map.h"
-
+#include "Map.h"
 
 void test_continent () {
 	// Testing Constructor
