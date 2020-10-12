@@ -14,7 +14,7 @@ int main()
     MapLoader map;
 
 
-    if (map.loadFile("exampleMaps/solar.map", test) == true) {
+    if (map.loadFile("exampleMaps/france.map", test) == true) {
 
 
         // remove 2 at the end
@@ -40,7 +40,7 @@ int main()
         // so the sequence is we display the terrotories the user has 
         // then we prompt for them to select a territory to make a decision on
         // then we run this for loop to get the list of places you could attack  
-        cout<< *test.getTerritory(1)->getNeighbour(39);
+       // cout<< *test.getTerritory(1)->getNeighbour(39);
 
     }
 
