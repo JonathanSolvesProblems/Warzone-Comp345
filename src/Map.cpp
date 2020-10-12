@@ -3,9 +3,8 @@
 namespace map
 {
 
-  /*
-   * MAP CLASS DEFINITIONS
-   */
+  // START OF MAP DEFINITIONS
+
 
   Map::Map()
   {
@@ -13,9 +12,6 @@ namespace map
     continents = new std::vector<Continent *>();
   }
 
-  /*
-   * Note: The individual territories and continents will not be copied.
-   */
   Map::Map(const Map &other)
   {
     territories = new std::vector<Territory *>();
@@ -27,6 +23,14 @@ namespace map
 
   Map::~Map()
   {
+    for (Continent* continent : *continents) {
+      delete continent;
+    }
+
+    for (Territory* territory : *territories) {
+      delete territory;
+    }
+
     delete territories;
     delete continents;
   }
@@ -34,15 +38,14 @@ namespace map
   void Map::addContinent(Continent *continent)
   {
     if (getContinent(continent->getID()))
-      return; // TODO Change to throw exception
-
+      return;
     this->continents->push_back(continent);
   }
 
   void Map::addTerritory(Territory *territory)
   {
     if (getTerritory(territory->getID()))
-      return; // TODO Change to throw exception
+      return;
 
     this->territories->push_back(territory);
   }
@@ -155,8 +158,6 @@ namespace map
         [](Continent *continent) { return continent->isConnectedSubGraph(); });
   }
 
-  // TODO Is this the correct interpretation of this requirement?
-  // Also, this property is guaranteed if the Map is constructed using only public methods.
   bool Map::eachTerritoryHasSingleContinent()
   {
     std::unordered_set<int> territories_with_continents = std::unordered_set<int>();
@@ -207,9 +208,8 @@ namespace map
 
   // END OF MAP CLASS DEFINITIONS
 
-  /*
-   * TERRITORY CLASS DEFINITIONS
-   */
+  // START OF TERRITORY CLASS DEFINITIONS
+
   Territory::Territory(int id, std::string name, Continent &continent)
   {
     this->id = new int(id);
@@ -396,9 +396,8 @@ namespace map
 
   // END OF TERRITORY CLASS DEFINITIONS
 
-  /*
-   * CONTIENT CLASS DEFINITIONS
-   */
+  // START OF CONTINENT CLASS DEFINITIONS
+
   Continent::Continent(int id, std::string name, int bonus)
   {
     this->id = new int(id);
@@ -500,9 +499,9 @@ namespace map
 
   bool Continent::isConnectedSubGraph()
   {
-    #ifdef DEBUG
+#ifdef DEBUG
     std::cout << "CHECKING SUBGRAPH " << *this << std::endl;
-    #endif
+#endif
     std::unordered_map<int, bool> territory_ids_visited_map = std::unordered_map<int, bool>();
     territory_ids_visited_map.reserve(territories->size());
     for (Territory *territory : *territories)
@@ -525,9 +524,9 @@ namespace map
     {
       if (neighbour->getContinent()->getID() == getID() && !territory_ids_visited_map[neighbour->getID()])
       {
-        #ifdef DEBUG
+#ifdef DEBUG
         std::cout << "GOING TO " << *neighbour << " FROM" << *territory << std::endl;
-        #endif
+#endif
         traverseContinentWithoutLeaving(neighbour, territory_ids_visited_map);
       }
     }
@@ -540,4 +539,4 @@ namespace map
   }
 
   // END OF CONTINENT CLASS DEFINITIONS
-} // namespace map
+}

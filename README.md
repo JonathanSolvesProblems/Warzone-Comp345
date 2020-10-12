@@ -8,8 +8,21 @@
 Each driver (and corresponding `main` function) has a .sh (or .bat for Windows) script for building the executable. The build
 scripts were written manually using g++.
 
-Execute the build script for the desired driver, then run the resulting executable. On linux, you must first run
-`chmod +x NAME_OF_DRIVER`
+## Do the following in Windows Command Prompt to run each Driver.cpp file:<br/>
+1.Change into the project directory.<br/>
+`> cd Warzone-Comp345`<br/>
+
+2. Run one of the .bat scripts to build the driver<br/>
+`\Warzone-Comp345> build******Driver.bat`<br/>
+Change `******` to one of the part names: Card,Player,Map,Orders,or MapLoader.<br/>
+
+<i>Note (optional) If step 2 didn't work, add execute permissions to the driver</i><br/>
+`chmod +x NAME_OF_DRIVER`<br/>
+
+3. Run the .exe file that the .bat script created <br/>
+`\Warzone-Comp345> ******Driver.exe`<br/>
+Change `******` to one of the part names: Card,Player,Map,Orders,or MapLoader.<br/>
+<b>TODO: Linux .sh instructions</b><br/>
 
 # Project Description
 

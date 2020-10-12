@@ -8,7 +8,7 @@ g++ -I .\headers -o build\PlayerDriver\Orders.o -c src\Orders.cpp
 g++ -I .\headers -o build\PlayerDriver\Card.o -c src\Card.cpp
 g++ -I .\headers -o build\PlayerDriver\MapLoader.o -c src\MapLoader.cpp
 
-echo "Compiling and Linking PlayerDriver.cpp with Map.o & MapLoader.o & Card.o & Orders.o & Player.o"
+echo Compiling and Linking PlayerDriver.cpp with Map.o, MapLoader.o, Card.o, Orders.o and Player.o
 g++ -I .\headers -o PlayerDriver drivers\PlayerDriver.cpp build\PlayerDriver\Map.o build\PlayerDriver\MapLoader.o build\PlayerDriver\Player.o build\PlayerDriver\Orders.o build\PlayerDriver\Card.o
 
 echo Cleaning up...

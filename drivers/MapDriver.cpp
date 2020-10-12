@@ -2,6 +2,7 @@
 
 #include "Map.h"
 
+/* Will test the basic behaviours of the Continent class */
 void test_continent () {
 	// Testing Constructor
 	const map::Continent continent = map::Continent(0, "test continent", 4);
@@ -17,6 +18,7 @@ void test_continent () {
 	std::cout << other_continent.getName() << std::endl;
 }
 
+/* Will test the behaviours of the Territory class */
 void test_territory () {
 	// Testing constructor
 	map::Continent continent = map::Continent(0, "test continent", 4);
@@ -53,6 +55,7 @@ void test_territory () {
 	std::cout << "Neighbours after deleting: " << territory.getNeighbourCount() << std::endl;
 }
 
+/* Will test the behaviours of the Continent class */
 void test_map () {
 	map::Map* map = new map::Map();
 	std::cout << *map << std::endl;	
