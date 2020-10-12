@@ -359,3 +359,6 @@ MigrationBackup/
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
 
 .vscode
+/build
+/MapDriver
+/MapDriver.exe
