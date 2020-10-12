@@ -360,13 +360,10 @@ MigrationBackup/
 
 .vscode
 /build
-/MapDriver
-/MapDriver.exe
-/CardDriver
-/CardDriver.exe
-/PlayerDriver
-/PlayerDriver.exe
-/OrdersDriver
-/OrdersDriver.exe
-/MapLoaderDriver
-/MapLoaderDriver.exe
+MapDriver
+CardDriver
+PlayerDriver
+OrdersDriver
+MapLoaderDriver
+
+*.exe
