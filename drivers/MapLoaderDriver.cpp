@@ -1,12 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <sstream>
-#include <locale>
 #include "MapLoader.h"
-
-
 
 
 // THIS IS THE MAP LOADER DRIVER FILE THAT TAKES A MAP AND DISPLAYS THE CONTINENTS, THE TERRITORIES, THE AMOUNT OF NEIGHBOURS A TERRITORY HAS ALONG WITH THE CONTINENT 
@@ -22,7 +14,7 @@ int main()
     mapLoader map;
 
 
-    if (map.loadFile("france.map", test) == true) {
+    if (map.loadFile("exampleMaps/france.map", test) == true) {
 
 
         // remove 2 at the end
@@ -55,7 +47,7 @@ int main()
 
     else {
 
-        cout << "Invalid file... System terminating";
+        cout << "Invalid file... System terminating" << endl;
     }
 
 

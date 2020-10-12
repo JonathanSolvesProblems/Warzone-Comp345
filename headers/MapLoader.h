@@ -8,10 +8,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale> 
-#include "map/Map.h"
-#include "map/Continent.h"
-#include "map/Territory.h"
-
+#include "Map.h"
 
 using namespace std;
 

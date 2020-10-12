@@ -1,9 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <sstream>
-#include <locale>
 #include "MapLoader.h"
 
 
