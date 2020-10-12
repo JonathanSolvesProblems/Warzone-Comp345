@@ -28,7 +28,7 @@ int main()
         cout << "Countries and Neighbours: " << "\n";
         for (int s = 0; s < map.borders.size(); s++)
         {
-            cout << "Country: " << *test.getTerritory(s + 1) << " Has " << test.getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << test.getTerritory(s + 1)->getContinent() << endl;
+            cout << "Country: " << *test.getTerritory(s + 1) << " Has " << test.getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(test.getTerritory(s + 1)->getContinent()) << endl;
         }
 
         // have to run a forloop through all the neighbors to display if it is a neighbour 
@@ -40,7 +40,7 @@ int main()
         // so the sequence is we display the terrotories the user has 
         // then we prompt for them to select a territory to make a decision on
         // then we run this for loop to get the list of places you could attack  
-        cout<< *test.getTerritory(1)->getNeighbour(39);
+       // cout<< *test.getTerritory(1)->getNeighbour(39);
 
     }
 

@@ -10,7 +10,7 @@ pic france.png
 map france.gif
 crd nomission.cards
 
-[continents]
+[continents]     
 Bretagne 3 col1
 Basse-Normandie 2 col2
 Haute-Normandie 2 col3
@@ -36,7 +36,7 @@ Limousin 1 col22
 
 [countries]
 1 Ain 10 343 230
-2 Aisne 4 290 77
+2 Aisne 4 290 77    
 3 Allier 21 284 216
 4 Alpes-de-Haute-Provence 11 381 323
 5 Hautes-Alpes 11 380 301
