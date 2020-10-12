@@ -1,5 +1,17 @@
 # Concordia University  Department of Computer Science and Software Engineering  Advanced Program Design with C++  COMP 345 --- Fall 2020
 
+# Requirements
+```
+g++ (MinGW on Windows)
+```
+
+# Building and Running
+Each driver (and corresponding `main` function) has a .sh (or .bat for Windows) script for building the executable. The build
+scripts were written manually using g++.
+
+Execute the build script for the desired driver, then run the resulting executable. On linux, you must first run
+`chmod +x NAME_OF_DRIVER`
+
 # Project Description
 
 All assignments (3) will be about the development of different parts of a project. Thus, every assignment
@@ -76,6 +88,6 @@ effect that influence the course of the game:
 Any other player that does not control at least one territory is removed from the game. The game ends at any time one
 of the players owns all the territories in the map.
 
-## References
+# References
 https://www.warzone.com/  
 http://domination.sourceforge.net/getmaps.shtml
