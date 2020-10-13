@@ -290,6 +290,18 @@ public:
   std::string getName() const;
 
   /*
+   * Returns the pointer to the player which currently owns the territory.
+   * NOTE: Returns nullptr if the territory is not owned by any player.
+   */
+  Player* getOwner() const;
+
+  /*
+   * Sets the owning player, adds this territory the player's list of territories
+   * and removes it from the previous player's list.
+   */
+  void setOwner(Player* player);
+
+  /*
    * Returns the number of neighbours this territory has.
    */
   int getNeighbourCount() const;

@@ -16,20 +16,20 @@ class Player {
 public:
 	// a order list
 	OrdersList listOfOrders;
+
 	// a vector of cards to hold the players hand
+	Hand*
 	// stores the ID's of the defending territories
-	vector<int>myTerritories;
-	// stores the ID's of all the territories we will be playing with 
-	vector<int>allTerritories;
-	// territories to attack
-	vector<int>attack;
+	vector<map::Territory*> owned_territories;
+
 	//stores the player name
 	std::string playerName;
+
 	//stores a player's ID
 	int playerID;
 	
-	//** may have to include a map object to figure out neighboruing territories 
-	Player(std::string name, int pID, vector<int> allCountries);
+	// Creates a new player with the given name and player id
+	Player(std::string name, int pID);
 
 	Player(const Player& toCopy);
 
@@ -48,5 +48,11 @@ public:
 
 	// creates a list object
 	void issueOrder(Order& o);
+
+	// Adds a territory to myTerritories (Does not set the Territory's owner)
+	void addTerritory(map::Territory*);
+
+	// Removes a territory from myTerritories (Does not unset the Territory's owner)
+	void removeTerritory(map::Territory*);
 };
 

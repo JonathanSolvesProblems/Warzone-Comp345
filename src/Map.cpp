@@ -272,6 +272,22 @@ namespace map
     return continent;
   }
 
+  Player *Territory::getOwner() const
+  {
+    return owner_player;
+  }
+
+  void Territory::setOwner(Player* player)
+  {
+    if (this->owner_player) {
+      this->owner_player->removeTerritory(this);
+    }
+    if (player) {
+      player->addTerritory(this);
+    }
+    this->owner_player = player;
+  }
+
   int Territory::getNeighbourCount() const
   {
     return neighbours->size();

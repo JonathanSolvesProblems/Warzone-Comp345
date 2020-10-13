@@ -110,4 +110,19 @@ void Player::playerHand(Hand& hand, Deck& deck) {
 	hand.showHand();
 }
 
+void Player::addTerritory(map::Territory* territory) {
+	if (territory) {
+		this->myTerritories.push_back(territory->getID());
+	}
+}
+
+void Player::removeTerritory(map::Territory* territory) {
+	if (territory) {
+		vector<int>::iterator found = std::remove(
+			myTerritories.begin(),
+			myTerritories.end(),
+			territory->getID()
+		);
+	}
+}
 
