@@ -225,6 +225,7 @@ namespace map
   Territory::Territory(int id, std::string name, Continent &continent)
   {
     this->id = new int(id);
+    this->armees = 0;
     this->name = new std::string(name);
     this->continent = &continent;
     this->continent->addTerritory(this);
@@ -234,6 +235,7 @@ namespace map
   Territory::Territory(const Territory &other)
   {
     this->id = new int(other.getID());
+    this->armees = other.getArmees();
     this->name = new std::string(other.getName());
     this->continent = other.continent;
     this->neighbours = new std::vector<Territory *>();
@@ -273,6 +275,16 @@ namespace map
   int Territory::getID() const
   {
     return *id;
+  }
+
+  int Territory::getArmees() const
+  {
+    return armees;
+  }
+
+  void Territory::setArmees(int number)
+  {
+    armees = number;
   }
 
   std::string Territory::getName() const

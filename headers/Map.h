@@ -220,6 +220,8 @@ private:
   // A pointer the the player who owns this territory.
   Player *owner_player{nullptr};
 
+  int armees;
+
   /*
    * Stores pointers to the neighbouring territories.
    * 
@@ -280,6 +282,11 @@ public:
   int getID() const;
 
   /*
+   * Returns number of armees on the territory.
+   */
+  int getArmees() const;
+
+  /*
    * Returns a pointer to this territories Continent.
    */
   Continent* getContinent() const;
@@ -300,6 +307,9 @@ public:
    * and removes it from the previous player's list.
    */
   void setOwner(Player* player);
+
+  /* Sets the number of armees on the territory. */
+  void setArmees(int number);
 
   /*
    * Returns the number of neighbours this territory has.
