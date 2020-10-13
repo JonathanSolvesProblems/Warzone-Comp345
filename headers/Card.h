@@ -68,7 +68,7 @@ public:
 // Hand, cards that are drawn by the player will be stored here.
 class Hand {
 
-	vector<Card*> _hand;
+	vector<Card*> cards;
 public:
 
 	Hand(); 
@@ -76,8 +76,8 @@ public:
 
 	Hand& operator=(const Hand& hand);
 
-	void addHand(Card* drawn); 
-	void showHand(); // displays contents of hand
+	void add(Card* drawn); 
+	void show(); // displays contents of hand
 
 	friend ostream& operator<<(ostream& os, const Hand& hand);
 };

@@ -40,20 +40,20 @@ Airlift::~Airlift() {}
 Diplomacy::~Diplomacy() {}
 
 // Memory management for vector of pointers in destructor. 
-Deck::~Deck() { 
-	for (auto deck : _deck)
+Deck::~Deck() {
+	for (auto card : _deck)
 	{
-		delete deck;
+		delete card;
 	}
 	_deck.clear();
 }
 
-Hand::~Hand() { 
-	for (auto deck : _hand)
+Hand::~Hand() {
+	for (auto deck : cards)
 	{
 		delete deck;
 	}
-	_hand.clear();
+	cards.clear();
 }
 
 // Overriding play methods, depending on card type
@@ -84,7 +84,7 @@ void Diplomacy::play() {
 // shuffles deck of cards
 void Deck::shuffle(vector<Card*>& deck) {
 
-	srand(time(nullptr)); // reset random seed to not get same random # of cards each build.
+	srand(time(nullptr)); // reset random seed to not get same random # of cards each shuffle.
 
 	// swap cards
 	for (int s1 = 0; s1 < deck.size() - 1; s1++) {
@@ -110,32 +110,32 @@ Card* Deck::draw() {
 	return drawn;
 }
 
-void Hand::showHand() { // display's contents of the hand.
-
+void Hand::show() { // display's contents of the hand.
+#ifdef DEBUG
 	cout << "The hand contains: " << "\n\n";
-
-	for (auto elem : _hand)
+#endif
+	for (auto elem : cards)
 		elem->play();
 
 	cout << "\n\n";
 }
 
-void Hand::addHand(Card* drawn) { // adds card to hand, based on card that was drew.
-
+void Hand::add(Card* drawn) { // adds card to hand, based on card that was drew.
+#ifdef DEBUG
 	cout << "card drew successfully...\n";
-
-	_hand.push_back(drawn);
+#endif
+	cards.push_back(drawn);
 		
 }
 
 // insertion operator overloading
 
 ostream& operator<<(ostream& os, const Deck& deck) {
-	os << "\ncard added to deck...\n";
+	os << "(Deck " + std::to_string(deck._deck.size()) + ")" << std::endl;
 	return os;
 }
 
 ostream& operator<<(ostream& os, const Hand& hand) {
-	os << "\ncard added to hand...\n";
+	os << "(Hand " + std::to_string(hand.cards.size()) + ")" << std::endl;
 	return os;
 }

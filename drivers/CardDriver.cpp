@@ -10,19 +10,19 @@ int main() {
 	Hand hand;
 
 	// drawing cards from deck and adding them to the hand.
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
+	hand.add(deck.draw());
+	hand.add(deck.draw());
+	hand.add(deck.draw());
+	hand.add(deck.draw());
+	hand.add(deck.draw());
+	hand.add(deck.draw());
+	hand.add(deck.draw());
+	hand.add(deck.draw());
+	hand.add(deck.draw());
 
 	// calls play method of all cards in the hand.
 	cout << "\nRevealing hand...\n\n";
-	hand.showHand();
+	hand.show();
 
 	return 0;
 }

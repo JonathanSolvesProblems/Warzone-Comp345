@@ -218,8 +218,8 @@ private:
   Continent *continent{nullptr};
   
   // A pointer the the player who owns this territory.
-  Player* owner_player;
-  
+  Player *owner_player{nullptr};
+
   /*
    * Stores pointers to the neighbouring territories.
    * 
@@ -393,7 +393,7 @@ private:
   int *bonus{nullptr};
 
   // Maintains pointers to every territory in the continent.
-  std::vector<Territory*>* territories;
+  std::vector<Territory*>* territories{nullptr};
 
   /*
    * Starting at the given territory, traverses the continent without leaving it.
