@@ -1,4 +1,7 @@
 #pragma once
+
+class Player;
+
 #include "Map.h"
 #include "Card.h"
 #include "Orders.h"

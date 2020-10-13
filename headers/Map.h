@@ -1,5 +1,12 @@
 #pragma once
 #define DEBUG // Remove this to disabled debugging
+
+namespace map {
+  class Map;
+  class Territory;
+  class Continent;
+}
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -8,12 +15,10 @@
 #include <algorithm>
 #include <utility>
 
+#include "Player.h"
+
 namespace map
 {
-
-  class Map;
-  class Territory;
-  class Continent;
 
 /*
 Represents a Warzone Map as a connected graph of territories.
@@ -211,6 +216,9 @@ private:
   std::string *name{nullptr};
   // A pointer to the Continent this territory belongs to.
   Continent *continent{nullptr};
+  
+  // A pointer the the player who owns this territory.
+  Player* owner_player;
   
   /*
    * Stores pointers to the neighbouring territories.
