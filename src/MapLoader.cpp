@@ -7,6 +7,35 @@
 
 using namespace std;
 
+// default constructor
+MapLoader::MapLoader() {
+}
+
+//copy constructor
+MapLoader::MapLoader(const MapLoader& copyto) {
+this->continents = copyto.continents;
+this->borders = copyto.borders;
+this->countries = copyto.countries;
+}
+
+// destructor
+MapLoader::~MapLoader() {
+}
+
+// OS stream operator 
+ostream& operator<<(ostream& out, const MapLoader& o){
+
+for(int s =0; s< o.continents.size(); s++){
+		out << o.continents[s] << endl;
+        	
+}
+return out;
+
+}
+
+//assignment operator 
+MapLoader& MapLoader::operator=(const MapLoader& o){}
+
 // methods that takes the string as a filepath a map, continent, and territory objects 
 bool MapLoader::loadFile(string filePath, map::Map &test)
 {
@@ -35,8 +64,6 @@ bool MapLoader::loadFile(string filePath, map::Map &test)
                 continue;
             }
            
-
-        
             // checks to see if there is the continents banner and checks and stores them all 
             if (strstr(line.c_str(), continentsHeader.c_str()))
             {
@@ -222,7 +249,6 @@ bool MapLoader::isContinent(string line, map::Map &test, bool &isValid)
             }
 
             continentsArr[i] = line;
-
             i++;
         }
 
