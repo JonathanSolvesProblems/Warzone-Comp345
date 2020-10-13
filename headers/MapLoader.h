@@ -15,8 +15,23 @@ using namespace std;
 
 
 class MapLoader {
-
   public:
+
+
+	// default constructor
+	MapLoader();
+
+	//copy constructor
+	MapLoader(const MapLoader& toCopy);
+
+	// OS stream operator 
+	friend ostream& operator<<(ostream& out, const MapLoader& o);
+
+//assignment operator 
+  MapLoader& operator=(const MapLoader& o);
+
+	//destructor
+	~MapLoader();
 
   vector<string> continents; 
   vector<string> borders;    

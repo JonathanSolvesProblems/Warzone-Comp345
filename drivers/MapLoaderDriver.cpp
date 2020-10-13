@@ -14,7 +14,7 @@ int main()
     MapLoader map;
 
 
-    if (map.loadFile("exampleMaps/solar.map", test) == true) {
+    if (map.loadFile("exampleMaps/france.map", test) == true) {
 
 
         // remove 2 at the end
@@ -30,6 +30,7 @@ int main()
         {
             cout << "Country: " << *test.getTerritory(s + 1) << " Has " << test.getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(test.getTerritory(s + 1)->getContinent()) << endl;
         }
+
 
         // have to run a forloop through all the neighbors to display if it is a neighbour 
 
@@ -50,6 +51,57 @@ int main()
         cout << "Invalid file... System terminating" << endl;
     }
 
+
+    // invalid Map
+    map::Map invalid;
+    MapLoader map3;
+
+
+    // testing invalid file 
+
+    cout << endl << endl << endl << "Testing invalid hello file"<< endl;
+
+
+    if (map3.loadFile("exampleMaps/hello.txt", invalid) == true) {
+
+
+        // remove 2 at the end
+        cout << "Continents  " << map3.continents.size() << " \n";
+        for (int s = 0; s < map3.continents.size(); s++)
+        {
+            cout << *test.getContinent(s + 1) << endl;
+        }
+
+
+        cout << "Countries and Neighbours: " << "\n";
+        for (int s = 0; s < map3.borders.size(); s++)
+        {
+            cout << "Country: " << *invalid.getTerritory(s + 1) << " Has " << invalid.getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(invalid.getTerritory(s + 1)->getContinent()) << endl;
+        }
+
+      
+    }
+
+
+    else {
+
+        cout << "Invalid file... System terminating" << endl;
+    }
+
+
+
+
+// copy constructor 
+  MapLoader* map4 =  new MapLoader(map);
+
+cout<< "copy Constructor " << map4->continents[0] << endl << endl;
+cout<< map4->continents.size() << endl;
+cout<< map4->borders.size() << endl;
+cout<< map4->countries.size() << endl;
+cout<< map.borders[1];
+cout<< endl<< endl<<" this is the OS operator" <<endl;
+// out put 
+cout << *map4;
 
 
     return 0;
