@@ -25,6 +25,8 @@ void test_territory () {
 	map::Territory territory = map::Territory(0, "test territory #1", continent);
 	map::Territory territory_b = map::Territory(1, "test territory #2", continent);
 
+	territory.setArmees(4);
+
 	std::cout << "First " << territory << std::endl;
 	std::cout << "Second " << territory_b << std::endl;
 

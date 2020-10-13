@@ -269,7 +269,7 @@ namespace map
 
   std::string Territory::toString() const
   {
-    return "(Territory #" + std::to_string(*id) + ") " + *name;
+    return "(Territory #" + std::to_string(*id) + ") " + *name + " " + std::to_string(armees) + " armees";
   }
 
   int Territory::getID() const
