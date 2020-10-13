@@ -1,30 +1,46 @@
 #include "Card.h"
+#include "Orders.h"
 
+// Default Constructers
 Card::Card() {}
-
-Card::Card(const Card& cardCopy) {}
-
-Spy::Spy() {}
+Spy::Spy() {} 
 Bomb::Bomb() {}
 Reinforcement::Reinforcement() {}
-Blockage::Blockage() {}
+Blockage::Blockage() {} 
 Airlift::Airlift() {}
-Diplomacy::Diplomacy() {}
+Diplomacy::Diplomacy() {} 
+Hand::Hand() {}
 
-Card::~Card() {}
-Spy::~Spy() {}
-Bomb::~Bomb() {}
-Reinforcement::~Reinforcement() {}
-Blockage::~Blockage() {}
-Airlift::~Airlift() {}
-Diplomacy::~Diplomacy() {}
+Deck::Deck() {
+	// Hardcoding test cases to add for the deck.
+	_deck = { new Spy(), new Bomb(), new Reinforcement(), new Blockage(), new Airlift(), new Diplomacy(), 
+	new Spy(), new Bomb(), new Reinforcement(), new Blockage(), new Airlift(), new Diplomacy(),
+	new Spy(), new Bomb(), new Reinforcement(), new Blockage(), new Airlift(), new Diplomacy(),
+	new Spy(), new Bomb(), new Reinforcement(), new Blockage(), new Airlift(), new Diplomacy() };
 
-ostream& Card::operator<<(ostream& os)
-{
-	return os;
+	shuffle(_deck);
 }
 
-Deck::~Deck() {
+// Copy Constructers
+Card::Card(const Card& cardCopy) {}
+
+// equals operator overloading
+
+Hand& Hand::operator=(const Hand& hand) { 
+	return *this;
+}
+
+// Destructers
+Card::~Card() {} 
+Spy::~Spy() {} 
+Bomb::~Bomb() {} 
+Reinforcement::~Reinforcement() {}
+Blockage::~Blockage() {} 
+Airlift::~Airlift() {} 
+Diplomacy::~Diplomacy() {}
+
+// Memory management for vector of pointers in destructor. 
+Deck::~Deck() { 
 	for (auto deck : _deck)
 	{
 		delete deck;
@@ -32,49 +48,45 @@ Deck::~Deck() {
 	_deck.clear();
 }
 
-const Card& Card::operator=(const Card& cards) {
-	// Not necessary for now.
-	// compare private data members if any necessary.
-	return cards;
+Hand::~Hand() { 
+	for (auto deck : _hand)
+	{
+		delete deck;
+	}
+	_hand.clear();
 }
 
-
-
+// Overriding play methods, depending on card type
 void Spy::play() {
-	cout << "Spy::play()" << endl;
-	// create special orders
+	cout << "Spy Card\n";
 }
 
 void Bomb::play() {
-	cout << "Bomb::play()" << endl;
-	// create special orders
+	cout << "Bomb Card\n";
 }
 
 void Reinforcement::play() {
-	cout << "Reinforcement::play()" << endl;
-	// create special orders
+	cout << "Reinforcement Card\n";
 }
 
 void Blockage::play() {
-	cout << "Blockage::play()" << endl;
-	// create special orders
+	cout << "Blockage Card\n";
 }
 
 void Airlift::play() {
-	cout << "Airlift::play()" << endl;
-	// create special orders
+	cout << "Airlift Card\n";
 }
 
 void Diplomacy::play() {
-	cout << "Diplomacy::play()" << endl;
-	// create special orders
+	cout << "Diplomacy Card\n";
 }
 
 // shuffles deck of cards
 void Deck::shuffle(vector<Card*>& deck) {
 
-	srand(time(nullptr)); // reset random seed
+	srand(time(nullptr)); // reset random seed to not get same random # of cards each build.
 
+	// swap cards
 	for (int s1 = 0; s1 < deck.size() - 1; s1++) {
 
 		int s2 = s1 + rand() % (deck.size() - s1);
@@ -86,15 +98,7 @@ void Deck::shuffle(vector<Card*>& deck) {
 	}
 }
 
-Deck::Deck() {
-	// test cases
-	_deck = { new Spy(), new Bomb(), new Reinforcement(), new Blockage(), new Airlift(), new Diplomacy() }; // to add more cards, testing with the 6 different types.
-
-	shuffle(_deck);
-
-	cout << "deck created...\n\n";
-}
-
+// draw from deck. Return card that was drawn.
 Card* Deck::draw() {
 
 	// storing card to be drawn
@@ -103,13 +107,10 @@ Card* Deck::draw() {
 	// erasing drawn card from deck
 	_deck.erase(_deck.begin() + (_deck.size() - 1));
 
-	// returning drawn card
 	return drawn;
 }
 
-Hand::Hand() {}
-
-void Hand::showHand() {
+void Hand::showHand() { // display's contents of the hand.
 
 	cout << "The hand contains: " << "\n\n";
 
@@ -119,7 +120,7 @@ void Hand::showHand() {
 	cout << "\n\n";
 }
 
-void Hand::addHand(Card* drawn) {
+void Hand::addHand(Card* drawn) { // adds card to hand, based on card that was drew.
 
 	cout << "card drew successfully...\n";
 
@@ -127,10 +128,14 @@ void Hand::addHand(Card* drawn) {
 		
 }
 
-Hand::~Hand() {
-	for (auto deck : _hand)
-	{
-		delete deck;
-	}
-	_hand.clear();
+// insertion operator overloading
+
+ostream& operator<<(ostream& os, const Deck& deck) {
+	os << "\ncard added to deck...\n";
+	return os;
+}
+
+ostream& operator<<(ostream& os, const Hand& hand) {
+	os << "\ncard added to hand...\n";
+	return os;
 }
