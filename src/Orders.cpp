@@ -312,10 +312,6 @@ OrdersList::OrdersList(const OrdersList &ordersListToCopy) {
 
 // Destructor
 OrdersList::~OrdersList() {
-	for (auto order : _orders) {
-		delete order;
-	}
-
 	_orders.clear();
 }
 
