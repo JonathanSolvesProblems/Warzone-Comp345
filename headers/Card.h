@@ -5,39 +5,34 @@
 #include <stdlib.h>
 #include <time.h>
 
-using std::string;
-using std::ostream;
-using std::vector;
-using std::cout;
-using std::endl;
+using namespace std;
 
-
-class Card { // abstract class
-private:
+// Card is an abstract class that will be the parent of all the card types.
+class Card {
 public:
-	Card();
-	Card(const Card& cardCopy);
-	friend ostream& operator<<(ostream& out, const Card& card);
+	Card(); 
 	virtual void play() = 0;
-	virtual ~Card();
-	const Card& operator=(const Card& cards);
-	ostream& operator<<(ostream& os);
+	virtual ~Card(); 
+	Card(const Card& cardCopy);
 };
 
-class Spy : public Card {
+// Card Type Spy
+class Spy : public Card { 
 public:
 	Spy();
 	virtual void play() override final;
 	virtual ~Spy();
 };
 
-class Bomb : public Card {
+// Card Type Bomb
+class Bomb : public Card { 
 public:
-	Bomb();
-	virtual void play() override final;
+	Bomb(); 
+	virtual void play() override final; 
 	virtual ~Bomb();
 };
 
+ // Card Type Reinforcement
 class Reinforcement : public Card {
 public:
 	Reinforcement();
@@ -45,51 +40,57 @@ public:
 	virtual ~Reinforcement();
 };
 
-class Blockage : public Card {
+// Card Type Blockage
+class Blockage : public Card { 
 public:
-	Blockage();
-	virtual void play() override final;
-	virtual ~Blockage();
+	Blockage(); 
+	virtual void play() override final; 
+	virtual ~Blockage(); 
+
 };
 
-class Airlift : public Card {
+// Card Type Airlift
+class Airlift : public Card { 
 public:
-	Airlift();
-	virtual void play() override final;
+	Airlift(); 
+	virtual void play() override final; 
 	virtual ~Airlift();
 };
 
-class Diplomacy : public Card {
+// Card Type Diplomacy
+class Diplomacy : public Card { 
 public:
 	Diplomacy();
 	virtual void play() override final;
 	virtual ~Diplomacy();
 };
 
-class Hand final {
+// Hand, cards that are drawn by the player will be stored here.
+class Hand {
 
-	vector<Card*> _hand;
+	vector<Card*> cards;
 public:
 
-	Hand();
+	Hand(); 
 	~Hand();
 
-	void addHand(Card* drawn);
-	void showHand();
+	Hand& operator=(const Hand& hand);
 
-	Hand(const Hand& orderToCopy);
-	friend ostream& operator<<(ostream& out, const Hand& o);
-	Hand& operator=(const Hand& o);
+	void add(Card* drawn); 
+	void show(); // displays contents of hand
+
+	friend ostream& operator<<(ostream& os, const Hand& hand);
 };
 
-class Deck final {
+// The Deck class stores the contents of the cards within a deck
+class Deck {
 private:
 	vector<Card*> _deck;
-
 public:
-	Deck();
-	~Deck();
-	void cardPlay();
-	Card* draw();
+	Deck(); 
+	~Deck(); 
+	void cardPlay(); 
+	Card* draw(); 
 	void shuffle(vector<Card*>& deck);
+	friend ostream& operator<<(ostream& os, const Deck& deck);
 };

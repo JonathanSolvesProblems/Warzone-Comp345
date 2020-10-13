@@ -1,5 +1,12 @@
 #pragma once
 #define DEBUG // Remove this to disabled debugging
+
+namespace map {
+  class Map;
+  class Territory;
+  class Continent;
+}
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -8,12 +15,10 @@
 #include <algorithm>
 #include <utility>
 
+#include "Player.h"
+
 namespace map
 {
-
-  class Map;
-  class Territory;
-  class Continent;
 
 /*
 Represents a Warzone Map as a connected graph of territories.
@@ -212,6 +217,9 @@ private:
   // A pointer to the Continent this territory belongs to.
   Continent *continent{nullptr};
   
+  // A pointer the the player who owns this territory.
+  Player *owner_player{nullptr};
+
   /*
    * Stores pointers to the neighbouring territories.
    * 
@@ -280,6 +288,18 @@ public:
    * Returns the name of the Territory.
    */
   std::string getName() const;
+
+  /*
+   * Returns the pointer to the player which currently owns the territory.
+   * NOTE: Returns nullptr if the territory is not owned by any player.
+   */
+  Player* getOwner() const;
+
+  /*
+   * Sets the owning player, adds this territory the player's list of territories
+   * and removes it from the previous player's list.
+   */
+  void setOwner(Player* player);
 
   /*
    * Returns the number of neighbours this territory has.
@@ -373,7 +393,7 @@ private:
   int *bonus{nullptr};
 
   // Maintains pointers to every territory in the continent.
-  std::vector<Territory*>* territories;
+  std::vector<Territory*>* territories{nullptr};
 
   /*
    * Starting at the given territory, traverses the continent without leaving it.

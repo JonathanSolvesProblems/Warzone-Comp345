@@ -1,4 +1,7 @@
 #pragma once
+
+class Player;
+
 #include "Map.h"
 #include "Card.h"
 #include "Orders.h"
@@ -13,16 +16,15 @@ class Player {
 public:
 
 	// an order list
-	OrdersList* listOfOrders;
+	OrdersList* listOfOrders{nullptr};
 	// a vector of cards to hold the players hand
+	Hand *hand{nullptr};
 	// stores the ID's of the defending territories
-	vector<int> myTerritories;
-	// stores the ID's of all the territories we will be playing with 
-	vector<int> allTerritories;
-	// territories to attack
-	vector<int> attack;
+	vector<map::Territory*> owned_territories;
+
 	//stores the player name
 	std::string playerName;
+
 	//stores a player's ID
 	int playerID;
 	
@@ -31,8 +33,7 @@ public:
 	/// </summary>
 	/// <param name="name">Name of player</param>
 	/// <param name="pID">Player's identifier</param>
-	/// <param name="allCountries">All Countries</param>
-	Player(std::string name, int pID, vector<int> allCountries);
+	Player(std::string name, int pID);
 
 	/// <summary>
 	/// Copy Constructor
@@ -58,31 +59,37 @@ public:
 	/// </summary>
 	/// <param name="playerToAssign"></param>
 	/// <returns></returns>
-	virtual Player& operator=(const Player& o);
+	Player operator=(const Player& o);
 
 	/// <summary>
-	/// Draws three cards from a rhand and deck object
+	/// Draws a card from the deck and inserts it into the player's hand.
 	/// </summary>
 	/// <param name="hand">Hand object</param>
 	/// <param name="deck">Deck object</param>
-	void playerHand(Hand& hand, Deck& deck);
+	void draw(Deck& deck);
 
 	/// <summary>
-	/// Temporarily print map's territories that Player will defend
+	/// Returns the a list of pointers to Territories that the player will defend.
+	/// For now, these are all the territories owned by the player.
 	/// </summary>
 	/// <param name="test"></param>
-	void toDefend(map::Map test);
+	const vector<map::Territory*> toDefend();
 
 	/// <summary>
-	/// Set specific map's territories to be set to attack
+	/// Returns the territories to attack (All neighbouring territories owned by other players).
 	/// </summary>
-	/// <param name="test">Map being interpreted</param>
-	void toAttack(map::Map test);
+	const vector<map::Territory*> toAttack();
 
 	/// <summary>
 	/// Adds order being passed to the player's list of orders
 	/// </summary>
 	/// <param name="o">Order being passed</param>
-	void issueOrder(Order* o);
+	void issueOrder(Order *o);
+
+	// Adds a territory to myTerritories (Does not set the Territory's owner)
+	void addTerritory(map::Territory*);
+
+	// Removes a territory from myTerritories (Does not unset the Territory's owner)
+	void removeTerritory(map::Territory*);
 };
 

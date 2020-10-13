@@ -6,92 +6,70 @@
 
 using namespace std;
 
-
-using namespace std;
-
-
-Player::Player(string name, int pID, vector<int> allCountries) {
-	for (int s = 0; s < allCountries.size(); s++)
-	{
-		allTerritories.push_back(allCountries[s]);
-	}
-	//stores the player name
+Player::Player(string name, int pID) {
 	playerName = name;
-	//stores a player's ID
 	playerID = pID;
 	listOfOrders = new OrdersList();
+	hand = new Hand();
 }
 
-Player::Player(const Player& orderToCopy) {
-	this->playerName = orderToCopy.playerName;
-	this->playerID = orderToCopy.playerID;
-	this->myTerritories = orderToCopy.myTerritories;
-	this->allTerritories = orderToCopy.allTerritories;
-	this->listOfOrders = orderToCopy.listOfOrders;
+Player::Player(const Player& playerToCopy) {
+	this->playerName = string(playerToCopy.playerName);
+	this->playerID = playerToCopy.playerID;
+
+	this->owned_territories = vector<map::Territory *>();
+	this->owned_territories.assign(
+			playerToCopy.owned_territories.begin(),
+			playerToCopy.owned_territories.end());
+	this->listOfOrders = new OrdersList(*(playerToCopy.listOfOrders));
+	this->hand = new Hand(*(playerToCopy.hand));
 }
 
-ostream& operator<<(ostream& out, const Player& playerToStream) {
+ostream &operator<<(ostream &out, const Player &playerToStream)
+{
 	out << playerToStream.playerName;
 	return out;
 }
 
-Player& Player::operator=(const Player& playerToAssign) {
-	this->playerName = playerToAssign.playerName;
-	this->playerID = playerToAssign.playerID;
-	this->myTerritories = playerToAssign.myTerritories;
-	this->allTerritories = playerToAssign.allTerritories;
-	this->listOfOrders = playerToAssign.listOfOrders;
-	return *this;
+Player Player::operator=(const Player &playerToAssign)
+{
+		return Player(playerToAssign);
 }
 
-
-Player::~Player() {
+Player::~Player()
+{
+	delete hand;
 	delete listOfOrders;
-	cout << "Destructor Called for player\n";
-}
 
-//Territories to defend are owned territories
-void Player::toDefend(map::Map test) {
-	cout << "Territories To Defend" << "\n";
-
-	for (int s = 0; s < myTerritories.size(); s++)
-	{
-		cout << *test.getTerritory(myTerritories[s]) << " in "<< test.getTerritory(myTerritories[s])->getContinent() << "\n";
+	for (map::Territory* territory : owned_territories) {
+		if (territory)
+			territory->setOwner(nullptr);
 	}
+	owned_territories.clear();
+
+#ifdef DEBUG
+	cout << "Destructor completed for player" << endl;
+#endif
 }
 
-//Territory index of owned is to be attacked
-void Player::toAttack(map::Map test) {
-	bool attack = false;
-	cout << "Territories To Attack" << "\n";
+const vector<map::Territory*> Player::toDefend() {
+	return owned_territories;
+}
 
-	for (int s = 0; s < allTerritories.size(); s++)
-	{
-		//normally we would loop through and check the neighbours of each territory we posses and see if we owned the territory
-		// take our myterritories vector and use the test (map) variable to get the neighbours in the vector and loop through 
-		// we make another vector for territories to be attacked
-		// upon doing this we have to chekc to see if we already own the territory so the if statement will follow the syntax bellow and get the neighbour vectors id
-		// if the vector matches the second forloop (anything in our myterritories vector) then we skip and dont add it to the attack vector
-		//else we add the id to the attack vector 
-
-		// then we display the the attack vector 
-
-		for (int x = 0; x < myTerritories.size(); x++)
-		{
-			if (allTerritories[s] == myTerritories[x]) {
-				attack = true;
+const vector<map::Territory*> Player::toAttack() {
+	unordered_set<map::Territory *> territories_to_attack = unordered_set<map::Territory *>();
+	
+	for (map::Territory* owned_territory : owned_territories) {
+		for (map::Territory* neighbour : owned_territory->getNeighbours()) {
+			if (territories_to_attack.find(neighbour) != territories_to_attack.end() && neighbour->getOwner() != this) {
+				territories_to_attack.insert(neighbour);
 			}
 		}
-
-		if (attack) {
-			attack = false;
-		}
-
-		else {
-			cout << *test.getTerritory(allTerritories[s]) << " in " << test.getTerritory(allTerritories[s])->getContinent() << "\n";
-			continue;
-		}
 	}
+
+	vector<map::Territory*> result = vector<map::Territory*>();
+	result.assign(territories_to_attack.begin(), territories_to_attack.end());
+	return result;
 }
 
 //Calls orderList's add method
@@ -100,12 +78,24 @@ void Player::issueOrder(Order* o) {
 }
 
 //Three cards get added to hand
-void Player::playerHand(Hand& hand, Deck& deck) {
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-	hand.addHand(deck.draw());
-
-	hand.showHand();
+void Player::draw(Deck& deck) {
+	Card* drawn = deck.draw();
+	hand->add(drawn);
 }
 
+void Player::addTerritory(map::Territory* territory) {
+	if (territory) {
+		this->owned_territories.push_back(territory);
+	}
+}
+
+void Player::removeTerritory(map::Territory* territory) {
+	if (territory) {
+		std::remove(
+			owned_territories.begin(),
+			owned_territories.end(),
+			territory
+		);
+	}
+}
 

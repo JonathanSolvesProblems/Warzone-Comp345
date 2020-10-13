@@ -23,16 +23,28 @@ namespace map
 
   Map::~Map()
   {
-    for (Continent* continent : *continents) {
-      delete continent;
-    }
+    std::cout << "ENTERING MAP DESTRUCTOR";
+    while (continents->size())
+    {
+      Continent* continent = continents->back();
+      continents->pop_back();
 
-    for (Territory* territory : *territories) {
-      delete territory;
+      for (Territory *territory : continent->getTerritories())
+      {
+        std::remove_if(
+            territories->begin(),
+            territories->end(),
+            [territory](Territory* t) {
+              return t == territory;
+            });
+        continent->removeTerritory(territory);
+        // delete territory;
+      }
     }
-
-    delete territories;
+    continents->clear();
+    territories->clear();
     delete continents;
+    delete territories;
   }
 
   void Map::addContinent(Continent *continent)
@@ -240,6 +252,7 @@ namespace map
     {
       neighbour->deleteNeighbour(this);
     }
+    neighbours->clear();
     delete neighbours;
 
     if (continent)
@@ -270,6 +283,22 @@ namespace map
   Continent *Territory::getContinent() const
   {
     return continent;
+  }
+
+  Player *Territory::getOwner() const
+  {
+    return owner_player;
+  }
+
+  void Territory::setOwner(Player* player)
+  {
+    if (this->owner_player) {
+      this->owner_player->removeTerritory(this);
+    }
+    if (player) {
+      player->addTerritory(this);
+    }
+    this->owner_player = player;
   }
 
   int Territory::getNeighbourCount() const
@@ -427,8 +456,10 @@ namespace map
       if (territory)
       {
         territory->setContinent(nullptr);
+        delete territory;
       }
     }
+    territories->clear();
     delete territories;
   }
 

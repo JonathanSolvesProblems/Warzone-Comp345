@@ -53,6 +53,24 @@ void test_territory () {
 	territory_c = nullptr;
 
 	std::cout << "Neighbours after deleting: " << territory.getNeighbourCount() << std::endl;
+
+	std::cout << "Testing Player owner" << std::endl;
+	Player owner = Player("Player 1", 1);
+	Player new_owner = Player("Player 2", 2);
+
+	territory.setOwner(&owner);
+
+	std::cout << "Territory A is owned by " << *territory.getOwner() << std::endl;
+	std::cout << "Player 1 has " + std::to_string(owner.owned_territories.size()) + " territories" << std::endl;
+	std::cout << "Player 2 has " + std::to_string(new_owner.owned_territories.size()) + " territories" << std::endl;
+
+	std::cout << "Reassigning owner..." << std::endl;
+
+	territory.setOwner(&new_owner);
+
+	std::cout << "Territory A is owned by " << *territory.getOwner() << std::endl;
+	std::cout << "Player 1 has " + std::to_string(owner.owned_territories.size()) + " territories" << std::endl;
+	std::cout << "Player 2 has " + std::to_string(new_owner.owned_territories.size()) + " territories" << std::endl;
 }
 
 /* Will test the behaviours of the Continent class */

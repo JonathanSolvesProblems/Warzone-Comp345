@@ -15,10 +15,6 @@ using namespace std;
 
 
 class MapLoader {
-
-
- 
-
   public:
 
 
@@ -50,7 +46,4 @@ public: bool isBorder(string line, map::Map& test, bool &isValid);// isBorder me
 public: bool isCountry(string line, map::Map& test, bool &isValid);// isCountry method whih checks if the string is a country 
 // isContinent method whcih checks if the strings is a continent 
 public: bool isContinent(string line, map::Map& test, bool &isValid);
-
-
-
 };
