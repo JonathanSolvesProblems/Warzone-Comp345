@@ -25,6 +25,7 @@ void orderTest() {
 }
 
 void ordersListTest() {
+	cout << "--- Adding Every Kind of Order ---" << endl;
 	OrdersList test;
 	Order* test2 = new AdvanceOrder();
 	test.add(test2);
@@ -44,12 +45,20 @@ void ordersListTest() {
 	Order* test7 = new NegotiateOrder();
 	test.add(test7);
 	cout << test;
+	cout << "--- Testing Removing the Fourth Order ---" << endl;
 	test.remove(3);
 	cout << test;
+	cout << "--- Testing Moving the First Order to the Third Position ---" << endl;
+	test.move(0, 3);
+	cout << test;
+	cout << "--- Testing Moving the Fourth Order to the First Position ---" << endl;
+	test.move(3, 0);
+	cout << test;
+	cout << "--- Testing Assignment Operator and Copy Constructor ---" << endl;
 	OrdersList newTest;
 	newTest = test;
-	cout << test;
-	test.move(0, 3);
+	// debug point here
+	OrdersList* newTest2 = new OrdersList(newTest);
 	cout << test;
 }
 
