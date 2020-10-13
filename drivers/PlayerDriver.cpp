@@ -53,15 +53,6 @@ int main() {
 	//Testing outstream overload for player
 	cout << "Player's current list of orders:" << std::endl << *(player->listOfOrders) << std::endl;
 
-	//Testing overload assignment and copy constructor
-	cout << "Testing Copy and Assignment: " << std::endl;
-	
-	Player playaCopy(*player);
-	Player playaAssigned = playaCopy;
-
-	cout << "Checking player has copied, should be same as player's name brenden: " << playaCopy << std::endl;
-	cout << "Checking assignment operator overload, should be same as player's name brenden: " << playaAssigned << std::endl;
-
 	delete player;
 	cout << "DESTROYED PLAYER!" << endl;
 
