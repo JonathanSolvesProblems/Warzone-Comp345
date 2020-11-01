@@ -69,6 +69,7 @@ void ordersExecutionTest() {
 	map::Territory terTest = map::Territory(0, "Quebec", test);
 	map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
 	AdvanceOrder* advance = new AdvanceOrder(terTest, terTest2, 3);
+	advance->execute();
 }
 
 int main() {
