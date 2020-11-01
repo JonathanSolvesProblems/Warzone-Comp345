@@ -45,6 +45,7 @@ If the target territory belongs to another player, an attack happens between the
 	// deliberately empty
 }
 
+// Parameterized constructor
 AdvanceOrder::AdvanceOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
 	this->_sourceTerritory = new map::Territory(sourceTerritory);
 	this->_targetTerritory = new map::Territory(targetTerritory);
@@ -92,6 +93,13 @@ AdvanceOrder& AdvanceOrder::operator=(const AdvanceOrder& advanceOrderToAssign) 
 // Default constructor
 AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from one of the current player's territories to any other territory.") {
 	// deliberately empty
+}
+
+// Parameterized constructor
+AirliftOrder::AirliftOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+	this->_sourceTerritory = new map::Territory(sourceTerritory);
+	this->_targetTerritory = new map::Territory(targetTerritory);
+	this->_numberOfArmies = new int(numberOfArmies);
 }
 
 // Copy constructor

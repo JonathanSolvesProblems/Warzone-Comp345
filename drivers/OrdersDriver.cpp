@@ -70,6 +70,10 @@ void ordersExecutionTest() {
 	map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
 	AdvanceOrder* advance = new AdvanceOrder(terTest, terTest2, 3);
 	advance->execute();
+	AirliftOrder* airlift = new AirliftOrder(terTest, terTest2, 8);
+	airlift->execute();
+	delete advance;
+	delete airlift;
 }
 
 int main() {

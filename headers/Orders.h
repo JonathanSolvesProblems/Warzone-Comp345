@@ -105,6 +105,7 @@ class AirliftOrder : public Order {
 public:
 	// Constructors
 	AirliftOrder();
+	AirliftOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
 	AirliftOrder(const AirliftOrder& orderToCopy);
 	// Destructor
 	~AirliftOrder();
@@ -131,6 +132,11 @@ public:
 	/// Assigns a copy of the airlift order description and effect to another airlift order variable.
 	/// </summary>
 	AirliftOrder& operator=(const AirliftOrder& o);
+private:
+	// Data members
+	map::Territory* _sourceTerritory;
+	map::Territory* _targetTerritory;
+	int* _numberOfArmies;
 };
 
 /// <summary>
