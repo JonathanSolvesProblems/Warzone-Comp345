@@ -72,6 +72,8 @@ void ordersExecutionTest() {
 	advance->execute();
 	AirliftOrder* airlift = new AirliftOrder(terTest, terTest2, 8);
 	airlift->execute();
+	BlockadeOrder* blockade = new BlockadeOrder(terTest);
+	blockade->execute();
 	delete advance;
 	delete airlift;
 }

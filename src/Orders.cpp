@@ -149,6 +149,11 @@ BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of a
 	// deliberately empty
 }
 
+// Parameterized constructor
+BlockadeOrder::BlockadeOrder(map::Territory& targetTerritory) : BlockadeOrder() {
+	this->_targetTerritory = new map::Territory(targetTerritory);
+}
+
 // Copy constructor
 BlockadeOrder::BlockadeOrder(const BlockadeOrder& blockadeOrderToCopy) : Order(blockadeOrderToCopy) {
 	// deliberately empty
@@ -156,7 +161,7 @@ BlockadeOrder::BlockadeOrder(const BlockadeOrder& blockadeOrderToCopy) : Order(b
 
 // Destructor
 BlockadeOrder::~BlockadeOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _targetTerritory;
 }
 
 // Checks whether the order is valid, and returns true if it is

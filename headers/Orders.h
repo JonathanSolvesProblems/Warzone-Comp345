@@ -47,8 +47,8 @@ public:
 	virtual Order& operator=(const Order& o);
 protected:
 	// Data members
-	string* _description;
-	string* _effect;
+	string* _description{nullptr};
+	string* _effect{nullptr};
 };
 
 /// <summary>
@@ -90,9 +90,9 @@ public:
 	AdvanceOrder& operator=(const AdvanceOrder& o);
 private:
 	// Data members
-	map::Territory* _sourceTerritory;
-	map::Territory* _targetTerritory;
-	int* _numberOfArmies;
+	map::Territory* _sourceTerritory{nullptr};
+	map::Territory* _targetTerritory{nullptr};
+	int* _numberOfArmies{nullptr};
 };
 
 /// <summary>
@@ -134,9 +134,9 @@ public:
 	AirliftOrder& operator=(const AirliftOrder& o);
 private:
 	// Data members
-	map::Territory* _sourceTerritory;
-	map::Territory* _targetTerritory;
-	int* _numberOfArmies;
+	map::Territory* _sourceTerritory{nullptr};
+	map::Territory* _targetTerritory{nullptr};
+	int* _numberOfArmies{nullptr};
 };
 
 /// <summary>
@@ -149,6 +149,7 @@ class BlockadeOrder : public Order {
 public:
 	// Constructors
 	BlockadeOrder();
+	BlockadeOrder(map::Territory& targetTerritory);
 	BlockadeOrder(const BlockadeOrder& orderToCopy);
 	// Destructor
 	~BlockadeOrder();
@@ -175,6 +176,9 @@ public:
 	/// Assigns a copy of the blockade order description and effect to another blockade order variable.
 	/// </summary>
 	BlockadeOrder& operator=(const BlockadeOrder& o);
+private:
+	// Data members
+	map::Territory* _targetTerritory{nullptr};
 };
 
 /// <summary>
