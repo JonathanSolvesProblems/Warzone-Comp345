@@ -191,6 +191,7 @@ class BombOrder : public Order {
 public:
 	// Constructors
 	BombOrder();
+	BombOrder(map::Territory& targetTerritory);
 	BombOrder(const BombOrder& orderToCopy);
 	// Destructor
 	~BombOrder();
@@ -217,6 +218,9 @@ public:
 	/// Assigns a copy of the bomb order description and effect to another bomb order variable.
 	/// </summary>
 	BombOrder& operator=(const BombOrder& o);
+private:
+	// Data members
+	map::Territory* _targetTerritory{nullptr};
 };
 
 /// <summary>

@@ -197,6 +197,11 @@ BombOrder::BombOrder() : Order("Bomb Order", "Destroy half of the armies located
 	// deliberately empty
 }
 
+// Parameterized constructor
+BombOrder::BombOrder(map::Territory& targetTerritory) : BombOrder() {
+	this->_targetTerritory = new map::Territory(targetTerritory);
+}
+
 // Copy constructor
 BombOrder::BombOrder(const BombOrder& bombOrderToCopy) : Order(bombOrderToCopy) {
 	// deliberately empty
@@ -204,7 +209,7 @@ BombOrder::BombOrder(const BombOrder& bombOrderToCopy) : Order(bombOrderToCopy) 
 
 // Destructor
 BombOrder::~BombOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _targetTerritory;
 }
 
 // Checks whether the order is valid, and returns true if it is

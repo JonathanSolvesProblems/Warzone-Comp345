@@ -74,8 +74,12 @@ void ordersExecutionTest() {
 	airlift->execute();
 	BlockadeOrder* blockade = new BlockadeOrder(terTest);
 	blockade->execute();
+	BombOrder* bomb = new BombOrder(terTest);
+	bomb->execute();
 	delete advance;
 	delete airlift;
+	delete blockade;
+	delete bomb;
 }
 
 int main() {
