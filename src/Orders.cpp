@@ -45,6 +45,15 @@ If the target territory belongs to another player, an attack happens between the
 	// deliberately empty
 }
 
+// Parameterized constructor
+AdvanceOrder::AdvanceOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
+	this->_sourcePlayer = new Player(sourcePlayer);
+	this->_sourceTerritory = new map::Territory(sourceTerritory);
+	this->_targetPlayer = new Player(sourcePlayer);
+	this->_targetTerritory = new map::Territory(targetTerritory);
+	this->_numberOfArmies = new int(numberOfArmies);
+}
+
 // Copy constructor
 AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advanceOrderToCopy) {
 	// deliberately empty
@@ -52,7 +61,11 @@ AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advan
 
 // Destructor
 AdvanceOrder::~AdvanceOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _sourcePlayer;
+	delete _sourceTerritory;
+	delete _targetPlayer;
+	delete _targetTerritory;
+	delete _numberOfArmies;
 }
 
 // Checks whether the order is valid, and returns true if it is
@@ -88,6 +101,15 @@ AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from 
 	// deliberately empty
 }
 
+// Parameterized constructor
+AirliftOrder::AirliftOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+	this->_sourcePlayer = new Player(sourcePlayer);
+	this->_sourceTerritory = new map::Territory(sourceTerritory);
+	this->_targetPlayer = new Player(sourcePlayer);
+	this->_targetTerritory = new map::Territory(targetTerritory);
+	this->_numberOfArmies = new int(numberOfArmies);
+}
+
 // Copy constructor
 AirliftOrder::AirliftOrder(const AirliftOrder& airliftOrderToCopy) : Order(airliftOrderToCopy) {
 	// deliberately empty
@@ -95,7 +117,11 @@ AirliftOrder::AirliftOrder(const AirliftOrder& airliftOrderToCopy) : Order(airli
 
 // Destructor
 AirliftOrder::~AirliftOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _sourcePlayer;
+	delete _sourceTerritory;
+	delete _targetPlayer;
+	delete _targetTerritory;
+	delete _numberOfArmies;
 }
 
 // Checks whether the order is valid, and returns true if it is
@@ -131,6 +157,12 @@ BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of a
 	// deliberately empty
 }
 
+// Parameterized constructor
+BlockadeOrder::BlockadeOrder(Player& targetPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
+	this->_targetPlayer = new Player(targetPlayer);
+	this->_targetTerritory = new map::Territory(targetTerritory);
+}
+
 // Copy constructor
 BlockadeOrder::BlockadeOrder(const BlockadeOrder& blockadeOrderToCopy) : Order(blockadeOrderToCopy) {
 	// deliberately empty
@@ -138,7 +170,8 @@ BlockadeOrder::BlockadeOrder(const BlockadeOrder& blockadeOrderToCopy) : Order(b
 
 // Destructor
 BlockadeOrder::~BlockadeOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _targetPlayer;
+	delete _targetTerritory;
 }
 
 // Checks whether the order is valid, and returns true if it is
@@ -174,6 +207,12 @@ BombOrder::BombOrder() : Order("Bomb Order", "Destroy half of the armies located
 	// deliberately empty
 }
 
+// Parameterized constructor
+BombOrder::BombOrder(Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
+	this->_targetPlayer = new Player(targetPlayer);
+	this->_targetTerritory = new map::Territory(targetTerritory);
+}
+
 // Copy constructor
 BombOrder::BombOrder(const BombOrder& bombOrderToCopy) : Order(bombOrderToCopy) {
 	// deliberately empty
@@ -181,7 +220,8 @@ BombOrder::BombOrder(const BombOrder& bombOrderToCopy) : Order(bombOrderToCopy) 
 
 // Destructor
 BombOrder::~BombOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _targetPlayer;
+	delete _targetTerritory;
 }
 
 // Checks whether the order is valid, and returns true if it is
@@ -217,6 +257,13 @@ DeployOrder::DeployOrder() : Order("Deploy Order", "Place some armies on one of 
 	// deliberately empty
 }
 
+// Parameterized constructor
+DeployOrder::DeployOrder(Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
+	this->_targetPlayer = new Player(targetPlayer);
+	this->_targetTerritory = new map::Territory(targetTerritory);
+	this->_numberOfArmies = new int(numberOfArmies);
+}
+
 // Copy constructor
 DeployOrder::DeployOrder(const DeployOrder& deployOrderToCopy) : Order(deployOrderToCopy) {
 	// deliberately empty
@@ -224,7 +271,9 @@ DeployOrder::DeployOrder(const DeployOrder& deployOrderToCopy) : Order(deployOrd
 
 // Destructor
 DeployOrder::~DeployOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _targetPlayer;
+	delete _targetTerritory;
+	delete _numberOfArmies;
 }
 
 // Checks whether the order is valid, and returns true if it is
@@ -260,6 +309,12 @@ NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks bet
 	// deliberately empty
 }
 
+// Parameterized constructor
+NegotiateOrder::NegotiateOrder(Player& firstPlayer, Player& secondPlayer) : NegotiateOrder() {
+	this->_firstPlayer = new Player(firstPlayer);
+	this->_secondPlayer = new Player(secondPlayer);
+}
+
 // Copy constructor
 NegotiateOrder::NegotiateOrder(const NegotiateOrder& negotiateOrderToCopy) : Order(negotiateOrderToCopy) {
 	// deliberately empty
@@ -267,7 +322,8 @@ NegotiateOrder::NegotiateOrder(const NegotiateOrder& negotiateOrderToCopy) : Ord
 
 // Destructor
 NegotiateOrder::~NegotiateOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _firstPlayer;
+	delete _secondPlayer;
 }
 
 // Checks whether the order is valid, and returns true if it is

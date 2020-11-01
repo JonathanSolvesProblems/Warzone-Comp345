@@ -1,7 +1,12 @@
 #pragma once
 
+class Order;
+class OrdersList;
+
 #include <iostream>
 #include <list>
+#include "Map.h"
+#include "Player.h"
 using namespace std;
 
 /// <summary>
@@ -43,8 +48,8 @@ public:
 	virtual Order& operator=(const Order& o);
 protected:
 	// Data members
-	string* _description;
-	string* _effect;
+	string* _description{nullptr};
+	string* _effect{nullptr};
 };
 
 /// <summary>
@@ -57,6 +62,7 @@ class AdvanceOrder : public Order {
 public:
 	// Constructors
 	AdvanceOrder();
+	AdvanceOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
 	AdvanceOrder(const AdvanceOrder& orderToCopy);
 	// Destructor
 	~AdvanceOrder();
@@ -83,6 +89,13 @@ public:
 	/// Assigns a copy of the advance order description and effect to another advance order variable.
 	/// </summary>
 	AdvanceOrder& operator=(const AdvanceOrder& o);
+private:
+	// Data members
+	Player* _sourcePlayer{nullptr};
+	map::Territory* _sourceTerritory{nullptr};
+	Player* _targetPlayer{nullptr};
+	map::Territory* _targetTerritory{nullptr};
+	int* _numberOfArmies{nullptr};
 };
 
 /// <summary>
@@ -95,6 +108,7 @@ class AirliftOrder : public Order {
 public:
 	// Constructors
 	AirliftOrder();
+	AirliftOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
 	AirliftOrder(const AirliftOrder& orderToCopy);
 	// Destructor
 	~AirliftOrder();
@@ -121,6 +135,13 @@ public:
 	/// Assigns a copy of the airlift order description and effect to another airlift order variable.
 	/// </summary>
 	AirliftOrder& operator=(const AirliftOrder& o);
+private:
+	// Data members
+	Player* _sourcePlayer{nullptr};
+	map::Territory* _sourceTerritory{nullptr};
+	Player* _targetPlayer{nullptr};
+	map::Territory* _targetTerritory{nullptr};
+	int* _numberOfArmies{nullptr};
 };
 
 /// <summary>
@@ -133,6 +154,7 @@ class BlockadeOrder : public Order {
 public:
 	// Constructors
 	BlockadeOrder();
+	BlockadeOrder(Player& targetPlayer, map::Territory& targetTerritory);
 	BlockadeOrder(const BlockadeOrder& orderToCopy);
 	// Destructor
 	~BlockadeOrder();
@@ -159,6 +181,10 @@ public:
 	/// Assigns a copy of the blockade order description and effect to another blockade order variable.
 	/// </summary>
 	BlockadeOrder& operator=(const BlockadeOrder& o);
+private:
+	// Data members
+	Player* _targetPlayer{nullptr};
+	map::Territory* _targetTerritory{nullptr};
 };
 
 /// <summary>
@@ -171,6 +197,7 @@ class BombOrder : public Order {
 public:
 	// Constructors
 	BombOrder();
+	BombOrder(Player& targetPlayer, map::Territory& targetTerritory);
 	BombOrder(const BombOrder& orderToCopy);
 	// Destructor
 	~BombOrder();
@@ -197,6 +224,10 @@ public:
 	/// Assigns a copy of the bomb order description and effect to another bomb order variable.
 	/// </summary>
 	BombOrder& operator=(const BombOrder& o);
+private:
+	// Data members
+	Player* _targetPlayer{nullptr};
+	map::Territory* _targetTerritory{nullptr};
 };
 
 /// <summary>
@@ -209,6 +240,7 @@ class DeployOrder : public Order {
 public:
 	// Constructors
 	DeployOrder();
+	DeployOrder(Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
 	DeployOrder(const DeployOrder& orderToCopy);
 	// Destructor
 	~DeployOrder();
@@ -235,6 +267,11 @@ public:
 	/// Assigns a copy of the deploy order description and effect to another deploy order variable.
 	/// </summary>
 	DeployOrder& operator=(const DeployOrder& o);
+private:
+	// Data members
+	Player* _targetPlayer{nullptr};
+	map::Territory* _targetTerritory{nullptr};
+	int* _numberOfArmies{nullptr};
 };
 
 /// <summary>
@@ -247,6 +284,7 @@ class NegotiateOrder : public Order {
 public:
 	// Constructors
 	NegotiateOrder();
+	NegotiateOrder(Player& firstPlayer, Player& secondPlayer);
 	NegotiateOrder(const NegotiateOrder& orderToCopy);
 	// Destructor
 	~NegotiateOrder();
@@ -273,6 +311,10 @@ public:
 	/// Assigns a copy of the negotiate order description and effect to another negotiate order variable.
 	/// </summary>
 	NegotiateOrder& operator=(const NegotiateOrder& o);
+private:
+	// Data members
+	Player* _firstPlayer{nullptr};
+	Player* _secondPlayer{nullptr};
 };
 
 /// <summary>

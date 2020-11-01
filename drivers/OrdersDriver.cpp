@@ -1,4 +1,5 @@
 #include "Orders.h"
+#include <string>
 
 template<typename T>
 void orderTest() {
@@ -62,19 +63,47 @@ void ordersListTest() {
 	cout << test;
 }
 
+void ordersExecutionTest() {
+	Player anthony = Player("Anthony", 12345678);
+	Player steve = Player("Steve", 12345670);
+	map::Continent test = map::Continent(0, "Canada", 3);
+	map::Continent test2 = map::Continent(1, "Freedomland", 99);
+	map::Territory terTest = map::Territory(0, "Quebec", test);
+	map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
+	AdvanceOrder* advance = new AdvanceOrder(anthony, terTest, anthony, terTest2, 3);
+	advance->execute();
+	AirliftOrder* airlift = new AirliftOrder(anthony, terTest, anthony, terTest2, 8);
+	airlift->execute();
+	BlockadeOrder* blockade = new BlockadeOrder(anthony, terTest);
+	blockade->execute();
+	BombOrder* bomb = new BombOrder(anthony, terTest);
+	bomb->execute();
+	DeployOrder* deploy = new DeployOrder(anthony, terTest, 19);
+	deploy->execute();
+	NegotiateOrder* negotiate = new NegotiateOrder(anthony, steve);
+	negotiate->execute();
+	delete advance;
+	delete airlift;
+	delete blockade;
+	delete bomb;
+	delete deploy;
+	delete negotiate;
+}
+
 int main() {
-	orderTest<AdvanceOrder>();
-	cout << endl;
-	orderTest<AirliftOrder>();
-	cout << endl;
-	orderTest<BlockadeOrder>();
-	cout << endl;
-	orderTest<BombOrder>();
-	cout << endl;
-	orderTest<DeployOrder>();
-	cout << endl;
-	orderTest<NegotiateOrder>();
-	cout << endl;
-	ordersListTest();
+	// orderTest<AdvanceOrder>();
+	// cout << endl;
+	// orderTest<AirliftOrder>();
+	// cout << endl;
+	// orderTest<BlockadeOrder>();
+	// cout << endl;
+	// orderTest<BombOrder>();
+	// cout << endl;
+	// orderTest<DeployOrder>();
+	// cout << endl;
+	// orderTest<NegotiateOrder>();
+	// cout << endl;
+	// ordersListTest();
+	ordersExecutionTest();
 	return 0;
 }
