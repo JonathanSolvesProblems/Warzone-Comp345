@@ -6,6 +6,7 @@ class OrdersList;
 #include <iostream>
 #include <list>
 #include "Map.h"
+#include "Player.h"
 using namespace std;
 
 /// <summary>
@@ -61,7 +62,7 @@ class AdvanceOrder : public Order {
 public:
 	// Constructors
 	AdvanceOrder();
-	AdvanceOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
+	AdvanceOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
 	AdvanceOrder(const AdvanceOrder& orderToCopy);
 	// Destructor
 	~AdvanceOrder();
@@ -90,7 +91,9 @@ public:
 	AdvanceOrder& operator=(const AdvanceOrder& o);
 private:
 	// Data members
+	Player* _sourcePlayer{nullptr};
 	map::Territory* _sourceTerritory{nullptr};
+	Player* _targetPlayer{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int* _numberOfArmies{nullptr};
 };
@@ -105,7 +108,7 @@ class AirliftOrder : public Order {
 public:
 	// Constructors
 	AirliftOrder();
-	AirliftOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
+	AirliftOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
 	AirliftOrder(const AirliftOrder& orderToCopy);
 	// Destructor
 	~AirliftOrder();
@@ -134,7 +137,9 @@ public:
 	AirliftOrder& operator=(const AirliftOrder& o);
 private:
 	// Data members
+	Player* _sourcePlayer{nullptr};
 	map::Territory* _sourceTerritory{nullptr};
+	Player* _targetPlayer{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int* _numberOfArmies{nullptr};
 };

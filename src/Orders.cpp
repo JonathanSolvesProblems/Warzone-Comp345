@@ -46,8 +46,10 @@ If the target territory belongs to another player, an attack happens between the
 }
 
 // Parameterized constructor
-AdvanceOrder::AdvanceOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
+AdvanceOrder::AdvanceOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
+	this->_sourcePlayer = new Player(sourcePlayer);
 	this->_sourceTerritory = new map::Territory(sourceTerritory);
+	this->_targetPlayer = new Player(sourcePlayer);
 	this->_targetTerritory = new map::Territory(targetTerritory);
 	this->_numberOfArmies = new int(numberOfArmies);
 }
@@ -59,7 +61,9 @@ AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advan
 
 // Destructor
 AdvanceOrder::~AdvanceOrder() {
+	delete _sourcePlayer;
 	delete _sourceTerritory;
+	delete _targetPlayer;
 	delete _targetTerritory;
 	delete _numberOfArmies;
 }
@@ -98,8 +102,10 @@ AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from 
 }
 
 // Parameterized constructor
-AirliftOrder::AirliftOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+AirliftOrder::AirliftOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+	this->_sourcePlayer = new Player(sourcePlayer);
 	this->_sourceTerritory = new map::Territory(sourceTerritory);
+	this->_targetPlayer = new Player(sourcePlayer);
 	this->_targetTerritory = new map::Territory(targetTerritory);
 	this->_numberOfArmies = new int(numberOfArmies);
 }
@@ -111,7 +117,9 @@ AirliftOrder::AirliftOrder(const AirliftOrder& airliftOrderToCopy) : Order(airli
 
 // Destructor
 AirliftOrder::~AirliftOrder() {
+	delete _sourcePlayer;
 	delete _sourceTerritory;
+	delete _targetPlayer;
 	delete _targetTerritory;
 	delete _numberOfArmies;
 }

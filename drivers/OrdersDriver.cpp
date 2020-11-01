@@ -64,13 +64,14 @@ void ordersListTest() {
 }
 
 void ordersExecutionTest() {
+	Player anthony = Player("Anthony", 12345678);
 	map::Continent test = map::Continent(0, "Canada", 3);
 	map::Continent test2 = map::Continent(1, "Freedomland", 99);
 	map::Territory terTest = map::Territory(0, "Quebec", test);
 	map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
-	AdvanceOrder* advance = new AdvanceOrder(terTest, terTest2, 3);
+	AdvanceOrder* advance = new AdvanceOrder(anthony, terTest, anthony, terTest2, 3);
 	advance->execute();
-	AirliftOrder* airlift = new AirliftOrder(terTest, terTest2, 8);
+	AirliftOrder* airlift = new AirliftOrder(anthony, terTest, anthony, terTest2, 8);
 	airlift->execute();
 	BlockadeOrder* blockade = new BlockadeOrder(terTest);
 	blockade->execute();
