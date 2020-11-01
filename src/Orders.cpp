@@ -309,6 +309,12 @@ NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks bet
 	// deliberately empty
 }
 
+// Parameterized constructor
+NegotiateOrder::NegotiateOrder(Player& firstPlayer, Player& secondPlayer) : NegotiateOrder() {
+	this->_firstPlayer = new Player(firstPlayer);
+	this->_secondPlayer = new Player(secondPlayer);
+}
+
 // Copy constructor
 NegotiateOrder::NegotiateOrder(const NegotiateOrder& negotiateOrderToCopy) : Order(negotiateOrderToCopy) {
 	// deliberately empty
@@ -316,7 +322,8 @@ NegotiateOrder::NegotiateOrder(const NegotiateOrder& negotiateOrderToCopy) : Ord
 
 // Destructor
 NegotiateOrder::~NegotiateOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _firstPlayer;
+	delete _secondPlayer;
 }
 
 // Checks whether the order is valid, and returns true if it is

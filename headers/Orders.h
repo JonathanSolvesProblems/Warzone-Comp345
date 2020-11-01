@@ -284,6 +284,7 @@ class NegotiateOrder : public Order {
 public:
 	// Constructors
 	NegotiateOrder();
+	NegotiateOrder(Player& firstPlayer, Player& secondPlayer);
 	NegotiateOrder(const NegotiateOrder& orderToCopy);
 	// Destructor
 	~NegotiateOrder();
@@ -310,6 +311,10 @@ public:
 	/// Assigns a copy of the negotiate order description and effect to another negotiate order variable.
 	/// </summary>
 	NegotiateOrder& operator=(const NegotiateOrder& o);
+private:
+	// Data members
+	Player* _firstPlayer{nullptr};
+	Player* _secondPlayer{nullptr};
 };
 
 /// <summary>

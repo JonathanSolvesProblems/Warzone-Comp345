@@ -65,6 +65,7 @@ void ordersListTest() {
 
 void ordersExecutionTest() {
 	Player anthony = Player("Anthony", 12345678);
+	Player steve = Player("Steve", 12345670);
 	map::Continent test = map::Continent(0, "Canada", 3);
 	map::Continent test2 = map::Continent(1, "Freedomland", 99);
 	map::Territory terTest = map::Territory(0, "Quebec", test);
@@ -79,11 +80,14 @@ void ordersExecutionTest() {
 	bomb->execute();
 	DeployOrder* deploy = new DeployOrder(anthony, terTest, 19);
 	deploy->execute();
+	NegotiateOrder* negotiate = new NegotiateOrder(anthony, steve);
+	negotiate->execute();
 	delete advance;
 	delete airlift;
 	delete blockade;
 	delete bomb;
 	delete deploy;
+	delete negotiate;
 }
 
 int main() {
