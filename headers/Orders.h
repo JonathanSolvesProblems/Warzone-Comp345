@@ -240,6 +240,7 @@ class DeployOrder : public Order {
 public:
 	// Constructors
 	DeployOrder();
+	DeployOrder(Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
 	DeployOrder(const DeployOrder& orderToCopy);
 	// Destructor
 	~DeployOrder();
@@ -266,6 +267,11 @@ public:
 	/// Assigns a copy of the deploy order description and effect to another deploy order variable.
 	/// </summary>
 	DeployOrder& operator=(const DeployOrder& o);
+private:
+	// Data members
+	Player* _targetPlayer{nullptr};
+	map::Territory* _targetTerritory{nullptr};
+	int* _numberOfArmies{nullptr};
 };
 
 /// <summary>

@@ -257,6 +257,13 @@ DeployOrder::DeployOrder() : Order("Deploy Order", "Place some armies on one of 
 	// deliberately empty
 }
 
+// Parameterized constructor
+DeployOrder::DeployOrder(Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
+	this->_targetPlayer = new Player(targetPlayer);
+	this->_targetTerritory = new map::Territory(targetTerritory);
+	this->_numberOfArmies = new int(numberOfArmies);
+}
+
 // Copy constructor
 DeployOrder::DeployOrder(const DeployOrder& deployOrderToCopy) : Order(deployOrderToCopy) {
 	// deliberately empty
@@ -264,7 +271,9 @@ DeployOrder::DeployOrder(const DeployOrder& deployOrderToCopy) : Order(deployOrd
 
 // Destructor
 DeployOrder::~DeployOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _targetPlayer;
+	delete _targetTerritory;
+	delete _numberOfArmies;
 }
 
 // Checks whether the order is valid, and returns true if it is

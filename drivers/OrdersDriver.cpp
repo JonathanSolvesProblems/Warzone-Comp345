@@ -77,10 +77,13 @@ void ordersExecutionTest() {
 	blockade->execute();
 	BombOrder* bomb = new BombOrder(anthony, terTest);
 	bomb->execute();
+	DeployOrder* deploy = new DeployOrder(anthony, terTest, 19);
+	deploy->execute();
 	delete advance;
 	delete airlift;
 	delete blockade;
 	delete bomb;
+	delete deploy;
 }
 
 int main() {
