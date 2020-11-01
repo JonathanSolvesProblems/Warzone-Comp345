@@ -158,7 +158,8 @@ BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of a
 }
 
 // Parameterized constructor
-BlockadeOrder::BlockadeOrder(map::Territory& targetTerritory) : BlockadeOrder() {
+BlockadeOrder::BlockadeOrder(Player& targetPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
+	this->_targetPlayer = new Player(targetPlayer);
 	this->_targetTerritory = new map::Territory(targetTerritory);
 }
 
@@ -169,6 +170,7 @@ BlockadeOrder::BlockadeOrder(const BlockadeOrder& blockadeOrderToCopy) : Order(b
 
 // Destructor
 BlockadeOrder::~BlockadeOrder() {
+	delete _targetPlayer;
 	delete _targetTerritory;
 }
 
@@ -206,7 +208,8 @@ BombOrder::BombOrder() : Order("Bomb Order", "Destroy half of the armies located
 }
 
 // Parameterized constructor
-BombOrder::BombOrder(map::Territory& targetTerritory) : BombOrder() {
+BombOrder::BombOrder(Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
+	this->_targetPlayer = new Player(targetPlayer);
 	this->_targetTerritory = new map::Territory(targetTerritory);
 }
 
@@ -217,6 +220,7 @@ BombOrder::BombOrder(const BombOrder& bombOrderToCopy) : Order(bombOrderToCopy) 
 
 // Destructor
 BombOrder::~BombOrder() {
+	delete _targetPlayer;
 	delete _targetTerritory;
 }
 

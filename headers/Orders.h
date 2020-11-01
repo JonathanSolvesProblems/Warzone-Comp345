@@ -154,7 +154,7 @@ class BlockadeOrder : public Order {
 public:
 	// Constructors
 	BlockadeOrder();
-	BlockadeOrder(map::Territory& targetTerritory);
+	BlockadeOrder(Player& targetPlayer, map::Territory& targetTerritory);
 	BlockadeOrder(const BlockadeOrder& orderToCopy);
 	// Destructor
 	~BlockadeOrder();
@@ -183,6 +183,7 @@ public:
 	BlockadeOrder& operator=(const BlockadeOrder& o);
 private:
 	// Data members
+	Player* _targetPlayer{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 };
 
@@ -196,7 +197,7 @@ class BombOrder : public Order {
 public:
 	// Constructors
 	BombOrder();
-	BombOrder(map::Territory& targetTerritory);
+	BombOrder(Player& targetPlayer, map::Territory& targetTerritory);
 	BombOrder(const BombOrder& orderToCopy);
 	// Destructor
 	~BombOrder();
@@ -225,6 +226,7 @@ public:
 	BombOrder& operator=(const BombOrder& o);
 private:
 	// Data members
+	Player* _targetPlayer{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 };
 
