@@ -1,4 +1,5 @@
 #include "Orders.h"
+#include <string>
 
 template<typename T>
 void orderTest() {
@@ -62,19 +63,28 @@ void ordersListTest() {
 	cout << test;
 }
 
+void ordersExecutionTest() {
+	map::Continent test = map::Continent(0, "Canada", 3);
+	map::Continent test2 = map::Continent(1, "Freedomland", 99);
+	map::Territory terTest = map::Territory(0, "Quebec", test);
+	map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
+	AdvanceOrder* advance = new AdvanceOrder(terTest, terTest2, 3);
+}
+
 int main() {
-	orderTest<AdvanceOrder>();
-	cout << endl;
-	orderTest<AirliftOrder>();
-	cout << endl;
-	orderTest<BlockadeOrder>();
-	cout << endl;
-	orderTest<BombOrder>();
-	cout << endl;
-	orderTest<DeployOrder>();
-	cout << endl;
-	orderTest<NegotiateOrder>();
-	cout << endl;
-	ordersListTest();
+	// orderTest<AdvanceOrder>();
+	// cout << endl;
+	// orderTest<AirliftOrder>();
+	// cout << endl;
+	// orderTest<BlockadeOrder>();
+	// cout << endl;
+	// orderTest<BombOrder>();
+	// cout << endl;
+	// orderTest<DeployOrder>();
+	// cout << endl;
+	// orderTest<NegotiateOrder>();
+	// cout << endl;
+	// ordersListTest();
+	ordersExecutionTest();
 	return 0;
 }

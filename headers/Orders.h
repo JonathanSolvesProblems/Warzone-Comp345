@@ -1,7 +1,11 @@
 #pragma once
 
+class Order;
+class OrdersList;
+
 #include <iostream>
 #include <list>
+#include "Map.h"
 using namespace std;
 
 /// <summary>
@@ -57,6 +61,7 @@ class AdvanceOrder : public Order {
 public:
 	// Constructors
 	AdvanceOrder();
+	AdvanceOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
 	AdvanceOrder(const AdvanceOrder& orderToCopy);
 	// Destructor
 	~AdvanceOrder();
@@ -83,6 +88,11 @@ public:
 	/// Assigns a copy of the advance order description and effect to another advance order variable.
 	/// </summary>
 	AdvanceOrder& operator=(const AdvanceOrder& o);
+private:
+	// Data members
+	map::Territory* _sourceTerritory;
+	map::Territory* _targetTerritory;
+	int* _numberOfArmies;
 };
 
 /// <summary>

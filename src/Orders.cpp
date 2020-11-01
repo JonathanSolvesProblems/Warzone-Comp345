@@ -45,6 +45,12 @@ If the target territory belongs to another player, an attack happens between the
 	// deliberately empty
 }
 
+AdvanceOrder::AdvanceOrder(map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) {
+	this->_sourceTerritory = new map::Territory(sourceTerritory);
+	this->_targetTerritory = new map::Territory(targetTerritory);
+	this->_numberOfArmies = new int(numberOfArmies);
+}
+
 // Copy constructor
 AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advanceOrderToCopy) {
 	// deliberately empty
