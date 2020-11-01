@@ -1,3 +1,12 @@
+echo Checking dependencies...
+
+cnt=$(locate ncurses | wc -l);
+cnt=$(($cnt + 0));
+if [ "$cnt" -eq "0" ]; then
+  echo Installing ncurses...
+  apt-get install libncurses5-dev libncursesw5-dev
+fi
+
 echo Creating build/GameEngineDriver Directory
 mkdir -p build/GameEngineDriver
 
