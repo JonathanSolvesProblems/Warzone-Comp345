@@ -59,7 +59,9 @@ AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advan
 
 // Destructor
 AdvanceOrder::~AdvanceOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _sourceTerritory;
+	delete _targetTerritory;
+	delete _numberOfArmies;
 }
 
 // Checks whether the order is valid, and returns true if it is
@@ -109,7 +111,9 @@ AirliftOrder::AirliftOrder(const AirliftOrder& airliftOrderToCopy) : Order(airli
 
 // Destructor
 AirliftOrder::~AirliftOrder() {
-	// deliberately empty, default base class destructor will be called
+	delete _sourceTerritory;
+	delete _targetTerritory;
+	delete _numberOfArmies;
 }
 
 // Checks whether the order is valid, and returns true if it is
