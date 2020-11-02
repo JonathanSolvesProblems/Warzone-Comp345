@@ -1,5 +1,4 @@
 #include <curses.h>
-#include <menu.h>
 #include <list>
 #include <string>
 #include <sstream>

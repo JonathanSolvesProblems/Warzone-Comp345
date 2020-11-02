@@ -16,7 +16,6 @@ g++ -I ./headers -o build/GameEngineDriver/Application.o -c src/Application.cpp
 g++ -I ./headers -o build/GameEngineDriver/GameEngine.o -c src/GameEngine.cpp
 
 echo Compiling and Linking GameEngineDriver.cpp with objects files.
-g++ -I ./headers -o GameEngineDriver drivers/GameEngineDriver.cpp build/GameEngineDriver/*.o -lmenu -lcurses $@
 if g++ -I ./headers -o GameEngineDriver drivers/GameEngineDriver.cpp build/GameEngineDriver/*.o -lmenu -lcurses $@; then
   echo Compilation Successful.
 else
