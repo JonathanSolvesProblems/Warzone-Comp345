@@ -1,8 +1,4 @@
-#ifdef WINDOWS
-  #include <curses.h>
-#else
-  #include <ncurses.h>
-#endif
+#include <curses.h>
 #include <menu.h>
 #include <list>
 #include <string>
