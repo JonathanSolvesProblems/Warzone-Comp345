@@ -22,6 +22,62 @@ void View::notifyKeyboardEventPerformed(int key) {
 
 void View::display() {}
 
+void View::activate() {}
+
+void View::deactivate() {}
+
+Application::Application() {
+}
+
+Application::~Application() {
+}
+
+void Application::mainloop(int esc_key) {
+  curs_set(0);
+  cbreak();
+  noecho();
+  keypad(stdscr, TRUE);
+
+  std::stringstream escape_msg;
+  escape_msg << "Press " << esc_key << " to exit";
+  printw((escape_msg).str().c_str());
+  refresh();
+
+  if (_activeView)
+    _activeView->display();
+
+  int ch;
+  while ((ch = getch()) != esc_key)
+  {
+    if (_activeView)
+      _activeView->notifyKeyboardEventPerformed(ch);
+  }
+}
+
+void Application::registerView(int view_id, View* view) {
+  _registered_views.insert(std::make_pair(view_id, view));
+}
+
+void Application::deregisterView(int view_id){
+  _registered_views.erase(view_id);
+}
+
+void Application::activateView(int view_id) {
+  if (_registered_views.count(view_id)) {
+    if (_activeView) {
+      _activeView->deactivate();
+    }
+    _activeView = _registered_views[view_id];
+    _activeView->activate();
+  }
+}
+
+std::shared_ptr<Application> Application::instance()
+{
+  static std::shared_ptr<Application>  _singleton(new Application);
+  return _singleton;
+}
+
 WINDOW *create_newwin(int height, int width, int starty, int startx)
 {
   // Implementation based on https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/windows.html
@@ -71,26 +127,6 @@ void WindowView::activate() {
   display();
 }
 
-void WindowView::mainloop(char esc_key) {  
-  curs_set(0);
-  cbreak();
-  noecho();
-  keypad(stdscr, TRUE);
-
-  std::stringstream escape_msg;
-  escape_msg << "Press " << esc_key << " to exit";
-  printw((escape_msg).str().c_str());
-  refresh();
-
-  display();
-
-  int ch;
-  while ((ch = getch()) != esc_key)
-  {
-    notifyKeyboardEventPerformed(ch);
-  }
-}
-
 void WindowView::display() {
   wrefresh(_window);
 }
@@ -102,19 +138,20 @@ void WindowView::print_centered(int line, std::string msg) {
   wprintw(_window, msg.c_str());
 }
 
-MainMenuView::MainMenuView(int w, int h, MainGameModel* mgm): WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2) {
-  _main_game_model = mgm;
-  _main_game_model->getPhaseHeadersEnabled()->attach(this);
-  _main_game_model->getStatsHeadersEnabled()->attach(this);
+MainMenuView::MainMenuView(int w, int h, GameModel* mgm): WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2) {
+  _game_model = mgm;
+  _game_model->getPhaseHeadersEnabled()->attach(this);
+  _game_model->getStatsHeadersEnabled()->attach(this);
 };
 
 MainMenuView::~MainMenuView() {
-  _main_game_model->getPhaseHeadersEnabled()->detach(this);
-  _main_game_model->getStatsHeadersEnabled()->detach(this);
+  _game_model->getPhaseHeadersEnabled()->detach(this);
+  _game_model->getStatsHeadersEnabled()->detach(this);
 }
 
 void MainMenuView::display_banner(int& offset) {
   wattron(_window, COLOR_PAIR(RED_BLACK));
+  offset += 2;
   wmove(_window, offset, 0);
   wprintw(_window,
           R"( __      __                                          
@@ -129,41 +166,50 @@ void MainMenuView::display_banner(int& offset) {
 
 void MainMenuView::display_credits(int& offset) {
   wattron(_window, COLOR_PAIR(GREY_BLACK));
-  print_centered(offset + 3, "Created by");
+  print_centered(height - 4, "Created by");
   wattron(_window, COLOR_PAIR(WHITE_BLACK));
-  print_centered(offset + 4, "Alex Kofman    Anthony van Voorst    Brendan Bissessar");
-  print_centered(offset + 5, "Drew Wagner    Jonathan Andrei");
-  offset = getcury(_window);
+  print_centered(height - 3, "Alex Kofman    Anthony van Voorst    Brendan Bissessar");
+  print_centered(height - 2, "Drew Wagner    Jonathan Andrei");
   wattroff(_window, COLOR_PAIR(WHITE_BLACK));
 }
 
 void MainMenuView::display_menu(int& offset) {
-  if (_main_game_model->getPhaseHeadersEnabled()->get()) {
+  wattron(_window, COLOR_PAIR(RED_BLACK));
+  print_centered(offset + 3, "Press ENTER to begin");
+  wattroff(_window, COLOR_PAIR(RED_BLACK));
+
+
+  if (_game_model->getPhaseHeadersEnabled()->get()) {
     wattron(_window, COLOR_PAIR(BLACK_GREEN));
-    print_centered(offset + 3, "PHASE HEADERS ENABLED  (p)");
+    print_centered(offset + 5, " PHASE HEADER ENABLED  (p) ");
     wattroff(_window, COLOR_PAIR(BLACK_GREEN));
   } else {
     wattron(_window, COLOR_PAIR(BLACK_RED));
-    print_centered(offset + 3, "PHASE HEADERS DISABLED (p)");
+    print_centered(offset + 5, " PHASE HEADER DISABLED (p) ");
     wattroff(_window, COLOR_PAIR(BLACK_RED));
   }
 
-  if (_main_game_model->getStatsHeadersEnabled()->get())
+  if (_game_model->getStatsHeadersEnabled()->get())
   {
     wattron(_window, COLOR_PAIR(BLACK_GREEN));
-    print_centered(offset + 5, "STATS HEADERS ENABLED  (o)");
+    print_centered(offset + 7, " STATS HEADER ENABLED  (o) ");
     wattroff(_window, COLOR_PAIR(BLACK_GREEN));
   }
   else
   {
     wattron(_window, COLOR_PAIR(BLACK_RED));
-    print_centered(offset + 5, "STATS HEADERS DISABLED (o)");
+    print_centered(offset + 7, " STATS HEADER DISABLED (o) ");
     wattroff(_window, COLOR_PAIR(BLACK_RED));
   }
+
   offset = getcury(_window);
 }
 
 void MainMenuView::display() {
+  if (!_window) {
+    activate();
+  }
+
   int offset = 0;
   wclear(_window);
   display_banner(offset);
@@ -176,50 +222,44 @@ void MainMenuView::update() {
   display();
 }
 
-ConcreteObservable<int>* MainGameModel::getPhase() {
-  return &phase;
-}
-
-ConcreteObservable<bool> *MainGameModel::getPhaseHeadersEnabled()
+ConcreteObservable<bool> *GameModel::getPhaseHeadersEnabled()
 {
   return &phase_headers_enabled;
 }
 
-ConcreteObservable<bool> *MainGameModel::getStatsHeadersEnabled()
+ConcreteObservable<bool> *GameModel::getStatsHeadersEnabled()
 {
   return &stats_headers_enabled;
 }
 
-void MainGameModel::setPhase(int p) {
-  phase.set(p);
-}
-
-void MainGameModel::setPhaseHeadersEnabled(bool e)
+void GameModel::setPhaseHeadersEnabled(bool e)
 {
   phase_headers_enabled.set(e);
 }
 
-void MainGameModel::setStatsHeadersEnabled(bool e)
+void GameModel::setStatsHeadersEnabled(bool e)
 {
   stats_headers_enabled.set(e);
 }
 
-MainGameController::MainGameController(MainGameModel * mgm)
+GameController::GameController(GameModel * mgm)
 {
-  _main_game_model = mgm;
+  _game_model = mgm;
 }
 
-MainGameController::~MainGameController() {
+GameController::~GameController() {
 }
 
-bool MainGameController::keyboardEventPerformed(int key) {
+bool GameController::keyboardEventPerformed(int key) {
  if (key == 'p') {
-   bool current = _main_game_model->getPhaseHeadersEnabled()->get();
-   _main_game_model->setPhaseHeadersEnabled(!current);
+   bool current = _game_model->getPhaseHeadersEnabled()->get();
+   _game_model->setPhaseHeadersEnabled(!current);
    return true;
  } else if (key == 'o') {
-   bool current = _main_game_model->getStatsHeadersEnabled()->get();
-   _main_game_model->setStatsHeadersEnabled(!current);
+   bool current = _game_model->getStatsHeadersEnabled()->get();
+   _game_model->setStatsHeadersEnabled(!current);
+   return true;
+ } else if (key == KEY_ENTER) {
    return true;
  }
  return false;

@@ -15,7 +15,7 @@ g++ -I ./headers -o build/GameEngineDriver/Observers.o -c src/Observers.cpp
 g++ -I ./headers -o build/GameEngineDriver/GameEngine.o -c src/GameEngine.cpp
 
 echo Compiling and Linking GameEngineDriver.cpp with objects files.
-g++ -I ./headers -o GameEngineDriver drivers/GameEngineDriver.cpp build/GameEngineDriver/*.o -lcurses
+g++ -I ./headers -o GameEngineDriver drivers/GameEngineDriver.cpp build/GameEngineDriver/*.o -lmenu -lcurses $@
 
 echo Cleaning up...
 rm build/GameEngineDriver/*.o

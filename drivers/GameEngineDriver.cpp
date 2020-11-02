@@ -1,7 +1,6 @@
 #include "GameEngine.h"
 
-int main () {
-  initscr();
+void initialize_ncurses_colors() {
   start_color();
   init_color(COLOR_GREY, 600, 600, 600);
   init_pair(RED_BLACK, COLOR_RED, COLOR_BLACK);
@@ -9,18 +8,30 @@ int main () {
   init_pair(GREY_BLACK, COLOR_GREY, COLOR_BLACK);
   init_pair(BLACK_RED, COLOR_BLACK, COLOR_RED);
   init_pair(BLACK_GREEN, COLOR_BLACK, COLOR_GREEN);
+}
 
-  MainGameModel *main_game_model = new MainGameModel();
-  main_game_model->setPhaseHeadersEnabled(true);
+int main () {
+  initscr();
+  initialize_ncurses_colors();
 
-  MainGameController *main_game_controller = new MainGameController(main_game_model);
-  MainMenuView *main_menu_view = new MainMenuView(54, 20, main_game_model);
+  GameModel *game_model = new GameModel();
+  game_model->setPhaseHeadersEnabled(true);
+
+  GameController *main_game_controller = new GameController(game_model);
+  MainMenuView *main_menu_view = new MainMenuView(54, LINES, game_model);
   main_menu_view->registerListener(main_game_controller);
-  main_menu_view->mainloop('q');
+
+  std::shared_ptr<Application> application = Application::instance();
+  application->registerView(MAIN_MENU_VIEW, main_menu_view);
+  application->activateView(MAIN_MENU_VIEW);
+
+  application->mainloop('q');
+  clear();
+  refresh();
 
   delete main_menu_view;
   delete main_game_controller;
-  delete main_game_model;
+  delete game_model;
 
   endwin();
   return 0;

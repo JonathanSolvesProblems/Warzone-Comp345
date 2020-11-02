@@ -4,6 +4,8 @@
 #include <list>
 #include <string>
 #include <sstream>
+#include <memory>
+#include <unordered_map>
 
 #define COLOR_GREY 8
 #define RED_BLACK 1
@@ -12,12 +14,15 @@
 #define BLACK_RED 4
 #define BLACK_GREEN 5
 
+#define MAIN_MENU_VIEW 0
+
 class ActionListener;
+class Application;
 class View;
 class WindowView;
 class MainMenuView;
-class MainGameModel;
-class MainGameController;
+class GameModel;
+class GameController;
 
 class ActionListener
 {
@@ -39,13 +44,30 @@ public:
   ~View();
   void registerListener(ActionListener *action_listener);
   void deregisterListener(ActionListener *action_listener);
+  virtual void activate();
+  virtual void deactivate();
   virtual void display();
-
-protected:
   virtual void notifyKeyboardEventPerformed(int key);
 
 private:
   std::list<ActionListener *> _action_listeners;
+};
+
+class Application
+{
+  public:
+    Application(const Application&) = delete;
+    ~Application();
+    static std::shared_ptr<Application> instance();
+    void mainloop(int esc_key);
+    void activateView(int view_id);
+    void registerView(int view_id, View* view);
+    void deregisterView(int view_id);
+
+  private:
+    Application();
+    View* _activeView{nullptr};
+    std::unordered_map<int, View*> _registered_views;
 };
 
 WINDOW *create_newwin(int height, int width, int starty, int startx);
@@ -56,10 +78,9 @@ class WindowView : public View {
     WindowView(int w, int h, int x, int y);
     ~WindowView();
     virtual void display();
-    virtual void mainloop(char esc_key);
+    virtual void activate();
+    virtual void deactivate();
     void print_centered(int line, std::string msg);
-    void deactivate();
-    void activate();
 
   protected:
     int width, height, start_x, start_y;
@@ -69,7 +90,7 @@ class WindowView : public View {
 class MainMenuView : public WindowView, public Observer
 {
   public:
-    MainMenuView(int w, int h, MainGameModel* mgm);
+    MainMenuView(int w, int h, GameModel* mgm);
     ~MainMenuView();
     virtual void display();
     virtual void update();
@@ -77,31 +98,38 @@ class MainMenuView : public WindowView, public Observer
     void display_banner(int& offset);
     void display_credits(int& offset);
     void display_menu(int &offset);
-    MainGameModel *_main_game_model;
+    GameModel *_game_model;
 };
 
-class MainGameController : public ActionListener {
+class GameController : public ActionListener {
   public:
-    MainGameController(MainGameModel * mgm);
-    ~MainGameController();
+    GameController(GameModel * mgm);
+    ~GameController();
 
     virtual bool keyboardEventPerformed(int key);
 
   private:
-    MainGameModel *_main_game_model;
+    GameModel *_game_model;
 };
 
-class MainGameModel {
+class GameModel {
   public:
-    ConcreteObservable<int> *getPhase();
     ConcreteObservable<bool> *getPhaseHeadersEnabled();
     ConcreteObservable<bool> *getStatsHeadersEnabled();
-    void setPhase(int p);
     void setPhaseHeadersEnabled(bool e);
     void setStatsHeadersEnabled(bool e);
 
   private:
-    ConcreteObservable<int> phase;
     ConcreteObservable<bool> phase_headers_enabled;
     ConcreteObservable<bool> stats_headers_enabled;
+};
+
+class SelectMapView : public View, public Observer {
+  private:
+
+};
+
+class SelectMapController : public ActionListener {
+  SelectMapController();
+  ~SelectMapController();
 };
