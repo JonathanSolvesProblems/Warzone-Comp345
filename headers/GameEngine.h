@@ -59,7 +59,7 @@ class Application
     Application(const Application&) = delete;
     ~Application();
     static std::shared_ptr<Application> instance();
-    void mainloop(int esc_key);
+    void mainloop(char esc_key);
     void activateView(int view_id);
     void registerView(int view_id, View* view);
     void deregisterView(int view_id);

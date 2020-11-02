@@ -32,7 +32,7 @@ Application::Application() {
 Application::~Application() {
 }
 
-void Application::mainloop(int esc_key) {
+void Application::mainloop(char esc_key) {
   curs_set(0);
   cbreak();
   noecho();
