@@ -19,16 +19,19 @@ int main () {
 
   GameController *main_game_controller = new GameController(game_model);
   MainMenuView *main_menu_view = new MainMenuView(54, LINES, game_model);
+  View *testView = new View();
   main_menu_view->registerListener(main_game_controller);
 
   std::shared_ptr<Application> application = Application::instance();
   application->registerView(MAIN_MENU_VIEW, main_menu_view);
+  application->registerView(1, testView);
   application->activateView(MAIN_MENU_VIEW);
 
   application->mainloop('q');
   clear();
   refresh();
 
+  delete testView;
   delete main_menu_view;
   delete main_game_controller;
   delete game_model;

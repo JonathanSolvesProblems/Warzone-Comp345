@@ -175,7 +175,7 @@ void MainMenuView::display_credits(int& offset) {
 
 void MainMenuView::display_menu(int& offset) {
   wattron(_window, COLOR_PAIR(RED_BLACK));
-  print_centered(offset + 3, "Press ENTER to begin");
+  print_centered(offset + 3, "Press SPACE to begin");
   wattroff(_window, COLOR_PAIR(RED_BLACK));
 
 
@@ -251,16 +251,17 @@ GameController::~GameController() {
 }
 
 bool GameController::keyboardEventPerformed(int key) {
- if (key == 'p') {
-   bool current = _game_model->getPhaseHeadersEnabled()->get();
-   _game_model->setPhaseHeadersEnabled(!current);
-   return true;
- } else if (key == 'o') {
-   bool current = _game_model->getStatsHeadersEnabled()->get();
-   _game_model->setStatsHeadersEnabled(!current);
-   return true;
- } else if (key == KEY_ENTER) {
-   return true;
- }
- return false;
+  if (key == 'p') {
+    bool current = _game_model->getPhaseHeadersEnabled()->get();
+    _game_model->setPhaseHeadersEnabled(!current);
+    return true;
+  } else if (key == 'o') {
+    bool current = _game_model->getStatsHeadersEnabled()->get();
+    _game_model->setStatsHeadersEnabled(!current);
+    return true;
+  } else if (key == ' ') {
+    Application::instance()->activateView(1);
+    return true;
+  }
+  return false;
 }
