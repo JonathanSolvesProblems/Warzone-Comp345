@@ -14,27 +14,41 @@ int main () {
   initscr();
   initialize_ncurses_colors();
 
-  GameModel *game_model = new GameModel();
+  SettingsModel *game_model = new SettingsModel();
   game_model->setPhaseHeadersEnabled(true);
 
-  GameController *main_game_controller = new GameController(game_model);
+  MenuModel *menu_model = new MenuModel();
+  std::vector<std::string> map_list ({"map 1", "map 2"});
+  menu_model->setMapFileList(map_list);
+
+  MainMenuController *main_game_controller = new MainMenuController(game_model);
+  MapSelectionController *map_selection_controller = new MapSelectionController(menu_model);
+  MapMenuController *map_menu_controller = new MapMenuController(menu_model);
+
   MainMenuView *main_menu_view = new MainMenuView(54, LINES, game_model);
-  View *testView = new View();
+  MapSelectionView *map_selection_view = new MapSelectionView(54, LINES, 6, menu_model);
+
   main_menu_view->registerListener(main_game_controller);
+
+  map_selection_view->registerListener(map_selection_controller);
+  map_selection_view->registerMenuListener(map_menu_controller);
 
   std::shared_ptr<Application> application = Application::instance();
   application->registerView(MAIN_MENU_VIEW, main_menu_view);
-  application->registerView(1, testView);
+  application->registerView(MAP_SELECTION_VIEW, map_selection_view);
   application->activateView(MAIN_MENU_VIEW);
 
   application->mainloop('q');
   clear();
   refresh();
 
-  delete testView;
+  delete map_selection_view;
   delete main_menu_view;
   delete main_game_controller;
+  delete map_selection_controller;
+  delete map_menu_controller;
   delete game_model;
+  delete menu_model;
 
   endwin();
   return 0;
