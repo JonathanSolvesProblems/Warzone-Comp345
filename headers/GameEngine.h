@@ -1,7 +1,5 @@
-#include "Observers.h"
 #include "Application.h"
-#include <string>
-#include <sstream>
+#include "Observers.h"
 
 #define COLOR_GREY 8
 #define RED_BLACK 1
