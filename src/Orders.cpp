@@ -47,11 +47,9 @@ If the target territory belongs to another player, an attack happens between the
 }
 
 // Parameterized constructor
-AdvanceOrder::AdvanceOrder(const Player& issuingPlayer, Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
+AdvanceOrder::AdvanceOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
 	this->_issuingPlayer = &issuingPlayer;
-	this->_sourcePlayer = &sourcePlayer;
 	this->_sourceTerritory = &sourceTerritory;
-	this->_targetPlayer = &sourcePlayer;
 	this->_targetTerritory = &targetTerritory;
 	this->_numberOfArmies = new int(numberOfArmies);
 }
@@ -69,7 +67,7 @@ AdvanceOrder::~AdvanceOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
 	//checks _sourceTerritory belong to _sourcePlayer
-	if(_sourceTerritory->getOwner() == _sourcePlayer)
+	if(_sourceTerritory->getOwner() == _issuingPlayer)
 		return true;
 	return false;
 }
@@ -103,11 +101,9 @@ AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from 
 }
 
 // Parameterized constructor
-AirliftOrder::AirliftOrder(const Player& issuingPlayer, Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+AirliftOrder::AirliftOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
 	this->_issuingPlayer = &issuingPlayer;
-	this->_sourcePlayer = &sourcePlayer;
 	this->_sourceTerritory = &sourceTerritory;
-	this->_targetPlayer = &sourcePlayer;
 	this->_targetTerritory = &targetTerritory;
 	this->_numberOfArmies = new int(numberOfArmies);
 }
@@ -125,7 +121,7 @@ AirliftOrder::~AirliftOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool AirliftOrder::validate() {
 	//Check that the source and target belongs to the player that issued the order
-	if(_sourceTerritory->getOwner() == _sourcePlayer && _sourceTerritory->getOwner() == _targetPlayer )
+	if(_sourceTerritory->getOwner() == _issuingPlayer && _targetTerritory->getOwner() == _issuingPlayer )
 		return true;
 	return false;
 }
@@ -159,9 +155,8 @@ BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of a
 }
 
 // Parameterized constructor
-BlockadeOrder::BlockadeOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
+BlockadeOrder::BlockadeOrder(const Player& issuingPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
 	this->_issuingPlayer = &issuingPlayer;
-	this->_targetPlayer = &targetPlayer;
 	this->_targetTerritory = &targetTerritory;
 }
 
@@ -179,7 +174,7 @@ BlockadeOrder::~BlockadeOrder() {
 bool BlockadeOrder::validate() {
 	//Target doesn't belong to an enemy player
 	//TODO: Ask about checking for enemy players
-	if(_targetTerritory->getOwner() == _targetPlayer)
+	if(_targetTerritory->getOwner() == _issuingPlayer)
 		return true;
 	return true;
 }
@@ -232,7 +227,7 @@ BombOrder::~BombOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool BombOrder::validate() {
 	//Check that target doesn't belong to player that issued order
-	if(_targetTerritory->getOwner() != _targetPlayer)
+	if(_targetTerritory->getOwner() != _issuingPlayer)
 		return true;
 	return false;
 }
@@ -266,9 +261,8 @@ DeployOrder::DeployOrder() : Order("Deploy Order", "Place some armies on one of 
 }
 
 // Parameterized constructor
-DeployOrder::DeployOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
+DeployOrder::DeployOrder(const Player& issuingPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
 	this->_issuingPlayer = &issuingPlayer;
-	this->_targetPlayer = &targetPlayer;
 	this->_targetTerritory = &targetTerritory;
 	this->_numberOfArmies = new int(numberOfArmies);
 }
@@ -286,7 +280,7 @@ DeployOrder::~DeployOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool DeployOrder::validate() {
 	//If target targetTerritory belongs to player, return true
-	if(_targetTerritory->getOwner() == _targetPlayer )
+	if(_targetTerritory->getOwner() == _issuingPlayer )
 		return true;
 	return false;
 }
@@ -320,9 +314,8 @@ NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks bet
 }
 
 // Parameterized constructor
-NegotiateOrder::NegotiateOrder(const Player& issuingPlayer, Player& firstPlayer, Player& secondPlayer) : NegotiateOrder() {
+NegotiateOrder::NegotiateOrder(const Player& issuingPlayer, Player& secondPlayer) : NegotiateOrder() {
 	this->_issuingPlayer = &issuingPlayer;
-	this->_firstPlayer = &firstPlayer;
 	this->_secondPlayer = &secondPlayer;
 }
 
@@ -339,7 +332,7 @@ NegotiateOrder::~NegotiateOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool NegotiateOrder::validate() {
 	//target cannot be the same player issuing the order
-	if(_firstPlayer == _secondPlayer)
+	if(_issuingPlayer == _secondPlayer)
 		return false;
 	return true;
 }
