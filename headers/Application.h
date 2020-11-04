@@ -46,9 +46,9 @@ class Application
     ~Application();
     static std::shared_ptr<Application> instance();
     void mainloop(char esc_key);
-    void activateView(int view_id);
     void registerView(int view_id, View* view);
     void deregisterView(int view_id);
+    void activateView(int view_id);
 
   private:
     Application();
