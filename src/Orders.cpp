@@ -70,7 +70,10 @@ AdvanceOrder::~AdvanceOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
-	return true;
+	//checks _sourceTerritory belong to _sourcePlayer
+	if(_sourceTerritory->getOwner() == _sourcePlayer)
+		return true;
+	return false;
 }
 
 // Outputs the effect of the advance order and executes it
@@ -126,7 +129,10 @@ AirliftOrder::~AirliftOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AirliftOrder::validate() {
-	return true;
+	//Check that the source and target belongs to the player that issued the order
+	if(_sourceTerritory->getOwner() == _sourcePlayer && _sourceTerritory->getOwner() == _targetPlayer )
+		return true;
+	return false;
 }
 
 // Outputs the effect of the airlift order and executes it
@@ -176,6 +182,10 @@ BlockadeOrder::~BlockadeOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool BlockadeOrder::validate() {
+	//Target doesn't belong to an enemy player
+	//TODO: Ask about checking for enemy players
+	if(_targetTerritory->getOwner() == _targetPlayer)
+		return true;
 	return true;
 }
 
@@ -226,6 +236,7 @@ BombOrder::~BombOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool BombOrder::validate() {
+	//Check that target doesn't belong to player that issued order
 	return true;
 }
 
@@ -278,7 +289,10 @@ DeployOrder::~DeployOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool DeployOrder::validate() {
-	return true;
+	//If target targetTerritory belongs to player, return true
+	if(_targetTerritory->getOwner() == _targetPlayer )
+		return true;
+	return false;
 }
 
 // Outputs the effect of the deploy order and executes it
@@ -328,6 +342,9 @@ NegotiateOrder::~NegotiateOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool NegotiateOrder::validate() {
+	//target cannot be the same player issuing the order
+	if(_firstPlayer == _secondPlayer)
+		return false;
 	return true;
 }
 
