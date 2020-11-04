@@ -15,6 +15,7 @@ Order::Order(string description, string effect) : _description(new string(descri
 Order::Order(const Order& orderToCopy) {
 	this->_description = new string(*(orderToCopy._description));
 	this->_effect = new string(*(orderToCopy._effect));
+	this->_issuingPlayer = orderToCopy._issuingPlayer;
 }
 
 // Destructor
@@ -46,7 +47,8 @@ If the target territory belongs to another player, an attack happens between the
 }
 
 // Parameterized constructor
-AdvanceOrder::AdvanceOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
+AdvanceOrder::AdvanceOrder(const Player& issuingPlayer, Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
+	this->_issuingPlayer = &issuingPlayer;
 	this->_sourcePlayer = &sourcePlayer;
 	this->_sourceTerritory = &sourceTerritory;
 	this->_targetPlayer = &sourcePlayer;
@@ -101,7 +103,8 @@ AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from 
 }
 
 // Parameterized constructor
-AirliftOrder::AirliftOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+AirliftOrder::AirliftOrder(const Player& issuingPlayer, Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+	this->_issuingPlayer = &issuingPlayer;
 	this->_sourcePlayer = &sourcePlayer;
 	this->_sourceTerritory = &sourceTerritory;
 	this->_targetPlayer = &sourcePlayer;
@@ -156,7 +159,8 @@ BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of a
 }
 
 // Parameterized constructor
-BlockadeOrder::BlockadeOrder(Player& targetPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
+BlockadeOrder::BlockadeOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
+	this->_issuingPlayer = &issuingPlayer;
 	this->_targetPlayer = &targetPlayer;
 	this->_targetTerritory = &targetTerritory;
 }
@@ -209,7 +213,8 @@ BombOrder::BombOrder() : Order("Bomb Order", "Destroy half of the armies located
 }
 
 // Parameterized constructor
-BombOrder::BombOrder(Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
+BombOrder::BombOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
+	this->_issuingPlayer = &issuingPlayer;
 	this->_targetPlayer = &targetPlayer;
 	this->_targetTerritory = &targetTerritory;
 }
@@ -261,7 +266,8 @@ DeployOrder::DeployOrder() : Order("Deploy Order", "Place some armies on one of 
 }
 
 // Parameterized constructor
-DeployOrder::DeployOrder(Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
+DeployOrder::DeployOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
+	this->_issuingPlayer = &issuingPlayer;
 	this->_targetPlayer = &targetPlayer;
 	this->_targetTerritory = &targetTerritory;
 	this->_numberOfArmies = new int(numberOfArmies);
@@ -314,7 +320,8 @@ NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks bet
 }
 
 // Parameterized constructor
-NegotiateOrder::NegotiateOrder(Player& firstPlayer, Player& secondPlayer) : NegotiateOrder() {
+NegotiateOrder::NegotiateOrder(const Player& issuingPlayer, Player& firstPlayer, Player& secondPlayer) : NegotiateOrder() {
+	this->_issuingPlayer = &issuingPlayer;
 	this->_firstPlayer = &firstPlayer;
 	this->_secondPlayer = &secondPlayer;
 }

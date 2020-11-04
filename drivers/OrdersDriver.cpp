@@ -77,12 +77,12 @@ void ordersValidationTest() {
 	stevesTerr.setOwner(&steve);
 	anthonysTerr.setOwner(&anthony);
 
-	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, anthonysTerr, anthony, anthonysTerr, 3);
-	AirliftOrder* airliftGood = new AirliftOrder(anthony, anthonysTerr, anthony, anthonysTerr, 3);
-	BombOrder* bombGood = new BombOrder(anthony, stevesTerr);
-	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, anthonysTerr);
-	DeployOrder* deployGood = new DeployOrder(anthony, anthonysTerr, 19);
-	NegotiateOrder* negotiateGood = new NegotiateOrder(anthony, steve);
+	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, anthony, anthonysTerr, anthony, anthonysTerr, 3);
+	AirliftOrder* airliftGood = new AirliftOrder(anthony, anthony, anthonysTerr, anthony, anthonysTerr, 3);
+	BombOrder* bombGood = new BombOrder(anthony, anthony, stevesTerr);
+	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, anthony, anthonysTerr);
+	DeployOrder* deployGood = new DeployOrder(anthony, anthony, anthonysTerr, 19);
+	NegotiateOrder* negotiateGood = new NegotiateOrder(anthony, anthony, steve);
 
 	cout << "Validating Advance order, should show 1 as true: " << advanceGood->validate() << "\n";
 	cout << "Validating Airlift order, should show 1 as true: " << airliftGood->validate() << "\n";
@@ -107,17 +107,17 @@ void ordersExecutionTest() {
 	map::Territory terTest = map::Territory(0, "Quebec", test);
 	map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
 	
-	AdvanceOrder* advance = new AdvanceOrder(anthony, terTest, anthony, terTest2, 3);
+	AdvanceOrder* advance = new AdvanceOrder(anthony, anthony, terTest, anthony, terTest2, 3);
 	advance->execute();
-	AirliftOrder* airlift = new AirliftOrder(anthony, terTest, anthony, terTest2, 8);
+	AirliftOrder* airlift = new AirliftOrder(anthony, anthony, terTest, anthony, terTest2, 8);
 	airlift->execute();
-	BlockadeOrder* blockade = new BlockadeOrder(anthony, terTest);
+	BlockadeOrder* blockade = new BlockadeOrder(anthony, anthony, terTest);
 	blockade->execute();
-	BombOrder* bomb = new BombOrder(anthony, terTest);
+	BombOrder* bomb = new BombOrder(anthony, anthony, terTest);
 	bomb->execute();
-	DeployOrder* deploy = new DeployOrder(anthony, terTest, 19);
+	DeployOrder* deploy = new DeployOrder(anthony, anthony, terTest, 19);
 	deploy->execute();
-	NegotiateOrder* negotiate = new NegotiateOrder(anthony, steve);
+	NegotiateOrder* negotiate = new NegotiateOrder(anthony, anthony, steve);
 	negotiate->execute();
 	delete advance;
 	delete airlift;
