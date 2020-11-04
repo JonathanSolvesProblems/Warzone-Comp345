@@ -63,6 +63,42 @@ void ordersListTest() {
 	cout << test;
 }
 
+void ordersValidationTest() {
+	//TODO: Re-use these for the same tests?
+	Player anthony = Player("Anthony", 12345678);
+	Player steve = Player("Steve", 12345670);
+	map::Continent test = map::Continent(0, "Canada", 3);
+	map::Continent test2 = map::Continent(1, "Freedomland", 99);
+	map::Territory stevesTerr = map::Territory(0, "Quebec", test);
+	map::Territory anthonysTerr = map::Territory(1, "New Jersey", test2);
+
+	//Set owners
+	//TODO: set without pointer?
+	stevesTerr.setOwner(&steve);
+	anthonysTerr.setOwner(&anthony);
+
+	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, anthonysTerr, anthony, anthonysTerr, 3);
+	AirliftOrder* airliftGood = new AirliftOrder(anthony, anthonysTerr, anthony, anthonysTerr, 3);
+	BombOrder* bombGood = new BombOrder(anthony, stevesTerr);
+	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, anthonysTerr);
+	DeployOrder* deployGood = new DeployOrder(anthony, anthonysTerr, 19);
+	NegotiateOrder* negotiateGood = new NegotiateOrder(anthony, steve);
+
+	cout << "Validating Advance order, should show 1 as true: " << advanceGood->validate() << "\n";
+	cout << "Validating Airlift order, should show 1 as true: " << airliftGood->validate() << "\n";
+	cout << "Validating Blockade order, should show 1 as true: " << blockadeGood->validate() << "\n";
+	cout << "Validating Bomb order, should show 1 as true: " << bombGood->validate() << "\n";
+	cout << "Validating Deploy order, should show 1 as true: " << deployGood->validate() << "\n";
+	cout << "Validating Negotiate order, should show 1 as true: " << negotiateGood->validate() << "\n";
+
+	delete advanceGood;
+	delete airliftGood;
+	delete blockadeGood;
+	delete bombGood;
+	delete deployGood;
+	delete negotiateGood;
+}
+
 void ordersExecutionTest() {
 	Player anthony = Player("Anthony", 12345678);
 	Player steve = Player("Steve", 12345670);
@@ -70,23 +106,18 @@ void ordersExecutionTest() {
 	map::Continent test2 = map::Continent(1, "Freedomland", 99);
 	map::Territory terTest = map::Territory(0, "Quebec", test);
 	map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
+	
 	AdvanceOrder* advance = new AdvanceOrder(anthony, terTest, anthony, terTest2, 3);
-	cout << "\nValidating Advance order, should show true: " << advance->validate();
 	advance->execute();
 	AirliftOrder* airlift = new AirliftOrder(anthony, terTest, anthony, terTest2, 8);
-	cout << "\nValidating Airlift order, should show true: " << airlift->validate();
 	airlift->execute();
 	BlockadeOrder* blockade = new BlockadeOrder(anthony, terTest);
-	cout << "\nValidating Blockade order, should show true: " << blockade->validate();
 	blockade->execute();
 	BombOrder* bomb = new BombOrder(anthony, terTest);
-	cout << "\nValidating Bomb order, should show true: " << bomb->validate();
 	bomb->execute();
 	DeployOrder* deploy = new DeployOrder(anthony, terTest, 19);
-	cout << "\nValidating Deploy order, should show true: " << deploy->validate();
 	deploy->execute();
 	NegotiateOrder* negotiate = new NegotiateOrder(anthony, steve);
-	cout << "\nValidating Negotiate order, should show true: " << negotiate->validate();
 	negotiate->execute();
 	delete advance;
 	delete airlift;
@@ -110,6 +141,7 @@ int main() {
 	// orderTest<NegotiateOrder>();
 	// cout << endl;
 	// ordersListTest();
-	ordersExecutionTest();
+	//ordersExecutionTest();
+	ordersValidationTest();
 	return 0;
 }

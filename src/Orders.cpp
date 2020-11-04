@@ -237,7 +237,9 @@ BombOrder::~BombOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool BombOrder::validate() {
 	//Check that target doesn't belong to player that issued order
-	return true;
+	if(_targetTerritory->getOwner() != _targetPlayer)
+		return true;
+	return false;
 }
 
 // Outputs the effect of the bomb order and executes it
