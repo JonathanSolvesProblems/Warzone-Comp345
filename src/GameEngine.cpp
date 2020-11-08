@@ -211,7 +211,7 @@ MapSelectionView::~MapSelectionView() {
 
 void MapSelectionView::notifyKeyboardEventPerformed(int key) {
   // Send everything except SPACE To the sub view
-  if (key != ' ') {
+  if (key != ' ' && key != KEY_BACKSPACE) {
     _menu_view->notifyKeyboardEventPerformed(key);
   } else {
     View::notifyKeyboardEventPerformed(key);
@@ -298,6 +298,8 @@ bool MapSelectionController::keyboardEventPerformed(int key) {
     Application::instance()->activateView(MAIN_MENU_VIEW);
 
     return true;
+  } else if (key == KEY_BACKSPACE) {
+    Application::instance()->activateView(MAIN_MENU_VIEW);
   }
   return false;
 }
