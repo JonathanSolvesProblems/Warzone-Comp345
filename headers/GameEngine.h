@@ -29,14 +29,18 @@ class MainMenuController : public ActionListener {
 
 class SettingsModel {
   public:
+    SettingsModel();
     ConcreteObservable<bool> *getPhaseHeadersEnabled();
     ConcreteObservable<bool> *getStatsHeadersEnabled();
+    ConcreteObservable<int> *getNumberOfPlayers();
     void setPhaseHeadersEnabled(bool e);
     void setStatsHeadersEnabled(bool e);
+    void setNumberOfPlayers(int n);
 
   private:
     ConcreteObservable<bool> phase_headers_enabled;
     ConcreteObservable<bool> stats_headers_enabled;
+    ConcreteObservable<int> number_of_players;
 };
 
 class MainMenuView : public WindowView, public Observer

@@ -5,11 +5,13 @@ MainMenuView::MainMenuView(int w, int h, SettingsModel* mgm): WindowView(w, h, (
   _settings_model = mgm;
   _settings_model->getPhaseHeadersEnabled()->attach(this);
   _settings_model->getStatsHeadersEnabled()->attach(this);
+  _settings_model->getNumberOfPlayers()->attach(this);
 };
 
 MainMenuView::~MainMenuView() {
   _settings_model->getPhaseHeadersEnabled()->detach(this);
   _settings_model->getStatsHeadersEnabled()->detach(this);
+  _settings_model->getNumberOfPlayers()->detach(this);
 }
 
 void MainMenuView::display_banner(int& offset) {
@@ -38,30 +40,33 @@ void MainMenuView::display_credits(int& offset) {
 
 void MainMenuView::display_menu(int& offset) {
   wattron(_window, COLOR_PAIR(RED_BLACK));
-  print_centered(offset + 3, "Press SPACE to begin");
+  print_centered(offset + 3, "Number of Players (UP/DOWN):  ");
+  wattron(_window, COLOR_PAIR(WHITE_BLACK));
+  print_centered(offset + 5, std::to_string(_settings_model->getNumberOfPlayers()->get()).c_str());
+  wattron(_window, COLOR_PAIR(RED_BLACK));
+  print_centered(offset + 7, "Press SPACE to begin");
   wattroff(_window, COLOR_PAIR(RED_BLACK));
-
-
+  
   if (_settings_model->getPhaseHeadersEnabled()->get()) {
     wattron(_window, COLOR_PAIR(BLACK_GREEN));
-    print_centered(offset + 5, " PHASE HEADER ENABLED  (p) ");
+    print_centered(offset + 9, " PHASE HEADER ENABLED  (p) ");
     wattroff(_window, COLOR_PAIR(BLACK_GREEN));
   } else {
     wattron(_window, COLOR_PAIR(BLACK_RED));
-    print_centered(offset + 5, " PHASE HEADER DISABLED (p) ");
+    print_centered(offset + 9, " PHASE HEADER DISABLED (p) ");
     wattroff(_window, COLOR_PAIR(BLACK_RED));
   }
 
   if (_settings_model->getStatsHeadersEnabled()->get())
   {
     wattron(_window, COLOR_PAIR(BLACK_GREEN));
-    print_centered(offset + 7, " STATS HEADER ENABLED  (o) ");
+    print_centered(offset + 11, " STATS HEADER ENABLED  (o) ");
     wattroff(_window, COLOR_PAIR(BLACK_GREEN));
   }
   else
   {
     wattron(_window, COLOR_PAIR(BLACK_RED));
-    print_centered(offset + 7, " STATS HEADER DISABLED (o) ");
+    print_centered(offset + 11, " STATS HEADER DISABLED (o) ");
     wattroff(_window, COLOR_PAIR(BLACK_RED));
   }
 
@@ -85,6 +90,10 @@ void MainMenuView::update() {
   display();
 }
 
+SettingsModel::SettingsModel() {
+  setNumberOfPlayers(2);
+}
+
 ConcreteObservable<bool> *SettingsModel::getPhaseHeadersEnabled()
 {
   return &phase_headers_enabled;
@@ -95,6 +104,11 @@ ConcreteObservable<bool> *SettingsModel::getStatsHeadersEnabled()
   return &stats_headers_enabled;
 }
 
+ConcreteObservable<int> *SettingsModel::getNumberOfPlayers()
+{
+  return &number_of_players;
+}
+
 void SettingsModel::setPhaseHeadersEnabled(bool e)
 {
   phase_headers_enabled.set(e);
@@ -103,6 +117,11 @@ void SettingsModel::setPhaseHeadersEnabled(bool e)
 void SettingsModel::setStatsHeadersEnabled(bool e)
 {
   stats_headers_enabled.set(e);
+}
+
+void SettingsModel::setNumberOfPlayers(int n)
+{
+  number_of_players.set(n);
 }
 
 MainMenuController::MainMenuController(SettingsModel * mgm)
@@ -122,7 +141,19 @@ bool MainMenuController::keyboardEventPerformed(int key) {
     bool current = _settings_model->getStatsHeadersEnabled()->get();
     _settings_model->setStatsHeadersEnabled(!current);
     return true;
-  } else if (key == ' ') {
+  } else if (key == KEY_UP) {
+    int nNumberOfPlayers = _settings_model->getNumberOfPlayers()->get() + 1;
+    if (nNumberOfPlayers > 5) nNumberOfPlayers = 5;
+    _settings_model->setNumberOfPlayers(nNumberOfPlayers);
+  }
+  else if (key == KEY_DOWN)
+  {
+    int nNumberOfPlayers = _settings_model->getNumberOfPlayers()->get() - 1;
+    if (nNumberOfPlayers < 2)
+      nNumberOfPlayers = 2;
+    _settings_model->setNumberOfPlayers(nNumberOfPlayers);
+  } else if (key == ' ')
+  {
     Application::instance()->activateView(MAP_SELECTION_VIEW);
     return true;
   }
