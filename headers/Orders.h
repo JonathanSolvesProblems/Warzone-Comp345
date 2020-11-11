@@ -50,6 +50,7 @@ protected:
 	// Data members
 	string* _description{nullptr};
 	string* _effect{nullptr};
+	const Player* _issuingPlayer{nullptr};
 };
 
 /// <summary>
@@ -62,7 +63,7 @@ class AdvanceOrder : public Order {
 public:
 	// Constructors
 	AdvanceOrder();
-	AdvanceOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
+	AdvanceOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
 	AdvanceOrder(const AdvanceOrder& orderToCopy);
 	// Destructor
 	~AdvanceOrder();
@@ -91,9 +92,7 @@ public:
 	AdvanceOrder& operator=(const AdvanceOrder& o);
 private:
 	// Data members
-	Player* _sourcePlayer{nullptr};
 	map::Territory* _sourceTerritory{nullptr};
-	Player* _targetPlayer{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int* _numberOfArmies{nullptr};
 };
@@ -108,7 +107,7 @@ class AirliftOrder : public Order {
 public:
 	// Constructors
 	AirliftOrder();
-	AirliftOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
+	AirliftOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
 	AirliftOrder(const AirliftOrder& orderToCopy);
 	// Destructor
 	~AirliftOrder();
@@ -137,9 +136,7 @@ public:
 	AirliftOrder& operator=(const AirliftOrder& o);
 private:
 	// Data members
-	Player* _sourcePlayer{nullptr};
 	map::Territory* _sourceTerritory{nullptr};
-	Player* _targetPlayer{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int* _numberOfArmies{nullptr};
 };
@@ -154,7 +151,7 @@ class BlockadeOrder : public Order {
 public:
 	// Constructors
 	BlockadeOrder();
-	BlockadeOrder(Player& targetPlayer, map::Territory& targetTerritory);
+	BlockadeOrder(const Player& issuingPlayer, map::Territory& targetTerritory);
 	BlockadeOrder(const BlockadeOrder& orderToCopy);
 	// Destructor
 	~BlockadeOrder();
@@ -183,7 +180,6 @@ public:
 	BlockadeOrder& operator=(const BlockadeOrder& o);
 private:
 	// Data members
-	Player* _targetPlayer{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 };
 
@@ -197,7 +193,7 @@ class BombOrder : public Order {
 public:
 	// Constructors
 	BombOrder();
-	BombOrder(Player& targetPlayer, map::Territory& targetTerritory);
+	BombOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory);
 	BombOrder(const BombOrder& orderToCopy);
 	// Destructor
 	~BombOrder();
@@ -240,7 +236,7 @@ class DeployOrder : public Order {
 public:
 	// Constructors
 	DeployOrder();
-	DeployOrder(Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies);
+	DeployOrder(const Player& issuingPlayer, map::Territory& targetTerritory, int numberOfArmies);
 	DeployOrder(const DeployOrder& orderToCopy);
 	// Destructor
 	~DeployOrder();
@@ -269,7 +265,6 @@ public:
 	DeployOrder& operator=(const DeployOrder& o);
 private:
 	// Data members
-	Player* _targetPlayer{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int* _numberOfArmies{nullptr};
 };
@@ -284,7 +279,7 @@ class NegotiateOrder : public Order {
 public:
 	// Constructors
 	NegotiateOrder();
-	NegotiateOrder(Player& firstPlayer, Player& secondPlayer);
+	NegotiateOrder(Player& issuingPlayer, Player& secondPlayer);
 	NegotiateOrder(const NegotiateOrder& orderToCopy);
 	// Destructor
 	~NegotiateOrder();
@@ -313,7 +308,6 @@ public:
 	NegotiateOrder& operator=(const NegotiateOrder& o);
 private:
 	// Data members
-	Player* _firstPlayer{nullptr};
 	Player* _secondPlayer{nullptr};
 };
 

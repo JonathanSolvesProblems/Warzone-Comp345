@@ -16,7 +16,6 @@ Player::Player(string name, int pID) {
 Player::Player(const Player& playerToCopy) {
 	this->playerName = string(playerToCopy.playerName);
 	this->playerID = playerToCopy.playerID;
-
 	this->owned_territories = vector<map::Territory *>();
 	this->owned_territories.assign(
 			playerToCopy.owned_territories.begin(),
@@ -98,4 +97,17 @@ void Player::removeTerritory(map::Territory* territory) {
 		);
 	}
 }
+
+bool Player::isOwner(map::Territory* territory) {
+	if(territory){
+		for (map::Territory* owned : owned_territories) {
+			if(territory == owned){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
 

@@ -15,6 +15,7 @@ Order::Order(string description, string effect) : _description(new string(descri
 Order::Order(const Order& orderToCopy) {
 	this->_description = new string(*(orderToCopy._description));
 	this->_effect = new string(*(orderToCopy._effect));
+	this->_issuingPlayer = orderToCopy._issuingPlayer;
 }
 
 // Destructor
@@ -46,11 +47,10 @@ If the target territory belongs to another player, an attack happens between the
 }
 
 // Parameterized constructor
-AdvanceOrder::AdvanceOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
-	this->_sourcePlayer = new Player(sourcePlayer);
-	this->_sourceTerritory = new map::Territory(sourceTerritory);
-	this->_targetPlayer = new Player(sourcePlayer);
-	this->_targetTerritory = new map::Territory(targetTerritory);
+AdvanceOrder::AdvanceOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
+	this->_issuingPlayer = &issuingPlayer;
+	this->_sourceTerritory = &sourceTerritory;
+	this->_targetTerritory = &targetTerritory;
 	this->_numberOfArmies = new int(numberOfArmies);
 }
 
@@ -61,16 +61,15 @@ AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advan
 
 // Destructor
 AdvanceOrder::~AdvanceOrder() {
-	delete _sourcePlayer;
-	delete _sourceTerritory;
-	delete _targetPlayer;
-	delete _targetTerritory;
-	delete _numberOfArmies;
+	// deliberately empty, Player and Territory pointers will be dealt with in their own scope
 }
 
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
-	return true;
+	//checks _sourceTerritory belong to _sourcePlayer
+	if(_sourceTerritory->getOwner() == _issuingPlayer)
+		return true;
+	return false;
 }
 
 // Outputs the effect of the advance order and executes it
@@ -102,11 +101,10 @@ AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from 
 }
 
 // Parameterized constructor
-AirliftOrder::AirliftOrder(Player& sourcePlayer, map::Territory& sourceTerritory, Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
-	this->_sourcePlayer = new Player(sourcePlayer);
-	this->_sourceTerritory = new map::Territory(sourceTerritory);
-	this->_targetPlayer = new Player(sourcePlayer);
-	this->_targetTerritory = new map::Territory(targetTerritory);
+AirliftOrder::AirliftOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+	this->_issuingPlayer = &issuingPlayer;
+	this->_sourceTerritory = &sourceTerritory;
+	this->_targetTerritory = &targetTerritory;
 	this->_numberOfArmies = new int(numberOfArmies);
 }
 
@@ -117,16 +115,15 @@ AirliftOrder::AirliftOrder(const AirliftOrder& airliftOrderToCopy) : Order(airli
 
 // Destructor
 AirliftOrder::~AirliftOrder() {
-	delete _sourcePlayer;
-	delete _sourceTerritory;
-	delete _targetPlayer;
-	delete _targetTerritory;
-	delete _numberOfArmies;
+	// deliberately empty, Player and Territory pointers will be dealt with in their own scope
 }
 
 // Checks whether the order is valid, and returns true if it is
 bool AirliftOrder::validate() {
-	return true;
+	//Check that the source and target belongs to the player that issued the order
+	if(_sourceTerritory->getOwner() == _issuingPlayer && _targetTerritory->getOwner() == _issuingPlayer )
+		return true;
+	return false;
 }
 
 // Outputs the effect of the airlift order and executes it
@@ -158,9 +155,9 @@ BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of a
 }
 
 // Parameterized constructor
-BlockadeOrder::BlockadeOrder(Player& targetPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
-	this->_targetPlayer = new Player(targetPlayer);
-	this->_targetTerritory = new map::Territory(targetTerritory);
+BlockadeOrder::BlockadeOrder(const Player& issuingPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
+	this->_issuingPlayer = &issuingPlayer;
+	this->_targetTerritory = &targetTerritory;
 }
 
 // Copy constructor
@@ -170,12 +167,15 @@ BlockadeOrder::BlockadeOrder(const BlockadeOrder& blockadeOrderToCopy) : Order(b
 
 // Destructor
 BlockadeOrder::~BlockadeOrder() {
-	delete _targetPlayer;
-	delete _targetTerritory;
+	// deliberately empty, Player and Territory pointers will be dealt with in their own scope
 }
 
 // Checks whether the order is valid, and returns true if it is
 bool BlockadeOrder::validate() {
+	//Target doesn't belong to an enemy player
+	//TODO: Ask about checking for enemy players
+	if(_targetTerritory->getOwner() == _issuingPlayer)
+		return true;
 	return true;
 }
 
@@ -208,9 +208,10 @@ BombOrder::BombOrder() : Order("Bomb Order", "Destroy half of the armies located
 }
 
 // Parameterized constructor
-BombOrder::BombOrder(Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
-	this->_targetPlayer = new Player(targetPlayer);
-	this->_targetTerritory = new map::Territory(targetTerritory);
+BombOrder::BombOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
+	this->_issuingPlayer = &issuingPlayer;
+	this->_targetPlayer = &targetPlayer;
+	this->_targetTerritory = &targetTerritory;
 }
 
 // Copy constructor
@@ -220,13 +221,15 @@ BombOrder::BombOrder(const BombOrder& bombOrderToCopy) : Order(bombOrderToCopy) 
 
 // Destructor
 BombOrder::~BombOrder() {
-	delete _targetPlayer;
-	delete _targetTerritory;
+	// deliberately empty, Player and Territory pointers will be dealt with in their own scope
 }
 
 // Checks whether the order is valid, and returns true if it is
 bool BombOrder::validate() {
-	return true;
+	//Check that target doesn't belong to player that issued order
+	if(_targetTerritory->getOwner() != _issuingPlayer)
+		return true;
+	return false;
 }
 
 // Outputs the effect of the bomb order and executes it
@@ -258,9 +261,9 @@ DeployOrder::DeployOrder() : Order("Deploy Order", "Place some armies on one of 
 }
 
 // Parameterized constructor
-DeployOrder::DeployOrder(Player& targetPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
-	this->_targetPlayer = new Player(targetPlayer);
-	this->_targetTerritory = new map::Territory(targetTerritory);
+DeployOrder::DeployOrder(const Player& issuingPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
+	this->_issuingPlayer = &issuingPlayer;
+	this->_targetTerritory = &targetTerritory;
 	this->_numberOfArmies = new int(numberOfArmies);
 }
 
@@ -271,14 +274,15 @@ DeployOrder::DeployOrder(const DeployOrder& deployOrderToCopy) : Order(deployOrd
 
 // Destructor
 DeployOrder::~DeployOrder() {
-	delete _targetPlayer;
-	delete _targetTerritory;
-	delete _numberOfArmies;
+	// deliberately empty, Player and Territory pointers will be dealt with in their own scope
 }
 
 // Checks whether the order is valid, and returns true if it is
 bool DeployOrder::validate() {
-	return true;
+	//If target targetTerritory belongs to player, return true
+	if(_targetTerritory->getOwner() == _issuingPlayer )
+		return true;
+	return false;
 }
 
 // Outputs the effect of the deploy order and executes it
@@ -310,9 +314,9 @@ NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks bet
 }
 
 // Parameterized constructor
-NegotiateOrder::NegotiateOrder(Player& firstPlayer, Player& secondPlayer) : NegotiateOrder() {
-	this->_firstPlayer = new Player(firstPlayer);
-	this->_secondPlayer = new Player(secondPlayer);
+NegotiateOrder::NegotiateOrder(Player& issuingPlayer, Player& secondPlayer) : NegotiateOrder() {
+	this->_issuingPlayer = &issuingPlayer;
+	this->_secondPlayer = &secondPlayer;
 }
 
 // Copy constructor
@@ -322,12 +326,14 @@ NegotiateOrder::NegotiateOrder(const NegotiateOrder& negotiateOrderToCopy) : Ord
 
 // Destructor
 NegotiateOrder::~NegotiateOrder() {
-	delete _firstPlayer;
-	delete _secondPlayer;
+	// deliberately empty, Player pointers will be dealt with in their own scope
 }
 
 // Checks whether the order is valid, and returns true if it is
 bool NegotiateOrder::validate() {
+	//target cannot be the same player issuing the order
+	if(_issuingPlayer == _secondPlayer)
+		return false;
 	return true;
 }
 

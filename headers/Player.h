@@ -91,5 +91,7 @@ public:
 
 	// Removes a territory from myTerritories (Does not unset the Territory's owner)
 	void removeTerritory(map::Territory*);
+
+	bool isOwner(map::Territory*);
 };
 

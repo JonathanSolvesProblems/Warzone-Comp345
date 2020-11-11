@@ -63,31 +63,93 @@ void ordersListTest() {
 	cout << test;
 }
 
-void ordersExecutionTest() {
+void ordersValidationTest() {
+	//TODO: Re-use these for the same tests?
 	Player anthony = Player("Anthony", 12345678);
 	Player steve = Player("Steve", 12345670);
 	map::Continent test = map::Continent(0, "Canada", 3);
 	map::Continent test2 = map::Continent(1, "Freedomland", 99);
-	map::Territory terTest = map::Territory(0, "Quebec", test);
-	map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
-	AdvanceOrder* advance = new AdvanceOrder(anthony, terTest, anthony, terTest2, 3);
-	advance->execute();
-	AirliftOrder* airlift = new AirliftOrder(anthony, terTest, anthony, terTest2, 8);
-	airlift->execute();
-	BlockadeOrder* blockade = new BlockadeOrder(anthony, terTest);
-	blockade->execute();
-	BombOrder* bomb = new BombOrder(anthony, terTest);
-	bomb->execute();
-	DeployOrder* deploy = new DeployOrder(anthony, terTest, 19);
-	deploy->execute();
-	NegotiateOrder* negotiate = new NegotiateOrder(anthony, steve);
-	negotiate->execute();
-	delete advance;
-	delete airlift;
-	delete blockade;
-	delete bomb;
-	delete deploy;
-	delete negotiate;
+	map::Territory stevesTerr = map::Territory(0, "Quebec", test);
+	map::Territory anthonysTerr = map::Territory(1, "New Jersey", test2);
+	map::Territory anthonysOtherTerr = map::Territory(2, "Texas", test2);
+	//Set owners
+	//TODO: set without pointer?
+	stevesTerr.setOwner(&steve);
+	anthonysTerr.setOwner(&anthony);
+	anthonysOtherTerr.setOwner(&anthony);
+
+	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, anthonysTerr, anthonysOtherTerr, 3);
+	AirliftOrder* airliftGood = new AirliftOrder(anthony, anthonysTerr, anthonysTerr, 3);
+	BombOrder* bombGood = new BombOrder(anthony, steve, stevesTerr);
+	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, anthonysTerr);
+	DeployOrder* deployGood = new DeployOrder(anthony, anthonysTerr, 19);
+	NegotiateOrder* negotiateGood = new NegotiateOrder(anthony, steve);
+
+	cout << "Validating Advance order, should show 1 as true: " << advanceGood->validate() << "\n";
+	cout << "Validating Airlift order, should show 1 as true: " << airliftGood->validate() << "\n";
+	cout << "Validating Blockade order, should show 1 as true: " << blockadeGood->validate() << "\n";
+	cout << "Validating Bomb order, should show 1 as true: " << bombGood->validate() << "\n";
+	cout << "Validating Deploy order, should show 1 as true: " << deployGood->validate() << "\n";
+	cout << "Validating Negotiate order, should show 1 as true: " << negotiateGood->validate() << "\n";
+
+	delete advanceGood;
+	delete airliftGood;
+	delete blockadeGood;
+	delete bombGood;
+	delete deployGood;
+	delete negotiateGood;
+}
+
+void ordersExecutionTest() {
+
+	//TODO: Re-use these for the same tests?
+	Player anthony = Player("Anthony", 12345678);
+	Player steve = Player("Steve", 12345670);
+	map::Continent test = map::Continent(0, "Canada", 3);
+	map::Continent test2 = map::Continent(1, "Freedomland", 99);
+	map::Territory stevesTerr = map::Territory(0, "Quebec", test);
+	map::Territory anthonysTerr = map::Territory(1, "New Jersey", test2);
+	map::Territory anthonysOtherTerr = map::Territory(2, "Texas", test2);
+
+	//Set owners
+	//TODO: set without pointer?
+	stevesTerr.setOwner(&steve);
+	anthonysTerr.setOwner(&anthony);
+	anthonysOtherTerr.setOwner(&anthony);
+
+	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, anthonysTerr, anthonysOtherTerr, 3);
+	AirliftOrder* airliftGood = new AirliftOrder(anthony, anthonysTerr, anthonysTerr, 3);
+	BombOrder* bombGood = new BombOrder(anthony, steve, stevesTerr);
+	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, anthonysTerr);
+	DeployOrder* deployGood = new DeployOrder(anthony, anthonysTerr, 19);
+	NegotiateOrder* negotiateGood = new NegotiateOrder(anthony, steve);
+
+
+	// Player anthony = Player("Anthony", 12345678);
+	// Player steve = Player("Steve", 12345670);
+	// map::Continent test = map::Continent(0, "Canada", 3);
+	// map::Continent test2 = map::Continent(1, "Freedomland", 99);
+	// map::Territory terTest = map::Territory(0, "Quebec", test);
+	// map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
+	
+	// AdvanceOrder* advance = new AdvanceOrder(anthony, anthony, terTest, anthony, terTest2, 3);
+	advanceGood->execute();
+	// AirliftOrder* airlift = new AirliftOrder(anthony, anthony, terTest, anthony, terTest2, 8);
+	airliftGood->execute();
+	// BlockadeOrder* blockade = new BlockadeOrder(anthony, anthony, terTest);
+	blockadeGood->execute();
+	// BombOrder* bomb = new BombOrder(anthony, anthony, terTest);
+	bombGood->execute();
+	// DeployOrder* deploy = new DeployOrder(anthony, anthony, terTest, 19);
+	deployGood->execute();
+	// NegotiateOrder* negotiate = new NegotiateOrder(anthony, anthony, steve);
+	negotiateGood->execute();
+	delete advanceGood;
+	delete airliftGood;
+	delete blockadeGood;
+	delete bombGood;
+	delete deployGood;
+	delete negotiateGood;
 }
 
 int main() {
@@ -105,5 +167,6 @@ int main() {
 	// cout << endl;
 	// ordersListTest();
 	ordersExecutionTest();
+	ordersValidationTest();
 	return 0;
 }
