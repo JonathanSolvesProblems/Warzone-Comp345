@@ -314,7 +314,7 @@ NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks bet
 }
 
 // Parameterized constructor
-NegotiateOrder::NegotiateOrder(const Player& issuingPlayer, Player& secondPlayer) : NegotiateOrder() {
+NegotiateOrder::NegotiateOrder(Player& issuingPlayer, Player& secondPlayer) : NegotiateOrder() {
 	this->_issuingPlayer = &issuingPlayer;
 	this->_secondPlayer = &secondPlayer;
 }

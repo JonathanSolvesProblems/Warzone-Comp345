@@ -279,7 +279,7 @@ class NegotiateOrder : public Order {
 public:
 	// Constructors
 	NegotiateOrder();
-	NegotiateOrder(const Player& issuingPlayer, Player& secondPlayer);
+	NegotiateOrder(Player& issuingPlayer, Player& secondPlayer);
 	NegotiateOrder(const NegotiateOrder& orderToCopy);
 	// Destructor
 	~NegotiateOrder();
