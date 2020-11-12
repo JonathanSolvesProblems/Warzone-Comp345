@@ -235,6 +235,7 @@ bool BombOrder::validate() {
 // Outputs the effect of the bomb order and executes it
 bool BombOrder::execute() {
 	if (validate()) {
+		_targetTerritory->setArmees(10); // Random test change
 		cout << *_effect << endl;
 		return true;
 	}
