@@ -287,6 +287,21 @@ namespace map
     armees = number;
   }
 
+  void Territory::addArmees(int number)
+  {
+    armees += number;
+  }
+
+  void Territory::removeArmees(int number)
+  {
+    armees -= number;
+  }
+
+  /*Places number of armees from source territroy to target*/
+  // void migrateArmees(int number ,Territory& source, Territory& target) {
+
+  // }
+
   std::string Territory::getName() const
   {
     return std::string(*name);

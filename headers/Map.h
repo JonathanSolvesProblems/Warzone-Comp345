@@ -311,6 +311,15 @@ public:
   /* Sets the number of armees on the territory. */
   void setArmees(int number);
 
+  /*Adds armees to the territory*/
+  void addArmees(int number);
+
+  /*Removes armees from the territroy */
+  void removeArmees(int number);
+
+  /*TODO: Places number of armees from source territroy to target */
+  //void migrateArmees(int number ,Territory& source, Territory& target);
+  
   /*
    * Returns the number of neighbours this territory has.
    */

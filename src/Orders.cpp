@@ -1,4 +1,4 @@
-#include "Orders.h"
+#include "../headers/Orders.h"
 
 // --------------------------- Order Class ---------------------------
 // Default constructor
@@ -62,6 +62,7 @@ AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advan
 // Destructor
 AdvanceOrder::~AdvanceOrder() {
 	// deliberately empty, Player and Territory pointers will be dealt with in their own scope
+
 }
 
 // Checks whether the order is valid, and returns true if it is
@@ -75,9 +76,17 @@ bool AdvanceOrder::validate() {
 // Outputs the effect of the advance order and executes it
 bool AdvanceOrder::execute() {
 	if (validate()) {
-		cout << *_effect << endl;
-		return true;
+		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
+			//Remove from source and add to target
+			this->_sourceTerritory->removeArmees(*(this->_numberOfArmies));
+			this->_targetTerritory->addArmees(*(this->_numberOfArmies));
+			return true;
+		}
+		else {
+			//TODO: Simulate attack
+		}
 	}
+	//cout << *_effect << endl;
 	return false;
 }
 
@@ -129,6 +138,7 @@ bool AirliftOrder::validate() {
 // Outputs the effect of the airlift order and executes it
 bool AirliftOrder::execute() {
 	if (validate()) {
+		_sourceTerritory->
 		cout << *_effect << endl;
 		return true;
 	}
@@ -176,12 +186,18 @@ bool BlockadeOrder::validate() {
 	//TODO: Ask about checking for enemy players
 	if(_targetTerritory->getOwner() == _issuingPlayer)
 		return true;
-	return true;
+	return false;
 }
 
 // Outputs the effect of the blockade order and executes it
 bool BlockadeOrder::execute() {
 	if (validate()) {
+		int currentPlayerArmies = this->_issuingPlayer->getArmees();
+		int blockadeArmies = floor(currentPlayerArmies / 2);
+		//Temporarily deploys half of a player's armies to the territory
+		this->_targetTerritory->addArmees(blockadeArmies);
+
+		this->_issuingPlayer->setArmees(currentPlayerArmies - blockadeArmies);
 		cout << *_effect << endl;
 		return true;
 	}
@@ -235,6 +251,9 @@ bool BombOrder::validate() {
 // Outputs the effect of the bomb order and executes it
 bool BombOrder::execute() {
 	if (validate()) {
+		//Territory being bombed belongs to enemy player, half of the armies get removed
+		_targetTerritory->removeArmees(ceil(_targetTerritory->getArmees() / 2));
+
 		cout << *_effect << endl;
 		return true;
 	}
@@ -288,6 +307,12 @@ bool DeployOrder::validate() {
 // Outputs the effect of the deploy order and executes it
 bool DeployOrder::execute() {
 	if (validate()) {
+
+		//Add passed number of armees to target territory
+		this->_targetTerritory->addArmees( *(this->_numberOfArmies) );
+		//TODO: Think of way to remove from a reinforcement pool, but still keep track of all player's armies
+		//this
+
 		cout << *_effect << endl;
 		return true;
 	}

@@ -9,6 +9,7 @@ using namespace std;
 Player::Player(string name, int pID) {
 	playerName = name;
 	playerID = pID;
+	armees = 0;
 	listOfOrders = new OrdersList();
 	hand = new Hand();
 }
@@ -16,6 +17,7 @@ Player::Player(string name, int pID) {
 Player::Player(const Player& playerToCopy) {
 	this->playerName = string(playerToCopy.playerName);
 	this->playerID = playerToCopy.playerID;
+	this->armees = playerToCopy.getArmees();
 	this->owned_territories = vector<map::Territory *>();
 	this->owned_territories.assign(
 			playerToCopy.owned_territories.begin(),
@@ -24,9 +26,19 @@ Player::Player(const Player& playerToCopy) {
 	this->hand = new Hand(*(playerToCopy.hand));
 }
 
+int Player::getArmees() const
+{
+	return armees;
+}
+
+void Player::setArmees(int number)
+{
+	armees = number;
+}
+
 ostream &operator<<(ostream &out, const Player &playerToStream)
 {
-	out << playerToStream.playerName;
+	out << playerToStream.playerName << " " << playerToStream.getArmees() ;
 	return out;
 }
 
