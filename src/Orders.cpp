@@ -253,8 +253,7 @@ bool BombOrder::execute() {
 	if (validate()) {
 		//Territory being bombed belongs to enemy player, half of the armies get removed
 		_targetTerritory->removeArmees(ceil(_targetTerritory->getArmees() / 2));
-
-		cout << *_effect << endl;
+		//cout << *_effect << endl;
 		return true;
 	}
 	return false;
@@ -339,7 +338,7 @@ NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks bet
 }
 
 // Parameterized constructor
-NegotiateOrder::NegotiateOrder(const Player& issuingPlayer, Player& secondPlayer) : NegotiateOrder() {
+NegotiateOrder::NegotiateOrder(Player& issuingPlayer, Player& secondPlayer) : NegotiateOrder() {
 	this->_issuingPlayer = &issuingPlayer;
 	this->_secondPlayer = &secondPlayer;
 }
