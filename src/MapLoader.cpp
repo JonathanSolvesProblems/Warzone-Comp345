@@ -69,7 +69,7 @@ bool MapLoader::loadFile(string mapName, map::Map& test)
     string line;
 
      //THIS IS THE PATH TO THE FOLDER THAT WE WANT
-    string folderPath = "C:\\Users\\b1hom\\Desktop\\GameEngine\\MapFiles\\" + mapName;
+    string folderPath = "exampleMaps\\" + mapName;
 
     //opens the file
     ifstream mapFile(folderPath);
@@ -535,7 +535,7 @@ bool MapLoader::mapSelection(map::Map& test) {
             else {
                 //stores the filepath in the string 
                 string& map = listOfFiles[option];
-                string file = "C:\\Users\\b1hom\\Desktop\\GameEngine\\MapFiles\\" + map;
+                string file = "exampleMaps\\" + map;
 
                 // checks to see if it is a valid map, will have to see if theres a way to keep the loop going
                 // seems that once its set, the continenets variabel never wants to be updated again. 
@@ -576,7 +576,7 @@ vector<string> MapLoader::findMapFiles() {
     // change char set to multibyte by going into the properties and go into advanced and change the char set
     // have to change the filepath to the correct one
 
-    for (auto& p : fs::directory_iterator("C:\\Users\\b1hom\\Desktop\\GameEngine\\MapFiles\\")) {
+    for (auto& p : fs::directory_iterator("exampleMaps")) {
         std::wstring wide(p.path().filename());
         std::string str(wide.begin(), wide.end());
         listOfFiles.push_back(str);
