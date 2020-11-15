@@ -37,6 +37,8 @@ public:
   virtual void deactivate();
   virtual void display();
   virtual void notifyKeyboardEventPerformed(int key);
+  virtual void notifyActivated();
+  virtual void notifyDeactivated();
 
 private:
   std::list<ActionListener *> _action_listeners;

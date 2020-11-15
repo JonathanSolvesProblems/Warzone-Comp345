@@ -20,11 +20,29 @@ void View::notifyKeyboardEventPerformed(int key) {
   }
 }
 
+void View::notifyActivated() {
+  for (auto listener : _action_listeners)
+  {
+    listener->viewActivated();
+  }
+}
+
+void View::notifyDeactivated() {
+  for (auto listener : _action_listeners)
+  {
+    listener->viewDeactivated();
+  }
+}
+
 void View::display() {}
 
-void View::activate() {}
+void View::activate() {
+  notifyActivated();
+}
 
-void View::deactivate() {}
+void View::deactivate() {
+  notifyDeactivated();
+}
 
 Application::Application() {
 }
@@ -117,12 +135,14 @@ void WindowView::deactivate() {
     delwin(_window);
     _window = nullptr;
   }
+  View::deactivate();
 }
 
 void WindowView::activate() {
   if (_window && _window != stdscr) {
     deactivate();
   }
+  View::activate();
   _window = create_newwin(height, width, start_y, start_x);
   display();
 }
