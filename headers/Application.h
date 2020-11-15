@@ -21,6 +21,9 @@ public:
     * in the chain.
   */
   virtual bool keyboardEventPerformed(int key) = 0;
+
+  virtual void viewActivated() = 0;
+  virtual void viewDeactivated() = 0;
 };
 
 class View

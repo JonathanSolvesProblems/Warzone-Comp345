@@ -23,24 +23,17 @@ class MainMenuController : public ActionListener {
 
     virtual bool keyboardEventPerformed(int key);
 
+    virtual void viewActivated();
+    virtual void viewDeactivated();
+
   private:
     SettingsModel *_settings_model;
 };
 
-class SettingsModel {
-  public:
-    SettingsModel();
-    ConcreteObservable<bool> *getPhaseHeadersEnabled();
-    ConcreteObservable<bool> *getStatsHeadersEnabled();
-    ConcreteObservable<int> *getNumberOfPlayers();
-    void setPhaseHeadersEnabled(bool e);
-    void setStatsHeadersEnabled(bool e);
-    void setNumberOfPlayers(int n);
-
-  private:
-    ConcreteObservable<bool> phase_headers_enabled;
-    ConcreteObservable<bool> stats_headers_enabled;
-    ConcreteObservable<int> number_of_players;
+struct SettingsModel {
+  ConcreteObservable<bool> phase_headers_enabled;
+  ConcreteObservable<bool> stats_headers_enabled;
+  ConcreteObservable<int> number_of_players;
 };
 
 class MainMenuView : public WindowView, public Observer
@@ -58,20 +51,11 @@ private:
   SettingsModel *_settings_model;
 };
 
-class MenuModel {
-  public:
-    MenuModel() {};
-    ~MenuModel() {};
-    ConcreteObservable<std::vector<std::string>> *getMapFileList();
-    ConcreteObservable<int> * getSelectedItem();
-    void setMapFileList(std::vector<std::string>& list);
-    void setSelectedItem(int index);
+struct MenuModel {
+    ConcreteObservable<std::vector<std::string>> map_file_list;
+    ConcreteObservable<int> selected_index;
     void incrementItem(int inc);
     std::string getSelection();
-
-  private:
-    ConcreteObservable<std::vector<std::string>> _map_file_list;
-    ConcreteObservable<int> _selected_item;
 };
 
 class MapMenuView : public WindowView, public Observer {
@@ -102,6 +86,8 @@ class MapSelectionController : public ActionListener {
     ~MapSelectionController();
 
     virtual bool keyboardEventPerformed(int key);
+    virtual void viewActivated();
+    virtual void viewDeactivated();
 
   private:
     MenuModel *_menu_model;
@@ -114,6 +100,9 @@ class MapMenuController : public ActionListener
     ~MapMenuController();
 
     virtual bool keyboardEventPerformed(int key);
+    virtual void viewActivated();
+    virtual void viewDeactivated();
+
   private:
     MenuModel *_menu_model;
 };

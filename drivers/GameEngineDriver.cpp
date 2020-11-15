@@ -15,11 +15,12 @@ int main () {
   initialize_ncurses_colors();
 
   SettingsModel *game_model = new SettingsModel();
-  game_model->setPhaseHeadersEnabled(true);
+  game_model->phase_headers_enabled.set(true);
+  game_model->number_of_players.set(2);
 
   MenuModel *menu_model = new MenuModel();
   std::vector<std::string> map_list ({"map 1", "map 2"});
-  menu_model->setMapFileList(map_list);
+  menu_model->map_file_list.set(map_list);
 
   MainMenuController *main_game_controller = new MainMenuController(game_model);
   MapSelectionController *map_selection_controller = new MapSelectionController(menu_model);

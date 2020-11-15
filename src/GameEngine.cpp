@@ -3,15 +3,15 @@
 
 MainMenuView::MainMenuView(int w, int h, SettingsModel* mgm): WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2) {
   _settings_model = mgm;
-  _settings_model->getPhaseHeadersEnabled()->attach(this);
-  _settings_model->getStatsHeadersEnabled()->attach(this);
-  _settings_model->getNumberOfPlayers()->attach(this);
+  _settings_model->phase_headers_enabled.attach(this);
+  _settings_model->stats_headers_enabled.attach(this);
+  _settings_model->number_of_players.attach(this);
 };
 
 MainMenuView::~MainMenuView() {
-  _settings_model->getPhaseHeadersEnabled()->detach(this);
-  _settings_model->getStatsHeadersEnabled()->detach(this);
-  _settings_model->getNumberOfPlayers()->detach(this);
+  _settings_model->phase_headers_enabled.detach(this);
+  _settings_model->stats_headers_enabled.detach(this);
+  _settings_model->number_of_players.detach(this);
 }
 
 void MainMenuView::display_banner(int& offset) {
@@ -42,12 +42,12 @@ void MainMenuView::display_menu(int& offset) {
   wattron(_window, COLOR_PAIR(RED_BLACK));
   print_centered(offset + 3, "Number of Players (UP/DOWN):  ");
   wattron(_window, COLOR_PAIR(WHITE_BLACK));
-  print_centered(offset + 5, std::to_string(_settings_model->getNumberOfPlayers()->get()).c_str());
+  print_centered(offset + 5, std::to_string(_settings_model->number_of_players.get()).c_str());
   wattron(_window, COLOR_PAIR(RED_BLACK));
   print_centered(offset + 7, "Press SPACE to begin");
   wattroff(_window, COLOR_PAIR(RED_BLACK));
   
-  if (_settings_model->getPhaseHeadersEnabled()->get()) {
+  if (_settings_model->phase_headers_enabled.get()) {
     wattron(_window, COLOR_PAIR(BLACK_GREEN));
     print_centered(offset + 9, " PHASE HEADER ENABLED  (p) ");
     wattroff(_window, COLOR_PAIR(BLACK_GREEN));
@@ -57,7 +57,7 @@ void MainMenuView::display_menu(int& offset) {
     wattroff(_window, COLOR_PAIR(BLACK_RED));
   }
 
-  if (_settings_model->getStatsHeadersEnabled()->get())
+  if (_settings_model->stats_headers_enabled.get())
   {
     wattron(_window, COLOR_PAIR(BLACK_GREEN));
     print_centered(offset + 11, " STATS HEADER ENABLED  (o) ");
@@ -90,39 +90,6 @@ void MainMenuView::update() {
   display();
 }
 
-SettingsModel::SettingsModel() {
-  setNumberOfPlayers(2);
-}
-
-ConcreteObservable<bool> *SettingsModel::getPhaseHeadersEnabled()
-{
-  return &phase_headers_enabled;
-}
-
-ConcreteObservable<bool> *SettingsModel::getStatsHeadersEnabled()
-{
-  return &stats_headers_enabled;
-}
-
-ConcreteObservable<int> *SettingsModel::getNumberOfPlayers()
-{
-  return &number_of_players;
-}
-
-void SettingsModel::setPhaseHeadersEnabled(bool e)
-{
-  phase_headers_enabled.set(e);
-}
-
-void SettingsModel::setStatsHeadersEnabled(bool e)
-{
-  stats_headers_enabled.set(e);
-}
-
-void SettingsModel::setNumberOfPlayers(int n)
-{
-  number_of_players.set(n);
-}
 
 MainMenuController::MainMenuController(SettingsModel * mgm)
 {
@@ -134,24 +101,24 @@ MainMenuController::~MainMenuController() {
 
 bool MainMenuController::keyboardEventPerformed(int key) {
   if (key == 'p') {
-    bool current = _settings_model->getPhaseHeadersEnabled()->get();
-    _settings_model->setPhaseHeadersEnabled(!current);
+    bool current = _settings_model->phase_headers_enabled.get();
+    _settings_model->phase_headers_enabled.set(!current);
     return true;
   } else if (key == 'o') {
-    bool current = _settings_model->getStatsHeadersEnabled()->get();
-    _settings_model->setStatsHeadersEnabled(!current);
+    bool current = _settings_model->stats_headers_enabled.get();
+    _settings_model->stats_headers_enabled.set(!current);
     return true;
   } else if (key == KEY_UP) {
-    int nNumberOfPlayers = _settings_model->getNumberOfPlayers()->get() + 1;
+    int nNumberOfPlayers = _settings_model->number_of_players.get() + 1;
     if (nNumberOfPlayers > 5) nNumberOfPlayers = 5;
-    _settings_model->setNumberOfPlayers(nNumberOfPlayers);
+    _settings_model->number_of_players.set(nNumberOfPlayers);
   }
   else if (key == KEY_DOWN)
   {
-    int nNumberOfPlayers = _settings_model->getNumberOfPlayers()->get() - 1;
+    int nNumberOfPlayers = _settings_model->number_of_players.get() - 1;
     if (nNumberOfPlayers < 2)
       nNumberOfPlayers = 2;
-    _settings_model->setNumberOfPlayers(nNumberOfPlayers);
+    _settings_model->number_of_players.set(nNumberOfPlayers);
   } else if (key == ' ')
   {
     Application::instance()->activateView(MAP_SELECTION_VIEW);
@@ -160,15 +127,18 @@ bool MainMenuController::keyboardEventPerformed(int key) {
   return false;
 }
 
+void MainMenuController::viewActivated() {}
+void MainMenuController::viewDeactivated() {}
+
 MapMenuView::MapMenuView(int w, int h, MenuModel *mm): WindowView(w, h, (COLS - w) / 2, LINES - h) {
   _menu_model = mm;
-  _menu_model->getMapFileList()->attach(this);
-  _menu_model->getSelectedItem()->attach(this);
+  _menu_model->map_file_list.attach(this);
+  _menu_model->selected_index.attach(this);
 }
 
 MapMenuView::~MapMenuView() {
-  _menu_model->getMapFileList()->detach(this);
-  _menu_model->getSelectedItem()->detach(this);
+  _menu_model->map_file_list.detach(this);
+  _menu_model->selected_index.detach(this);
 }
 
 void MapMenuView::update() {
@@ -185,8 +155,8 @@ void MapMenuView::display() {
   wattron(_window, COLOR_PAIR(RED_BLACK));
   box(_window, 0, 0);
   wattroff(_window, COLOR_PAIR(RED_BLACK));
-  std::vector<std::string> maps = _menu_model->getMapFileList()->get();
-  int active_index = _menu_model->getSelectedItem()->get();
+  std::vector<std::string> maps = _menu_model->map_file_list.get();
+  int active_index = _menu_model->selected_index.get();
   for (int i=0; i < maps.size(); i++) {
     if (i == active_index) {
       wattron(_window, COLOR_PAIR(BLACK_RED));
@@ -241,30 +211,14 @@ void MapSelectionView::display() {
   WindowView::display();
 }
 
-ConcreteObservable<std::vector<std::string>> *MenuModel::getMapFileList() {
-  return &_map_file_list;
-}
-
-ConcreteObservable<int> *MenuModel::getSelectedItem() {
-  return &_selected_item;
-}
-
-void MenuModel::setMapFileList(std::vector<std::string>& list) {
-  _map_file_list.set(list);
-}
-
-void MenuModel::setSelectedItem(int index) {
-  const int length = _map_file_list.get().size();
-  _selected_item.set(index % length);
-}
 
 void MenuModel::incrementItem(int inc) {
-  int current = _selected_item.get();
-  setSelectedItem(current + inc);
+  int current = selected_index.get();
+  selected_index.set(current + inc);
 }
 
 std::string MenuModel::getSelection() {
-  return _map_file_list.get()[_selected_item.get()];
+  return map_file_list.get()[selected_index.get()];
 }
 
 MapMenuController::MapMenuController(MenuModel *mm) {
@@ -283,6 +237,9 @@ bool MapMenuController::keyboardEventPerformed(int key) {
   }
   return true;
 }
+
+void MapMenuController::viewActivated() {}
+void MapMenuController::viewDeactivated() {}
 
 MapSelectionController::MapSelectionController(MenuModel *mm) {
   _menu_model = mm;
@@ -303,3 +260,6 @@ bool MapSelectionController::keyboardEventPerformed(int key) {
   }
   return false;
 }
+
+void MapSelectionController::viewActivated() {}
+void MapSelectionController::viewDeactivated() {}
