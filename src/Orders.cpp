@@ -47,11 +47,11 @@ If the target territory belongs to another player, an attack happens between the
 }
 
 // Parameterized constructor
-AdvanceOrder::AdvanceOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
+AdvanceOrder::AdvanceOrder(Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AdvanceOrder() {
 	this->_issuingPlayer = &issuingPlayer;
 	this->_sourceTerritory = &sourceTerritory;
 	this->_targetTerritory = &targetTerritory;
-	this->_numberOfArmies = new int(numberOfArmies);
+	this->_numberOfArmies = numberOfArmies;
 }
 
 // Copy constructor
@@ -67,9 +67,15 @@ AdvanceOrder::~AdvanceOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
-	//checks _sourceTerritory belong to _sourcePlayer
+
+	map::Territory* ptr = _sourceTerritory->getNeighbour(_targetTerritory->getName());
+	
+	if(ptr == nullptr)
+		return false;
+
 	if(_sourceTerritory->getOwner() == _issuingPlayer)
 		return true;
+
 	return false;
 }
 
@@ -78,12 +84,49 @@ bool AdvanceOrder::execute() {
 	if (validate()) {
 		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
 			//Remove from source and add to target
-			this->_sourceTerritory->removeArmees(*(this->_numberOfArmies));
-			this->_targetTerritory->addArmees(*(this->_numberOfArmies));
+			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
+			this->_targetTerritory->addArmees(this->_numberOfArmies);
 			return true;
 		}
 		else {
-			//TODO: Simulate attack
+			srand(time(0));
+			int troopsLost = 0;
+			int enemiesKilled = 0;
+
+			for(int i = 0; i < this->_numberOfArmies ; i++) {
+				int attackingOdds = rand() % 10 + 1;
+				if(attackingOdds <= 6) {
+					enemiesKilled++;
+					if(enemiesKilled == this->_targetTerritory->getArmees() ) {
+						break;
+					}
+				}
+			}
+
+			for(int i = 0; i < this->_targetTerritory->getArmees() ; i++) {
+				int defendingOdds = rand() % 10 + 1;
+				if(defendingOdds <= 7) {
+					troopsLost++;
+					if(troopsLost == this->_numberOfArmies ) {
+						break;
+					}
+				}
+			}
+			//All enemies are dead, and you still have armies left
+			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
+				//change ownership to issuingPlayer
+				this->_targetTerritory->setOwner(this->_issuingPlayer);
+
+				//Change armies values
+				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
+			}
+
+			//All your troops are dead, and your enemy has troops left
+			if(troopsLost >= this->_numberOfArmies && enemiesKilled < this->_targetTerritory->getArmees() ){
+
+				//Change armies values
+				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
+			}
 		}
 	}
 	//cout << *_effect << endl;
@@ -110,11 +153,11 @@ AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from 
 }
 
 // Parameterized constructor
-AirliftOrder::AirliftOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
+AirliftOrder::AirliftOrder(Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies) : AirliftOrder() {
 	this->_issuingPlayer = &issuingPlayer;
 	this->_sourceTerritory = &sourceTerritory;
 	this->_targetTerritory = &targetTerritory;
-	this->_numberOfArmies = new int(numberOfArmies);
+	this->_numberOfArmies = numberOfArmies;
 }
 
 // Copy constructor
@@ -138,8 +181,52 @@ bool AirliftOrder::validate() {
 // Outputs the effect of the airlift order and executes it
 bool AirliftOrder::execute() {
 	if (validate()) {
-		_sourceTerritory->
-		cout << *_effect << endl;
+		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
+			//Remove from source and add to target
+			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
+			this->_targetTerritory->addArmees(this->_numberOfArmies);
+			return true;
+		}
+		else {
+			srand(time(0));
+			int troopsLost = 0;
+			int enemiesKilled = 0;
+
+			for(int i = 0; i < this->_numberOfArmies ; i++) {
+				int attackingOdds = rand() % 10 + 1;
+				if(attackingOdds <= 6) {
+					enemiesKilled++;
+					if(enemiesKilled == this->_targetTerritory->getArmees() ) {
+						break;
+					}
+				}
+			}
+
+			for(int i = 0; i < this->_targetTerritory->getArmees() ; i++) {
+				int defendingOdds = rand() % 10 + 1;
+				if(defendingOdds <= 7) {
+					troopsLost++;
+					if(troopsLost == this->_numberOfArmies ) {
+						break;
+					}
+				}
+			}
+			//All enemies are dead, and you still have armies left
+			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
+				//change ownership to issuingPlayer
+				this->_targetTerritory->setOwner(this->_issuingPlayer);
+
+				//Change armies values
+				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
+			}
+
+			//All your troops are dead, and your enemy has troops left
+			if(troopsLost >= this->_numberOfArmies && enemiesKilled < this->_targetTerritory->getArmees() ){
+
+				//Change armies values
+				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
+			}
+		}
 		return true;
 	}
 	return false;
@@ -165,7 +252,7 @@ BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of a
 }
 
 // Parameterized constructor
-BlockadeOrder::BlockadeOrder(const Player& issuingPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
+BlockadeOrder::BlockadeOrder(Player& issuingPlayer, map::Territory& targetTerritory) : BlockadeOrder() {
 	this->_issuingPlayer = &issuingPlayer;
 	this->_targetTerritory = &targetTerritory;
 }
@@ -192,13 +279,15 @@ bool BlockadeOrder::validate() {
 // Outputs the effect of the blockade order and executes it
 bool BlockadeOrder::execute() {
 	if (validate()) {
-		int currentPlayerArmies = this->_issuingPlayer->getArmees();
-		int blockadeArmies = floor(currentPlayerArmies / 2);
-		//Temporarily deploys half of a player's armies to the territory
-		this->_targetTerritory->addArmees(blockadeArmies);
 
-		this->_issuingPlayer->setArmees(currentPlayerArmies - blockadeArmies);
-		cout << *_effect << endl;
+		//Double armies
+		this->_targetTerritory->addArmees(this->_targetTerritory->getArmees());
+
+		this->_issuingPlayer->removeTerritory(_targetTerritory);
+
+		//Set neutral player owner
+		this->_targetTerritory->setOwner(neutral);
+
 		return true;
 	}
 	return false;
@@ -224,7 +313,7 @@ BombOrder::BombOrder() : Order("Bomb Order", "Destroy half of the armies located
 }
 
 // Parameterized constructor
-BombOrder::BombOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
+BombOrder::BombOrder(Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
 	this->_issuingPlayer = &issuingPlayer;
 	this->_targetPlayer = &targetPlayer;
 	this->_targetTerritory = &targetTerritory;
@@ -279,10 +368,10 @@ DeployOrder::DeployOrder() : Order("Deploy Order", "Place some armies on one of 
 }
 
 // Parameterized constructor
-DeployOrder::DeployOrder(const Player& issuingPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
+DeployOrder::DeployOrder(Player& issuingPlayer, map::Territory& targetTerritory, int numberOfArmies) : DeployOrder() {
 	this->_issuingPlayer = &issuingPlayer;
 	this->_targetTerritory = &targetTerritory;
-	this->_numberOfArmies = new int(numberOfArmies);
+	this->_numberOfArmies = numberOfArmies;
 }
 
 // Copy constructor
@@ -308,9 +397,7 @@ bool DeployOrder::execute() {
 	if (validate()) {
 
 		//Add passed number of armees to target territory
-		this->_targetTerritory->addArmees( *(this->_numberOfArmies) );
-		//TODO: Think of way to remove from a reinforcement pool, but still keep track of all player's armies
-		//this
+		this->_targetTerritory->addArmees(this->_numberOfArmies);
 
 		cout << *_effect << endl;
 		return true;
@@ -361,7 +448,7 @@ bool NegotiateOrder::validate() {
 	return true;
 }
 
-// Outputs the effect of the negotiate order and executes it
+// TODO: This still needs to be done
 bool NegotiateOrder::execute() {
 	if (validate()) {
 		cout << *_effect << endl;

@@ -9,6 +9,8 @@ class OrdersList;
 #include "Player.h"
 using namespace std;
 
+static Player* neutral = new Player("Neutral",-1);
+
 /// <summary>
 /// Order Class
 /// </summary>
@@ -50,7 +52,7 @@ protected:
 	// Data members
 	string* _description{nullptr};
 	string* _effect{nullptr};
-	const Player* _issuingPlayer{nullptr};
+	Player* _issuingPlayer{nullptr};
 };
 
 /// <summary>
@@ -63,7 +65,7 @@ class AdvanceOrder : public Order {
 public:
 	// Constructors
 	AdvanceOrder();
-	AdvanceOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
+	AdvanceOrder(Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
 	AdvanceOrder(const AdvanceOrder& orderToCopy);
 	// Destructor
 	~AdvanceOrder();
@@ -94,7 +96,7 @@ private:
 	// Data members
 	map::Territory* _sourceTerritory{nullptr};
 	map::Territory* _targetTerritory{nullptr};
-	int* _numberOfArmies{nullptr};
+	int _numberOfArmies{0};
 };
 
 /// <summary>
@@ -107,7 +109,7 @@ class AirliftOrder : public Order {
 public:
 	// Constructors
 	AirliftOrder();
-	AirliftOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
+	AirliftOrder(Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
 	AirliftOrder(const AirliftOrder& orderToCopy);
 	// Destructor
 	~AirliftOrder();
@@ -138,7 +140,7 @@ private:
 	// Data members
 	map::Territory* _sourceTerritory{nullptr};
 	map::Territory* _targetTerritory{nullptr};
-	int* _numberOfArmies{nullptr};
+	int _numberOfArmies{0};
 };
 
 /// <summary>
@@ -151,7 +153,7 @@ class BlockadeOrder : public Order {
 public:
 	// Constructors
 	BlockadeOrder();
-	BlockadeOrder(const Player& issuingPlayer, map::Territory& targetTerritory);
+	BlockadeOrder(Player& issuingPlayer, map::Territory& targetTerritory);
 	BlockadeOrder(const BlockadeOrder& orderToCopy);
 	// Destructor
 	~BlockadeOrder();
@@ -193,7 +195,7 @@ class BombOrder : public Order {
 public:
 	// Constructors
 	BombOrder();
-	BombOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory);
+	BombOrder(Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory);
 	BombOrder(const BombOrder& orderToCopy);
 	// Destructor
 	~BombOrder();
@@ -236,7 +238,7 @@ class DeployOrder : public Order {
 public:
 	// Constructors
 	DeployOrder();
-	DeployOrder(const Player& issuingPlayer, map::Territory& targetTerritory, int numberOfArmies);
+	DeployOrder(Player& issuingPlayer, map::Territory& targetTerritory, int _numberOfArmies);
 	DeployOrder(const DeployOrder& orderToCopy);
 	// Destructor
 	~DeployOrder();
@@ -266,7 +268,7 @@ public:
 private:
 	// Data members
 	map::Territory* _targetTerritory{nullptr};
-	int* _numberOfArmies{nullptr};
+	int _numberOfArmies{0};
 };
 
 /// <summary>
@@ -310,6 +312,7 @@ private:
 	// Data members
 	Player* _secondPlayer{nullptr};
 };
+
 
 /// <summary>
 /// This class contains a list of Order derived classes.
@@ -357,6 +360,7 @@ public:
 	/// </summary>
 	/// <param name="ordersListToAssign">The orders list to copy over.</param>
 	OrdersList& operator=(OrdersList& ordersListToAssign);
+	
 private:
 	// Data members
 	list<Order*> _orders;

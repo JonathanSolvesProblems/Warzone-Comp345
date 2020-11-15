@@ -98,6 +98,7 @@ class Player {
 		void removeTerritory(map::Territory*);
 
 		bool isOwner(map::Territory*);
+		
 	private:
 		int armees;
 };
