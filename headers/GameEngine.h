@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "Observers.h"
+#include "GameObservers.h"
 #include <vector>
 
 #define COLOR_GREY 8
@@ -122,6 +122,7 @@ class GameplayLayoutView : public View, public Observer
     virtual void activate();
     virtual void deactivate();
     virtual void notifyKeyboardEventPerformed(int key);
+    
 
   private:
     const int HEADER_HEIGHT = 6;
