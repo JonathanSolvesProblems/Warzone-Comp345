@@ -19,7 +19,17 @@ int main () {
   game_model->number_of_players.set(2);
 
   MenuModel *menu_model = new MenuModel();
-  std::vector<std::string> map_list ({"map 1", "map 2"});
+
+
+/************************************************* MAP LOADER PARTS ADDED by brenden */
+
+  // adding the maps
+    map::Map map;
+    MapLoader maploader;
+
+/* *********************************************************************************** */
+
+  std::vector<std::string> map_list = maploader.findMapFiles();
   menu_model->map_file_list.set(map_list);
 
   MainMenuController *main_game_controller = new MainMenuController(game_model);
