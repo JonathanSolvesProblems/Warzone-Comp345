@@ -2,7 +2,31 @@
 
 # Requirements
 
-- g++: MinGw on Windows (http://www.codebind.com/cprogramming/install-mingw-windows-10-gcc/)
+- g++: MinGw on Windows (https://mirrors.gigenet.com/OSDN//mingw/68260/mingw-get-setup.exe)
+- pdcurses (Windows) or ncurses (Linux)
+
+# Installing PDCurses for Windows
+
+1. Download https://mirrors.gigenet.com/OSDN//mingw/68260/mingw-get-setup.exe
+2. Install with GUI
+3. Open GUI
+4. Basic Setup -> select the following:
+   - mingw32-developer-toolkit-bin
+   - mingw32-base-bin
+   - mingw32-gcc-g++-bin
+5. All Packages -> select the following:
+   - mingw32-libpdcurses-dev
+   - mingw32-libpdcurses-dll
+6. Add <INSTALL_DIR>/mingw32/bin to PATH (replacing <INSTALL_DIR> with the directory in which you installed mingw32)
+7. Ensure that no other versions of mingw are installed (i.e mingw64) or make sure that you are able to invoke a specific version when compiling.
+8. In Warzone-Comp345 run buildGameEngineDriver.bat
+9. The program should compile with one warning (it can be safely ignored)
+10. Run GameEngineDriver.exe
+
+# Installing Ncurses for Linux
+
+TODO
+
 
 # Building and Running
 Each driver (and corresponding `main` function) has a .sh (or .bat for Windows) script for building the executable. The build
