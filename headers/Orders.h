@@ -3,13 +3,12 @@
 class Order;
 class OrdersList;
 
+#include <cmath>
 #include <iostream>
 #include <list>
 #include "Map.h"
 #include "Player.h"
 using namespace std;
-
-static Player* neutral = new Player("Neutral",-1);
 
 /// <summary>
 /// Order Class

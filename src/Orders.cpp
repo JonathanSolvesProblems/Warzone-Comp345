@@ -286,7 +286,7 @@ bool BlockadeOrder::execute() {
 		this->_issuingPlayer->removeTerritory(_targetTerritory);
 
 		//Set neutral player owner
-		this->_targetTerritory->setOwner(neutral);
+		this->_targetTerritory->setOwner(nullptr);
 
 		return true;
 	}
