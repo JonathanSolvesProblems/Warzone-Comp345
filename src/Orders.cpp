@@ -92,8 +92,8 @@ bool AdvanceOrder::execute() {
 		}
 		else {
 			srand(time(0));
-			int troopsLost = 0;
-			int enemiesKilled = 0;
+			int troopsLost = 0; // source armies
+			int enemiesKilled = 0; // target armies
 
 			for(int i = 0; i < this->_numberOfArmies ; i++) {
 				int attackingOdds = rand() % 10 + 1;
@@ -118,15 +118,15 @@ bool AdvanceOrder::execute() {
 			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
 				//change ownership to issuingPlayer
 				this->_targetTerritory->setOwner(this->_issuingPlayer);
-
 				//Change armies values
+				this->_sourceTerritory->removeArmees(_numberOfArmies);
 				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
 			}
 
 			//All your troops are dead, and your enemy has troops left
-			if(troopsLost >= this->_numberOfArmies && enemiesKilled < this->_targetTerritory->getArmees() ){
-
+			else if(troopsLost >= this->_numberOfArmies && enemiesKilled < this->_targetTerritory->getArmees() ){
 				//Change armies values
+				this->_sourceTerritory->setArmees( this->_sourceTerritory->getArmees() - troopsLost);
 				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
 			}
 		}

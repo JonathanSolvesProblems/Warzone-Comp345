@@ -1,6 +1,17 @@
 #include "Orders.h"
 #include <string>
 
+// Setup players
+Player anthony = Player("Anthony", 12345678);
+Player steve = Player("Steve", 12345670);
+// Setup continents
+map::Continent canada = map::Continent(0, "Canada", 3);
+map::Continent freedomland = map::Continent(1, "Freedomland", 99);
+// Setup territories
+map::Territory quebec = map::Territory(0, "Quebec", canada);
+map::Territory newJersey = map::Territory(1, "New Jersey", freedomland);
+map::Territory texas = map::Territory(2, "Texas", freedomland);
+
 template<typename T>
 void orderTest() {
 	T orderTest;
@@ -69,20 +80,20 @@ void ordersValidationTest() {
 	Player steve = Player("Steve", 12345670);
 	map::Continent test = map::Continent(0, "Canada", 3);
 	map::Continent test2 = map::Continent(1, "Freedomland", 99);
-	map::Territory stevesTerr = map::Territory(0, "Quebec", test);
-	map::Territory anthonysTerr = map::Territory(1, "New Jersey", test2);
-	map::Territory anthonysOtherTerr = map::Territory(2, "Texas", test2);
+	map::Territory quebec = map::Territory(0, "Quebec", test);
+	map::Territory newJersey = map::Territory(1, "New Jersey", test2);
+	map::Territory texas = map::Territory(2, "Texas", test2);
 	//Set owners
 	//TODO: set without pointer?
-	stevesTerr.setOwner(&steve);
-	anthonysTerr.setOwner(&anthony);
-	anthonysOtherTerr.setOwner(&anthony);
+	quebec.setOwner(&steve);
+	newJersey.setOwner(&anthony);
+	texas.setOwner(&anthony);
 
-	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, anthonysTerr, anthonysOtherTerr, 3);
-	AirliftOrder* airliftGood = new AirliftOrder(anthony, anthonysTerr, anthonysTerr, 3);
-	BombOrder* bombGood = new BombOrder(anthony, steve, stevesTerr);
-	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, anthonysTerr);
-	DeployOrder* deployGood = new DeployOrder(anthony, anthonysTerr, 19);
+	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, newJersey, texas, 3);
+	AirliftOrder* airliftGood = new AirliftOrder(anthony, newJersey, newJersey, 3);
+	BombOrder* bombGood = new BombOrder(anthony, steve, quebec);
+	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, newJersey);
+	DeployOrder* deployGood = new DeployOrder(anthony, newJersey, 19);
 	NegotiateOrder* negotiateGood = new NegotiateOrder(anthony, steve);
 
 	cout << "Validating Advance order, should show 1 as true: " << advanceGood->validate() << "\n";
@@ -100,39 +111,61 @@ void ordersValidationTest() {
 	delete negotiateGood;
 }
 
-void ordersExecutionTest() {
-	// Setup players
-	Player anthony = Player("Anthony", 12345678);
-	Player steve = Player("Steve", 12345670);
-
-	// Setup continents
-	map::Continent test = map::Continent(0, "Canada", 3);
-	map::Continent test2 = map::Continent(1, "Freedomland", 99);
-
-	// Setup territories
-	map::Territory stevesTerr = map::Territory(0, "Quebec", test);
-	map::Territory anthonysTerr = map::Territory(1, "New Jersey", test2);
-	map::Territory anthonysOtherTerr = map::Territory(2, "Texas", test2);
-	anthonysTerr.addNeighbour(&anthonysOtherTerr);
-	anthonysTerr.setArmees(2);
-	anthonysOtherTerr.setArmees(3);
-
-	//Set owners
-	//TODO: set without pointer?
-	stevesTerr.setOwner(&steve);
-	anthonysTerr.setOwner(&anthony);
-	anthonysOtherTerr.setOwner(&anthony);
-
-	// Advance with two territories owned by the same player
-	cout << "Before: " << anthonysTerr << endl << anthonysOtherTerr << endl;
-	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, anthonysTerr, anthonysOtherTerr, 100);
-	advanceGood->execute();
-	cout << "After: " << anthonysTerr << endl << anthonysOtherTerr << endl;
+void advanceOrderTest() {
+	// Set neighbors
+	newJersey.addNeighbour(&texas);
+	newJersey.addNeighbour(&quebec);
 	
-	AirliftOrder* airliftGood = new AirliftOrder(anthony, anthonysTerr, anthonysTerr, 3);
-	BombOrder* bombGood = new BombOrder(anthony, steve, stevesTerr);
-	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, anthonysTerr);
-	DeployOrder* deployGood = new DeployOrder(anthony, anthonysTerr, 19);
+	//Set owners
+	quebec.setOwner(&steve);
+	newJersey.setOwner(&anthony);
+	texas.setOwner(&anthony);
+
+	// Set armies
+	newJersey.setArmees(6);
+	quebec.setArmees(10);
+	texas.setArmees(3);
+
+	cout << "Advance with two territories that are not neighbors." << endl;
+	cout << "Before: " << texas << endl << quebec << endl;
+	AdvanceOrder* advanceDiff = new AdvanceOrder(anthony, texas, quebec, 2);
+	advanceDiff->execute();
+	cout << "After: " << texas << endl << quebec << endl;
+	cout << "----------------------------------------------------" << endl;
+	cout << "Advance with two territories owned by the same player." << endl;
+	cout << "Before: " << newJersey << endl << texas << endl;
+	AdvanceOrder* advanceSame = new AdvanceOrder(anthony, newJersey, texas, 1);
+	advanceSame->execute();
+	cout << "After: " << newJersey << endl << texas << endl;
+	cout << "----------------------------------------------------" << endl;
+	cout << "Advance with two territories owned by the different players." << endl;
+	cout << "Defender wins:" << endl;
+	cout << "Before: " << newJersey << endl << quebec << endl;
+	advanceDiff = new AdvanceOrder(anthony, newJersey, quebec, 4);
+	advanceDiff->execute();
+	cout << "After: " << newJersey << endl << quebec << endl;
+	cout << "-------------------------" << endl;
+	newJersey.setArmees(20);
+	quebec.setArmees(4);
+	cout << "Attacker wins:" << endl;
+	cout << "Before: " << newJersey << endl << quebec << endl;
+	advanceDiff = new AdvanceOrder(anthony, newJersey, quebec, 20);
+	advanceDiff->execute();
+	cout << "After: " << newJersey << endl << quebec << endl;
+	cout << "----------------------------------------------------" << endl;
+	delete advanceSame;
+	delete advanceDiff;
+}
+
+void ordersExecutionTest() {
+	
+	
+
+	
+	AirliftOrder* airliftGood = new AirliftOrder(anthony, newJersey, newJersey, 3);
+	BombOrder* bombGood = new BombOrder(anthony, steve, quebec);
+	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, newJersey);
+	DeployOrder* deployGood = new DeployOrder(anthony, newJersey, 19);
 	NegotiateOrder* negotiateGood = new NegotiateOrder(anthony, steve);
 
 
@@ -153,7 +186,7 @@ void ordersExecutionTest() {
 	deployGood->execute();
 	// NegotiateOrder* negotiate = new NegotiateOrder(anthony, steve);
 	negotiateGood->execute();
-	delete advanceGood;
+	
 	delete airliftGood;
 	delete blockadeGood;
 	delete bombGood;
@@ -175,7 +208,8 @@ int main() {
 	// orderTest<NegotiateOrder>();
 	// cout << endl;
 	// ordersListTest();
-	ordersExecutionTest();
+	advanceOrderTest();
+	//ordersExecutionTest();
 	//ordersValidationTest();
 	return 0;
 }
