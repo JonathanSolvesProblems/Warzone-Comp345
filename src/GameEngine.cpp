@@ -188,8 +188,22 @@ void MapSelectionView::notifyKeyboardEventPerformed(int key) {
   }
 }
 
+
 void MapSelectionView::registerMenuListener(ActionListener *listener) {
   _menu_view->registerListener(listener);
+}
+
+
+void MapSelectionView::activate() {
+  WindowView::activate();
+  _menu_view->activate();
+}
+
+
+void MapSelectionView::deactivate()
+{
+  WindowView::deactivate();
+  _menu_view->deactivate();
 }
 
 
@@ -263,3 +277,56 @@ bool MapSelectionController::keyboardEventPerformed(int key) {
 
 void MapSelectionController::viewActivated() {}
 void MapSelectionController::viewDeactivated() {}
+
+GameplayLayoutView::GameplayLayoutView(
+  View* left_header, View* right_header, View* main_content, SettingsModel* settings_model
+) {
+  this->left_header = left_header;
+  this->right_header = right_header;
+  this->main_content = main_content;
+  this->settings_model = settings_model;
+  this->settings_model->phase_headers_enabled.attach(this);
+  this->settings_model->stats_headers_enabled.attach(this);
+}
+
+GameplayLayoutView::~GameplayLayoutView() {
+  this->settings_model->phase_headers_enabled.detach(this);
+  this->settings_model->stats_headers_enabled.detach(this);
+  if (this->left_header)
+    this->left_header->deactivate();
+  if (this->right_header)
+    this->right_header->deactivate();
+  if (this->main_content)
+    this->main_content->deactivate();
+}
+
+void GameplayLayoutView::activate() {
+  if (this->left_header)
+    this->left_header->activate();
+  if (this->right_header)
+    this->right_header->activate();
+  if (this->main_content)
+    this->main_content->activate();
+}
+
+void GameplayLayoutView::deactivate() {
+  if (this->left_header)
+    this->left_header->deactivate();
+  if (this->right_header)
+    this->right_header->deactivate();
+  if (this->main_content)
+    this->main_content->deactivate();
+}
+
+void GameplayLayoutView::update() {
+  display();
+}
+
+void GameplayLayoutView::notifyKeyboardEventPerformed(int key) {
+  if (this->left_header)
+    this->left_header->notifyKeyboardEventPerformed(key);
+  if (this->right_header)
+    this->right_header->notifyKeyboardEventPerformed(key);
+  if (this->main_content)
+    this->main_content->notifyKeyboardEventPerformed(key);
+}
