@@ -138,7 +138,7 @@ void advanceOrderTest() {
 	advanceSame->execute();
 	cout << "After: " << newJersey << endl << texas << endl;
 	cout << "----------------------------------------------------" << endl;
-	cout << "Advance with two territories owned by the different players." << endl;
+	cout << "Advance with two territories owned by different players." << endl;
 	cout << "Defender wins:" << endl;
 	cout << "Before: " << newJersey << endl << quebec << endl;
 	advanceDiff = new AdvanceOrder(anthony, newJersey, quebec, 4);
@@ -155,6 +155,42 @@ void advanceOrderTest() {
 	cout << "----------------------------------------------------" << endl;
 	delete advanceSame;
 	delete advanceDiff;
+}
+
+void airliftOrderTest() {
+	//Set owners
+	quebec.setOwner(&steve);
+	newJersey.setOwner(&anthony);
+	texas.setOwner(&anthony);
+
+	// Set armies
+	newJersey.setArmees(15);
+	quebec.setArmees(10);
+	texas.setArmees(5);
+
+	cout << "Airlift with two territories owned by the same player." << endl;
+	cout << "Before: " << texas << endl << newJersey << endl;
+	AirliftOrder* airliftSame = new AirliftOrder(anthony, texas, newJersey, 4);
+	airliftSame->execute();
+	cout << "After: " << texas << endl << newJersey << endl;
+	cout << "----------------------------------------------------" << endl;
+	cout << "Airlift with two territories owned by different players." << endl;
+	cout << "Defender wins:" << endl;
+	cout << "Before: " << newJersey << endl << quebec << endl;
+	AirliftOrder* airliftDiff = new AirliftOrder(anthony, newJersey, quebec, 4);
+	airliftDiff->execute();
+	cout << "After: " << newJersey << endl << quebec << endl;
+	cout << "-------------------------" << endl;
+	newJersey.setArmees(20);
+	quebec.setArmees(4);
+	cout << "Attacker wins:" << endl;
+	cout << "Before: " << newJersey << endl << quebec << endl;
+	airliftDiff = new AirliftOrder(anthony, newJersey, quebec, 20);
+	airliftDiff->execute();
+	cout << "After: " << newJersey << endl << quebec << endl;
+	cout << "----------------------------------------------------" << endl;
+	delete airliftSame;
+	delete airliftDiff;
 }
 
 void ordersExecutionTest() {
@@ -209,6 +245,7 @@ int main() {
 	// cout << endl;
 	// ordersListTest();
 	advanceOrderTest();
+	airliftOrderTest();
 	//ordersExecutionTest();
 	//ordersValidationTest();
 	return 0;

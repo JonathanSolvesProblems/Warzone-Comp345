@@ -82,9 +82,9 @@ bool AdvanceOrder::validate() {
 // Outputs the effect of the advance order and executes it
 bool AdvanceOrder::execute() {
 	if (validate()) {
+		if (_sourceTerritory->getArmees() < _numberOfArmies)
+			_numberOfArmies = _sourceTerritory->getArmees();
 		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
-			if (_sourceTerritory->getArmees() < _numberOfArmies)
-				_numberOfArmies = _sourceTerritory->getArmees();
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
@@ -175,7 +175,7 @@ AirliftOrder::~AirliftOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool AirliftOrder::validate() {
 	//Check that the source and target belongs to the player that issued the order
-	if(_sourceTerritory->getOwner() == _issuingPlayer && _targetTerritory->getOwner() == _issuingPlayer )
+	if(_sourceTerritory->getOwner() == _issuingPlayer)
 		return true;
 	return false;
 }
@@ -183,9 +183,9 @@ bool AirliftOrder::validate() {
 // Outputs the effect of the airlift order and executes it
 bool AirliftOrder::execute() {
 	if (validate()) {
+		if (_sourceTerritory->getArmees() < _numberOfArmies)
+			_numberOfArmies = _sourceTerritory->getArmees();
 		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
-			if (_sourceTerritory->getArmees() < _numberOfArmies)
-				_numberOfArmies = _sourceTerritory->getArmees();
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
@@ -219,15 +219,15 @@ bool AirliftOrder::execute() {
 			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
 				//change ownership to issuingPlayer
 				this->_targetTerritory->setOwner(this->_issuingPlayer);
-
 				//Change armies values
+				this->_sourceTerritory->removeArmees(_numberOfArmies);
 				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
 			}
 
 			//All your troops are dead, and your enemy has troops left
-			if(troopsLost >= this->_numberOfArmies && enemiesKilled < this->_targetTerritory->getArmees() ){
-
+			else if(troopsLost >= this->_numberOfArmies && enemiesKilled < this->_targetTerritory->getArmees() ){
 				//Change armies values
+				this->_sourceTerritory->setArmees( this->_sourceTerritory->getArmees() - troopsLost);
 				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
 			}
 		}
