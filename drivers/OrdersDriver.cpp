@@ -101,15 +101,22 @@ void ordersValidationTest() {
 }
 
 void ordersExecutionTest() {
-
-	//TODO: Re-use these for the same tests?
+	// Setup players
 	Player anthony = Player("Anthony", 12345678);
 	Player steve = Player("Steve", 12345670);
+
+	// Setup continents
 	map::Continent test = map::Continent(0, "Canada", 3);
 	map::Continent test2 = map::Continent(1, "Freedomland", 99);
+
+	// Setup territories
 	map::Territory stevesTerr = map::Territory(0, "Quebec", test);
 	map::Territory anthonysTerr = map::Territory(1, "New Jersey", test2);
 	map::Territory anthonysOtherTerr = map::Territory(2, "Texas", test2);
+
+	anthonysTerr.addNeighbour(&anthonysOtherTerr);
+	anthonysTerr.setArmees(3);
+	anthonysOtherTerr.setArmees(3);
 
 	//Set owners
 	//TODO: set without pointer?
@@ -132,17 +139,19 @@ void ordersExecutionTest() {
 	// map::Territory terTest = map::Territory(0, "Quebec", test);
 	// map::Territory terTest2 = map::Territory(1, "New Jersey", test2);
 	
-	// AdvanceOrder* advance = new AdvanceOrder(anthony, anthony, terTest, anthony, terTest2, 3);
+	// AdvanceOrder* advance = new AdvanceOrder(anthony, terTest, anthony, terTest2, 3);
 	advanceGood->execute();
-	// AirliftOrder* airlift = new AirliftOrder(anthony, anthony, terTest, anthony, terTest2, 8);
+	cout << anthonysTerr << endl;
+	cout << anthonysOtherTerr << endl;
+	// AirliftOrder* airlift = new AirliftOrder(anthony, terTest, anthony, terTest2, 8);
 	airliftGood->execute();
-	// BlockadeOrder* blockade = new BlockadeOrder(anthony, anthony, terTest);
+	// BlockadeOrder* blockade = new BlockadeOrder(anthony, terTest);
 	blockadeGood->execute();
-	// BombOrder* bomb = new BombOrder(anthony, anthony, terTest);
+	// BombOrder* bomb = new BombOrder(anthony, terTest);
 	bombGood->execute();
-	// DeployOrder* deploy = new DeployOrder(anthony, anthony, terTest, 19);
+	// DeployOrder* deploy = new DeployOrder(anthony, terTest, 19);
 	deployGood->execute();
-	// NegotiateOrder* negotiate = new NegotiateOrder(anthony, anthony, steve);
+	// NegotiateOrder* negotiate = new NegotiateOrder(anthony, steve);
 	negotiateGood->execute();
 	delete advanceGood;
 	delete airliftGood;
@@ -167,6 +176,6 @@ int main() {
 	// cout << endl;
 	// ordersListTest();
 	ordersExecutionTest();
-	ordersValidationTest();
+	//ordersValidationTest();
 	return 0;
 }
