@@ -109,25 +109,3 @@ class MapMenuController : public ActionListener
   private:
     MenuModel *_menu_model;
 };
-
-
-class GameplayLayoutView : public View, public Observer
-{
-  public:
-    GameplayLayoutView(View* left_header, View* right_header, View* main_content, SettingsModel* settings_model);
-    ~GameplayLayoutView();
-    
-    virtual void display();
-    virtual void update();
-    virtual void activate();
-    virtual void deactivate();
-    virtual void notifyKeyboardEventPerformed(int key);
-    
-
-  private:
-    const int HEADER_HEIGHT = 6;
-    View* left_header;
-    View* right_header;
-    View* main_content;
-    SettingsModel* settings_model;
-};

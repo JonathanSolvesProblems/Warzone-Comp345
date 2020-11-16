@@ -44,8 +44,6 @@ void View::deactivate() {
   notifyDeactivated();
 }
 
-void View::resize(int w, int h, int x, int y) {}
-
 Application::Application() {
 }
 
@@ -145,22 +143,6 @@ void WindowView::activate() {
     deactivate();
   }
   View::activate();
-  _window = create_newwin(height, width, start_y, start_x);
-  display();
-}
-
-void WindowView::resize(int w, int h, int x, int y) {
-  if (_window) {
-    wclear(_window);
-    wrefresh(_window);
-    delwin(_window);
-  }
-
-  width = w;
-  height = h;
-  start_x = x;
-  start_y = y;
-
   _window = create_newwin(height, width, start_y, start_x);
   display();
 }

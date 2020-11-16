@@ -35,7 +35,6 @@ public:
   void deregisterListener(ActionListener *action_listener);
   virtual void activate();
   virtual void deactivate();
-  virtual void resize(int w, int h, int x, int y);
   virtual void display();
   virtual void notifyKeyboardEventPerformed(int key);
   virtual void notifyActivated();
@@ -71,7 +70,6 @@ class WindowView : public View {
     ~WindowView();
     virtual void display();
     virtual void activate();
-    virtual void resize(int w, int h, int x, int y);
     virtual void deactivate();
     void print_centered(int line, std::string msg);
 
