@@ -10,12 +10,7 @@ class OrdersList;
 #include "Player.h"
 using namespace std;
 
-static list<truce> truces;
-
-struct truce {
-	Player* playerOne;
-	Player* playerTwo;
-};
+static list<Player*> truces;
 
 /// <summary>
 /// Order Class

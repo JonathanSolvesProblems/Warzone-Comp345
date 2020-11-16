@@ -83,6 +83,8 @@ bool AdvanceOrder::validate() {
 bool AdvanceOrder::execute() {
 	if (validate()) {
 		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
+			if (_sourceTerritory->getArmees() < _numberOfArmies)
+				_numberOfArmies = _sourceTerritory->getArmees();
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
@@ -182,6 +184,8 @@ bool AirliftOrder::validate() {
 bool AirliftOrder::execute() {
 	if (validate()) {
 		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
+			if (_sourceTerritory->getArmees() < _numberOfArmies)
+				_numberOfArmies = _sourceTerritory->getArmees();
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
@@ -450,10 +454,8 @@ bool NegotiateOrder::validate() {
 
 bool NegotiateOrder::execute() {
 	if (validate()) {
-		truce t;
-		t.playerOne = _issuingPlayer;
-		t.playerTwo = _secondPlayer;
-		truces.push_back(t);
+		truces.push_back(_issuingPlayer);
+		truces.push_back(_secondPlayer);
 		return true;
 	}
 	return false;
