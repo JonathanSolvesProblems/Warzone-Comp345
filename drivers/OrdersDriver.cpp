@@ -193,6 +193,76 @@ void airliftOrderTest() {
 	delete airliftDiff;
 }
 
+void bombOrderTest() {
+	//Set owners
+	quebec.setOwner(&steve);
+	newJersey.setOwner(&anthony);
+	texas.setOwner(&anthony);
+
+	// Set armies
+	newJersey.setArmees(15);
+	quebec.setArmees(11);
+	texas.setArmees(5);
+
+	// Anthony bombs Steve
+	BombOrder* validBomb = new BombOrder(anthony,steve,quebec);
+
+	cout << "Number of armies on quebec before anthony bombs it: " << quebec.getArmees() << endl;
+	validBomb->execute();
+	cout << "Number of armies on quebec AFTER anthony bombs it: "<< quebec.getArmees() << endl;
+
+	cout << "Making sure you can't bomb yourself" << endl;
+	BombOrder* invalidBomb = new BombOrder(anthony,anthony,newJersey);
+	bool successBomb = invalidBomb->execute();
+	cout << "Bomb shouldn't be successful (zero here): " << successBomb << endl;
+}
+
+void blockadeOrderTest() {
+	//Set owners
+	quebec.setOwner(&steve);
+	newJersey.setOwner(&anthony);
+	texas.setOwner(&anthony);
+
+	// Set armies
+	newJersey.setArmees(15);
+	quebec.setArmees(11);
+	texas.setArmees(5);
+
+	// Anthony blockades New Jersey
+	BlockadeOrder* validBlockade = new BlockadeOrder(anthony,newJersey);
+	cout << "Number of armies BEFORE blockade in New Jersey: " << newJersey.getArmees() << endl;
+	cout << "Owner BEFORE blockade: " << *newJersey.getOwner() << endl;
+	validBlockade->execute();
+	cout << "Number of armies AFTER blockade in New Jersey (should be double): " << newJersey.getArmees() << endl;
+	cout << "Owner AFTER blockade (should be 0): " << newJersey.getOwner() << endl;
+
+	// Anthony blockades Quebec (bad)
+	cout << "Player executes blockade on enemy territory(invalid)" << endl;
+	BlockadeOrder* invalidBlockade = new BlockadeOrder(anthony,quebec);
+	cout << "Zero shown here if blockade didn't occur: " << invalidBlockade->execute() << endl;
+}
+
+void negotiateOrderTest() {
+	//Set owners
+	quebec.setOwner(&steve);
+	newJersey.setOwner(&anthony);
+	texas.setOwner(&anthony);
+
+	// Set armies
+	newJersey.setArmees(15);
+	quebec.setArmees(11);
+	texas.setArmees(5);
+
+	cout << "Testing if negotiate cancels a bomb:" << endl;
+	NegotiateOrder* validNegotiate = new NegotiateOrder(anthony,steve);
+	validNegotiate->execute();
+	cout << "Troops on quebec BEFORE bomb: " << quebec.getArmees() << endl;
+	BombOrder* blockedBomb = new BombOrder(anthony,steve,quebec);
+	bool hasBombed = blockedBomb->execute();
+	cout << "Troops on quebec AFTER bomb of player with truce:  " << quebec.getArmees() << endl;
+
+}
+
 void ordersExecutionTest() {
 	
 	
@@ -246,6 +316,10 @@ int main() {
 	// ordersListTest();
 	advanceOrderTest();
 	airliftOrderTest();
+	bombOrderTest();
+	blockadeOrderTest();
+	negotiateOrderTest();
+
 	//ordersExecutionTest();
 	//ordersValidationTest();
 	return 0;

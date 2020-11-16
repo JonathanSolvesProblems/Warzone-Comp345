@@ -335,17 +335,30 @@ BombOrder::~BombOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool BombOrder::validate() {
+
 	//Check that target doesn't belong to player that issued order
-	if(_targetTerritory->getOwner() != _issuingPlayer)
-		return true;
-	return false;
+	if(_targetTerritory->getOwner() == _issuingPlayer)
+		return false;
+
+	// NOT WORKING!!!!!!
+	for (auto truceIter = truces.begin(); truceIter != truces.end(); truceIter++) {
+		if( (*(truceIter)) ==  _issuingPlayer && (*(truceIter)+1) == _targetPlayer ){
+			return false;
+		}
+		if( (*(truceIter)+1) ==  _issuingPlayer && (*(truceIter)) == _targetPlayer ){
+			return false;
+		}
+		truceIter++;
+	}
+
+	return true;
 }
 
 // Outputs the effect of the bomb order and executes it
 bool BombOrder::execute() {
 	if (validate()) {
 		//Territory being bombed belongs to enemy player, half of the armies get removed
-		_targetTerritory->removeArmees(ceil(_targetTerritory->getArmees() / 2));
+		_targetTerritory->removeArmees(ceil(_targetTerritory->getArmees() / 2.0));
 		//cout << *_effect << endl;
 		return true;
 	}
