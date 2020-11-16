@@ -301,12 +301,33 @@ GameplayLayoutView::~GameplayLayoutView() {
 }
 
 void GameplayLayoutView::activate() {
-  if (this->left_header)
-    this->left_header->activate();
-  if (this->right_header)
-    this->right_header->activate();
+  bool left_header_enabled = settings_model->phase_headers_enabled.get();
+  bool right_header_enabled = settings_model->stats_headers_enabled.get();
+  bool reserve_header_space = left_header_enabled || right_header_enabled;
+
+  int header_width;
+  if (left_header_enabled && right_header_enabled)
+  {
+    header_width = COLS / 2;
+  }
+  else
+  {
+    header_width = COLS;
+  }
+
+  if (this->left_header && left_header_enabled)
+    this->left_header->resize(header_width, HEADER_HEIGHT, 0, 0);
+
+  if (this->right_header && right_header_enabled)
+    this->left_header->resize(header_width, HEADER_HEIGHT, header_width, 0);
+
   if (this->main_content)
-    this->main_content->activate();
+    this->main_content->resize(
+        COLS,
+        LINES - reserve_header_space * HEADER_HEIGHT,
+        0,
+        reserve_header_space * HEADER_HEIGHT);
+  display();
 }
 
 void GameplayLayoutView::deactivate() {
@@ -317,6 +338,15 @@ void GameplayLayoutView::deactivate() {
   if (this->main_content)
     this->main_content->deactivate();
 }
+
+void GameplayLayoutView::display() {
+  if (this->left_header)
+    this->left_header->display();
+  if (this->right_header)
+    this->right_header->display();
+  if (this->main_content)
+    this->main_content->display();
+};
 
 void GameplayLayoutView::update() {
   display();

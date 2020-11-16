@@ -11,6 +11,7 @@
 
 #define MAIN_MENU_VIEW 0
 #define MAP_SELECTION_VIEW 1
+#define GAMEPLAY_VIEW 2
 
 class MainMenuView;
 class SettingsModel;
@@ -114,7 +115,8 @@ class GameplayLayoutView : public View, public Observer
 {
   public:
     GameplayLayoutView(View* left_header, View* right_header, View* main_content, SettingsModel* settings_model);
-
+    ~GameplayLayoutView();
+    
     virtual void display();
     virtual void update();
     virtual void activate();
