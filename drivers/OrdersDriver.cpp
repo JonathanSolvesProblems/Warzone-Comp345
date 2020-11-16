@@ -113,7 +113,6 @@ void ordersExecutionTest() {
 	map::Territory stevesTerr = map::Territory(0, "Quebec", test);
 	map::Territory anthonysTerr = map::Territory(1, "New Jersey", test2);
 	map::Territory anthonysOtherTerr = map::Territory(2, "Texas", test2);
-
 	anthonysTerr.addNeighbour(&anthonysOtherTerr);
 	anthonysTerr.setArmees(3);
 	anthonysOtherTerr.setArmees(3);
@@ -124,7 +123,9 @@ void ordersExecutionTest() {
 	anthonysTerr.setOwner(&anthony);
 	anthonysOtherTerr.setOwner(&anthony);
 
+	// Advance with two territories owned by the same player
 	AdvanceOrder* advanceGood = new AdvanceOrder(anthony, anthonysTerr, anthonysOtherTerr, 3);
+	
 	AirliftOrder* airliftGood = new AirliftOrder(anthony, anthonysTerr, anthonysTerr, 3);
 	BombOrder* bombGood = new BombOrder(anthony, steve, stevesTerr);
 	BlockadeOrder* blockadeGood = new BlockadeOrder(anthony, anthonysTerr);
@@ -141,8 +142,6 @@ void ordersExecutionTest() {
 	
 	// AdvanceOrder* advance = new AdvanceOrder(anthony, terTest, anthony, terTest2, 3);
 	advanceGood->execute();
-	cout << anthonysTerr << endl;
-	cout << anthonysOtherTerr << endl;
 	// AirliftOrder* airlift = new AirliftOrder(anthony, terTest, anthony, terTest2, 8);
 	airliftGood->execute();
 	// BlockadeOrder* blockade = new BlockadeOrder(anthony, terTest);

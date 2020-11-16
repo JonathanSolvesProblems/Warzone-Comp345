@@ -448,10 +448,12 @@ bool NegotiateOrder::validate() {
 	return true;
 }
 
-// TODO: This still needs to be done
 bool NegotiateOrder::execute() {
 	if (validate()) {
-		cout << *_effect << endl;
+		truce t;
+		t.playerOne = _issuingPlayer;
+		t.playerTwo = _secondPlayer;
+		truces.push_back(t);
 		return true;
 	}
 	return false;
@@ -474,6 +476,7 @@ NegotiateOrder& NegotiateOrder::operator=(const NegotiateOrder& negotiateOrderTo
 // Default constructor
 OrdersList::OrdersList() {
 	_orders;
+	truces;
 }
 
 // Copy constructor
