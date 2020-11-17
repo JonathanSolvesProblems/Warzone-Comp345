@@ -6,13 +6,15 @@ class Player;
 #include "Card.h"
 #include "Orders.h"
 
+#include "GameObservers.h"
+
 #include <iostream>
 #include <vector>
 #include <string>
 
 using namespace std;
 
-class Player {
+class Player : public Observable {
 public:
 
 	// an order list

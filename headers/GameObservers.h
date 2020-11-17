@@ -2,6 +2,7 @@
 #include <list>
 #include <vector>
 #include <type_traits>
+#include <algorithm>
 
 class Observer
 {
@@ -51,35 +52,41 @@ T ConcreteObservable<T>::get()
 template <class T>
 class VectorObservable : public Observable, public Observer
 {
-  static_assert(std::is_base_of<Observable, T>::value, "T must inherit from Observable");
+  // Reference: https://stackoverflow.com/questions/37956299/passing-the-type-of-a-pointer-as-a-template-parameter
+  using type = std::remove_pointer_t<T>;
+  static_assert(std::is_pointer<T>::value, "T must be of base Observable*");
+  static_assert(std::is_base_of<Observable, type>::value, "T must be of base Observable*");
 
 public:
   VectorObservable();
-  VectorObservable(std::vector<T*>&);
+  VectorObservable(std::vector<T>&);
   ~VectorObservable();
 
-  void set(std::vector<T *>&);
-  const std::vector<T *> &get();
-  void push_back(T*);
-  void remove(T*);
+  void set(std::vector<T>&);
+  const std::vector<T> &get();
+  void push_back(T);
+  void remove(T);
   void clear();
   virtual void update();
 
 private:
   void silent_clear();
-  std::vector<T*> state;
+  std::vector<T> state;
 };
 
 template <class T>
 VectorObservable<T>::VectorObservable(){}
 
 template <class T>
-VectorObservable<T>::VectorObservable(std::vector<T*>& base) {
+VectorObservable<T>::~VectorObservable() {}
+
+template <class T>
+VectorObservable<T>::VectorObservable(std::vector<T>& base) {
   state = base;
 }
 
 template <class T>
-void VectorObservable<T>::set(std::vector<T *> &base) {
+void VectorObservable<T>::set(std::vector<T> &base) {
   state = base;
   clear();
   for (auto element : state) {
@@ -98,13 +105,13 @@ template <class T>
 void VectorObservable<T>::silent_clear() {
   while (state.size())
   {
-    T *obs = state.pop_back();
+    T obs = state.pop_back();
     detach(obs);
   }
 }
 
 template <class T>
-void VectorObservable<T>::remove(T* el) {
+void VectorObservable<T>::remove(T el) {
   auto found = std::find(state.begin(), state.end(), el);
   if (found != state.end()) {
     detach(*found);
@@ -113,7 +120,7 @@ void VectorObservable<T>::remove(T* el) {
 }
 
 template <class T>
-void VectorObservable<T>::push_back(T* el) {
+void VectorObservable<T>::push_back(T el) {
   attach(el);
   state.push_back(el);
 }
@@ -124,6 +131,6 @@ void VectorObservable<T>::update() {
 }
 
 template <class T>
-const std::vector<T*>& VectorObservable<T>::get() {
+const std::vector<T>& VectorObservable<T>::get() {
   return state;
 }
