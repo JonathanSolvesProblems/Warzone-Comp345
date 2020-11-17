@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "Observers.h"
+#include "GameObservers.h"
 #include <vector>
 
 #define COLOR_GREY 8
@@ -11,6 +11,7 @@
 
 #define MAIN_MENU_VIEW 0
 #define MAP_SELECTION_VIEW 1
+#define GAMEPLAY_VIEW 2
 
 class MainMenuView;
 class SettingsModel;
@@ -74,6 +75,8 @@ class MapSelectionView : public WindowView {
     ~MapSelectionView();
 
     virtual void display();
+    virtual void activate();
+    virtual void deactivate();
     virtual void notifyKeyboardEventPerformed(int key);
     void registerMenuListener(ActionListener *listener);
   private:
@@ -105,4 +108,39 @@ class MapMenuController : public ActionListener
 
   private:
     MenuModel *_menu_model;
+};
+
+
+class PhaseObserverView : public WindowView {
+  public:
+    PhaseObserverView(int w, int h, int x, int y);
+    // ~PhaseObserverView();
+
+    virtual void display();
+};
+
+class StatisticsObserverView : public WindowView
+{
+public:
+  StatisticsObserverView(int w, int h, int x, int y);
+  // ~StatisticsObserverView();
+
+  virtual void display();
+};
+
+class GameplayView : public WindowView {
+
+  public:
+    GameplayView(int w, int h, SettingsModel *sm);
+    ~GameplayView();
+    virtual void display();
+    virtual void activate();
+    virtual void deactivate();
+
+  private:
+    void create_phase_observer_view();
+    void create_stats_observer_view();
+    PhaseObserverView* _phase_view{nullptr};
+    StatisticsObserverView* _stats_view{nullptr};
+    SettingsModel* settings_model{nullptr};
 };

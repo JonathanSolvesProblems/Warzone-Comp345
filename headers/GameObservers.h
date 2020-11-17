@@ -6,7 +6,7 @@ class Observer
 public:
   ~Observer();
   virtual void update() = 0;
-
+  virtual void display() = 0;
 protected:
   Observer();
 };
@@ -45,3 +45,23 @@ T ConcreteObservable<T>::get()
 {
   return state;
 }
+
+class PhaseObserver : public Observer{
+public:
+    ~PhaseObserver();
+    void update();
+    void display();
+
+protected:
+    PhaseObserver();
+};
+
+class StatisticsObserver : public Observer{
+public:
+    ~StatisticsObserver();
+    void update();
+    void display();
+
+protected:
+    StatisticsObserver();
+};
