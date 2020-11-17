@@ -8,9 +8,10 @@ class OrdersList;
 #include <list>
 #include "Map.h"
 #include "Player.h"
+#include <tuple>
 using namespace std;
 
-static list<Player*> truces;
+static vector<tuple<Player*,Player*>> truces;
 
 /// <summary>
 /// Order Class
@@ -41,6 +42,8 @@ public:
 	/// Whether the order successfully executed or not.
 	/// </returns>
 	virtual bool execute() = 0;
+
+	bool checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer);
 	/// <summary>
 	/// Sends the order description to the output stream.
 	/// </summary>

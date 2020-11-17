@@ -36,6 +36,24 @@ Order& Order::operator=(const Order& orderToAssign) {
 	this->_effect = new string(*(orderToAssign._effect));
 	return *this;
 }
+
+bool Order::checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer) {
+	for (int i = 0; i < truces.size();i++) {
+		//cout << "truce count: " << *truceIter << endl;
+
+		tuple<Player*,Player*> truce = truces.at(i);
+		Player* p1 = get<0>(truce);
+		Player* p2 = get<1>(truce);
+
+		if( p1 ==  _issuingPlayer && p2 == _targetPlayer ) {
+			return true;
+		}
+		if( p1 == _targetPlayer && p2 == _issuingPlayer) {
+			return true;
+		}
+	}
+	return false;
+}
 // ----------------------- End of Order Class ------------------------
 
 // ----------------------- AdvanceOrder Class ------------------------
@@ -73,8 +91,12 @@ bool AdvanceOrder::validate() {
 	if(ptr == nullptr)
 		return false;
 
-	if(_sourceTerritory->getOwner() == _issuingPlayer)
+	if(_sourceTerritory->getOwner() == _issuingPlayer) {
+		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())){
+			return false;
+		}
 		return true;
+	}
 
 	return false;
 }
@@ -174,9 +196,14 @@ AirliftOrder::~AirliftOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AirliftOrder::validate() {
+	
 	//Check that the source and target belongs to the player that issued the order
-	if(_sourceTerritory->getOwner() == _issuingPlayer)
+	if(_sourceTerritory->getOwner() == _issuingPlayer) {
+		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())) {
+			return false;
+		}
 		return true;
+	}
 	return false;
 }
 
@@ -340,17 +367,25 @@ bool BombOrder::validate() {
 	if(_targetTerritory->getOwner() == _issuingPlayer)
 		return false;
 
-	// NOT WORKING!!!!!!
-	for (auto truceIter = truces.begin(); truceIter != truces.end(); truceIter++) {
-		if( (*(truceIter)) ==  _issuingPlayer && (*(truceIter)+1) == _targetPlayer ){
-			return false;
-		}
-		if( (*(truceIter)+1) ==  _issuingPlayer && (*(truceIter)) == _targetPlayer ){
-			return false;
-		}
-		truceIter++;
-	}
+	// TODO:NOT WORKING!!!!!!
+	// for (int i = 0; i < truces.size();i++) {
+	// 	//cout << "truce count: " << *truceIter << endl;
 
+	// 	tuple<Player*,Player*> truce = truces.at(i);
+	// 	Player* p1 = get<0>(truce);
+	// 	Player* p2 = get<1>(truce);
+
+	// 	if( p1 ==  _issuingPlayer && p2 == _targetPlayer ) {
+	// 		return false;
+	// 	}
+	// 	if( p1 == _targetPlayer && p2 == _issuingPlayer) {
+	// 		return false;
+	// 	}
+	// }
+
+	if(checkIfTruce(_issuingPlayer,_targetPlayer)) {
+		return false;
+	}
 	return true;
 }
 
@@ -467,8 +502,12 @@ bool NegotiateOrder::validate() {
 
 bool NegotiateOrder::execute() {
 	if (validate()) {
-		truces.push_back(_issuingPlayer);
-		truces.push_back(_secondPlayer);
+		tuple<Player*,Player*> truce;
+
+		get<0>(truce) = _issuingPlayer;
+		get<1>(truce) = _secondPlayer;
+
+		truces.push_back(truce);
 		return true;
 	}
 	return false;
