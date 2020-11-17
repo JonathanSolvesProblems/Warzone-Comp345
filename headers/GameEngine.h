@@ -1,7 +1,9 @@
 #include "MapLoader.h"
 #include "Application.h"
 #include "GameObservers.h"
+#include "Player.h"
 #include <vector>
+#include <list>
 
 #define COLOR_GREY 8
 #define RED_BLACK 1
@@ -13,6 +15,10 @@
 #define MAIN_MENU_VIEW 0
 #define MAP_SELECTION_VIEW 1
 #define GAMEPLAY_VIEW 2
+
+class Player;
+
+enum Phase {REINFORCEMENT, ISSUE_ORDERS, ORDERS_EXECUTION};
 
 class MainMenuView;
 class GameModel;
@@ -128,13 +134,14 @@ class PhaseObserverView : public WindowView {
     virtual void display();
 };
 
-class StatisticsObserverView : public WindowView
+class StatisticsObserverView : public WindowView 
 {
 public:
   StatisticsObserverView(int w, int h, int x, int y);
   // ~StatisticsObserverView();
 
   virtual void display();
+
 };
 
 class GameplayView : public WindowView {
