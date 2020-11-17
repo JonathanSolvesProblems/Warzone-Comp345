@@ -269,7 +269,7 @@ void MapSelectionView::display() {
 void MenuModel::incrementItem(int inc)
 {
   int current = selected_index.get();
-  selected_index.set(current + inc);
+  selected_index.set((current + inc) % map_file_list.get().size());
 }
 
 std::string MenuModel::getSelection()
@@ -328,11 +328,9 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     map::Map map;
     MapLoader mapLoader;
 
-    if (mapLoader.mapValidator(map_file))
+    if (mapLoader.loadFile(map_file, map) && map.validate())
     {
-
       // load file under
-      mapLoader.loadFile(map_file, map);
       Application::instance()->activateView(GAMEPLAY_VIEW);
       return true;
     }

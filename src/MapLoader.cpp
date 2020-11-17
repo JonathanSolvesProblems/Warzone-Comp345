@@ -75,7 +75,12 @@ bool MapLoader::loadFile(string mapName, map::Map &test)
     string line;
 
     //THIS IS THE PATH TO THE FOLDER THAT WE WANT
-    string folderPath = "exampleMaps\\" + mapName;
+    string folderPath;
+#ifdef __linux__
+    folderPath = "exampleMaps/" + mapName;
+#else
+    folderPath = "exampleMaps\\" + mapName;
+#endif
 
     //opens the file
     ifstream mapFile(folderPath);

@@ -9,7 +9,7 @@ g++ -I ./headers -o build/MapDriver/Orders.o -c src/Orders.cpp
 g++ -I ./headers -o build/MapDriver/MapLoader.o -c src/MapLoader.cpp
 
 echo Compiling and Linking MapDriver.cpp with objects files.
-g++ -I ./headers -o MapDriver drivers/MapDriver.cpp build/MapDriver/*.o
+g++ -std=gnu++17 -I ./headers -o MapDriver drivers/MapDriver.cpp build/MapDriver/*.o -lstdc++fs
 
 echo Cleaning up...
 rm build/MapDriver/*.o

@@ -20,7 +20,6 @@ int main()
     
 
     if (map.loadFile("france.map", test) == true) {
-
         // remove 2 at the end
         cout << "Continents  " << map.continents.size() << " \n";
      
