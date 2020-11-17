@@ -321,17 +321,6 @@ bool MapSelectionController::keyboardEventPerformed(int key)
       Application::instance()->activateView(MAIN_MENU_VIEW);
       // load file under
       mapLoader.loadFile(map_file, map);
-      cout << mapLoader.borders.size();
-
-      // for test purposes
-
-      cout << *map.getContinent(1) << endl;
-
-      cout << "Countries and Neighbours: "
-           << "\n";
-
-      cout << "Country: " << *map.getTerritory(1) << " Has " << map.getTerritory(1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(map.getTerritory(1)->getContinent()) << endl;
-
       return true;
     }
 
