@@ -92,6 +92,11 @@ void Application::activateView(int view_id) {
 
 std::shared_ptr<Application> Application::instance()
 {
+  /*
+   * The first time the function is called, _singleton will be
+   * instantiated, and then subsequent calls will return that
+   * instance.
+   */
   static std::shared_ptr<Application>  _singleton(new Application);
   return _singleton;
 }
