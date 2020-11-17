@@ -23,7 +23,7 @@ namespace map
 
   Map::~Map()
   {
-    std::cout << "ENTERING MAP DESTRUCTOR";
+  
     while (continents->size())
     {
       Continent* continent = continents->back();

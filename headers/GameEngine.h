@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "GameObservers.h"
 #include <vector>
+#include "MapLoader.h"
 
 #define COLOR_GREY 8
 #define RED_BLACK 1
@@ -55,6 +56,7 @@ private:
 struct MenuModel {
     ConcreteObservable<std::vector<std::string>> map_file_list;
     ConcreteObservable<int> selected_index;
+    ConcreteObservable<std::string> error_message;
     void incrementItem(int inc);
     std::string getSelection();
 };
