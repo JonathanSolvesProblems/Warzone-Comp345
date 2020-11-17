@@ -315,7 +315,6 @@ MapSelectionController::~MapSelectionController() {}
 
 bool MapSelectionController::keyboardEventPerformed(int key)
 {
-
   if (key == ' ')
   {
     // Load map file
@@ -332,10 +331,11 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     {
       // load file under
       Application::instance()->activateView(GAMEPLAY_VIEW);
-      return true;
+    } else {
+      _menu_model->error_message.set("This is a invalid file! Please choose another!");
     }
 
-    _menu_model->error_message.set("This is a invalid file! Please choose another!");
+    return true;
   }
   return false;
 }
