@@ -229,13 +229,26 @@ void MapSelectionView::notifyKeyboardEventPerformed(int key)
   }
 }
 
-void MapSelectionView::registerMenuListener(ActionListener *listener)
-{
+
+void MapSelectionView::registerMenuListener(ActionListener *listener) {
   _menu_view->registerListener(listener);
 }
 
-void MapSelectionView::display()
+
+void MapSelectionView::activate() {
+  WindowView::activate();
+  _menu_view->activate();
+}
+
+
+void MapSelectionView::deactivate()
 {
+  WindowView::deactivate();
+  _menu_view->deactivate();
+}
+
+
+void MapSelectionView::display() {
   if (!_window)
   {
     activate();
@@ -318,9 +331,9 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     if (mapLoader.mapValidator(map_file))
     {
 
-      Application::instance()->activateView(MAIN_MENU_VIEW);
       // load file under
       mapLoader.loadFile(map_file, map);
+      Application::instance()->activateView(GAMEPLAY_VIEW);
       return true;
     }
 
@@ -330,3 +343,96 @@ bool MapSelectionController::keyboardEventPerformed(int key)
 }
 void MapSelectionController::viewActivated() {}
 void MapSelectionController::viewDeactivated() {}
+
+PhaseObserverView::PhaseObserverView(int w, int h, int x, int y) : WindowView(w, h, x, y) {}
+StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y) : WindowView(w, h, x, y) {}
+
+void PhaseObserverView::display() {
+  wclear(_window);
+  box(_window, 0, 0);
+  print_centered(height / 2, "Phase info");
+  WindowView::display();
+}
+
+void StatisticsObserverView::display() {
+  wclear(_window);
+  box(_window, 0, 0);
+  print_centered(height / 2, "Stats info");
+  WindowView::display();
+}
+
+GameplayView::GameplayView(int w, int h, SettingsModel *sm) {
+  settings_model = sm;
+  bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
+  this->start_x = 1;
+  this->start_y = headers_enabled * LINES / 4;
+  this->height = h - start_y;
+  this->width = w;
+}
+
+GameplayView::~GameplayView() {
+  if (_phase_view)
+    delete _phase_view;
+  if (_stats_view)
+    delete _stats_view;
+}
+
+void GameplayView::create_phase_observer_view() {
+  _phase_view = new PhaseObserverView(COLS / 2 - 1, LINES / 4 - 1, 1, 1);
+}
+
+void GameplayView::create_stats_observer_view()
+{
+  _stats_view = new StatisticsObserverView(COLS / 2 - 1, LINES / 4 - 1, COLS / 2, 1);
+}
+
+void GameplayView::display() {
+  int header_offset = 0;
+  if (_phase_view) {
+    _phase_view->display();
+  }
+  if (_stats_view) {
+    _stats_view->display();
+  }
+  if (!_window) {
+    activate();
+  }
+  wclear(_window);
+  box(_window, 0, 0);
+
+  print_centered(height / 2, "MAIN CONTENT");
+
+  WindowView::display();
+}
+
+void GameplayView::activate() {
+  bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
+  this->start_y = 1 + headers_enabled * LINES / 4;
+  this->height = LINES - start_y;
+
+  if (settings_model->phase_headers_enabled.get()) {
+    create_phase_observer_view();
+    _phase_view->activate();
+  }
+    
+  if (settings_model->stats_headers_enabled.get()) {
+    create_stats_observer_view();
+    _stats_view->activate();
+  }
+
+  WindowView::activate();
+  box(_window, 0, 0);
+  wrefresh(_window);
+}
+
+void GameplayView::deactivate() {
+  WindowView::deactivate();
+  if (_phase_view) {
+    _phase_view->deactivate();
+  }
+  if (_stats_view)
+  {
+    _stats_view->deactivate();
+  }
+}
+
