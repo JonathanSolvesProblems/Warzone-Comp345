@@ -28,7 +28,7 @@ int main () {
 
   MainMenuView *main_menu_view = new MainMenuView(54, LINES, game_model);
   MapSelectionView *map_selection_view = new MapSelectionView(54, LINES, 6, menu_model);
-  GameplayView *gameplay_view = new GameplayView(COLS, LINES - 1, game_model);
+  GameplayView *gameplay_view = new GameplayView(COLS - 2, LINES - 2, game_model);
 
   main_menu_view->registerListener(main_game_controller);
 

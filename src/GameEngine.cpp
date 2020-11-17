@@ -283,12 +283,14 @@ StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y) : Win
 
 void PhaseObserverView::display() {
   wclear(_window);
+  box(_window, 0, 0);
   print_centered(height / 2, "Phase info");
   WindowView::display();
 }
 
 void StatisticsObserverView::display() {
   wclear(_window);
+  box(_window, 0, 0);
   print_centered(height / 2, "Stats info");
   WindowView::display();
 }
@@ -296,10 +298,10 @@ void StatisticsObserverView::display() {
 GameplayView::GameplayView(int w, int h, SettingsModel *sm) {
   settings_model = sm;
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
-  this->start_x = 0;
+  this->start_x = 1;
   this->start_y = headers_enabled * LINES / 4;
-  this->height = LINES - start_y;
-  this->width = COLS;
+  this->height = h - start_y;
+  this->width = w;
 }
 
 GameplayView::~GameplayView() {
@@ -310,12 +312,12 @@ GameplayView::~GameplayView() {
 }
 
 void GameplayView::create_phase_observer_view() {
-  _phase_view = new PhaseObserverView(COLS / 2, LINES / 4, 0, 0);
+  _phase_view = new PhaseObserverView(COLS / 2 - 1, LINES / 4 - 1, 1, 1);
 }
 
 void GameplayView::create_stats_observer_view()
 {
-  _stats_view = new StatisticsObserverView(COLS / 2, LINES / 4, COLS / 2, 0);
+  _stats_view = new StatisticsObserverView(COLS / 2 - 1, LINES / 4 - 1, COLS / 2, 1);
 }
 
 void GameplayView::display() {
@@ -330,6 +332,7 @@ void GameplayView::display() {
     activate();
   }
   wclear(_window);
+  box(_window, 0, 0);
 
   print_centered(height / 2, "MAIN CONTENT");
 
@@ -338,7 +341,7 @@ void GameplayView::display() {
 
 void GameplayView::activate() {
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
-  this->start_y = headers_enabled * LINES / 4;
+  this->start_y = 1 + headers_enabled * LINES / 4;
   this->height = LINES - start_y;
 
   if (settings_model->phase_headers_enabled.get()) {
