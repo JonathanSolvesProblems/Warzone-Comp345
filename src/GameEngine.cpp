@@ -354,14 +354,15 @@ StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y) : Win
 void PhaseObserverView::display() {
   wclear(_window);
   box(_window, 0, 0);
-  print_centered(height / 2, "Phase info");
+  print_centered(height / 2, "reinforcement");
   WindowView::display();
 }
 
 void StatisticsObserverView::display() {
   wclear(_window);
   box(_window, 0, 0);
-  print_centered(height / 2, "Stats info");
+  // trouble calling enum here.
+  print_centered(height / 2, "stats");
   WindowView::display();
 }
 
