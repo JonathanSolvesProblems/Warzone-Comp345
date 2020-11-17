@@ -20,18 +20,6 @@ int main () {
 
   MenuModel *menu_model = new MenuModel();
 
-
-/************************************************* MAP LOADER PARTS ADDED by brenden */
-
-  // adding the maps
-    map::Map map;
-    MapLoader maploader;
-
-/* *********************************************************************************** */
-
-  std::vector<std::string> map_list = maploader.findMapFiles();
-  menu_model->map_file_list.set(map_list);
-
   MainMenuController *main_game_controller = new MainMenuController(game_model);
   MapSelectionController *map_selection_controller = new MapSelectionController(menu_model);
   MapMenuController *map_menu_controller = new MapMenuController(menu_model);

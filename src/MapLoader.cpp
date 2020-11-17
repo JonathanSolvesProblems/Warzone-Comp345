@@ -12,13 +12,20 @@ THEN CHANGE YOUR CHARSET FROM UNI TO MULTYBYTE
 
 #include <fstream>
 #include <iostream>
+
+#ifdef __linux__
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#else
 #include <filesystem>
+namespace fs = std::filesystem;
+#endif
+
 #include <locale>
 #include <codecvt>
 
 std::wstring string_to_convert;
 
-namespace fs = std::filesystem;
 using namespace std;
 
 // default constructor
@@ -616,11 +623,9 @@ vector<string> MapLoader::findMapFiles()
     // change char set to multibyte by going into the properties and go into advanced and change the char set
     // have to change the filepath to the correct one
 
-    for (auto &p : fs::directory_iterator("exampleMaps"))
+    for (auto& p : fs::directory_iterator("exampleMaps"))
     {
-        std::wstring wide(p.path().filename());
-        std::string str(wide.begin(), wide.end());
-        listOfFiles.push_back(str);
+        listOfFiles.push_back(p.path().filename());
     }
     return listOfFiles;
 }

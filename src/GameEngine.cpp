@@ -341,7 +341,13 @@ bool MapSelectionController::keyboardEventPerformed(int key)
   }
   return false;
 }
-void MapSelectionController::viewActivated() {}
+void MapSelectionController::viewActivated() {
+  map::Map map;
+  MapLoader maploader;
+
+  std::vector<std::string> map_list = maploader.findMapFiles();
+  _menu_model->map_file_list.set(map_list);
+}
 void MapSelectionController::viewDeactivated() {}
 
 PhaseObserverView::PhaseObserverView(int w, int h, int x, int y) : WindowView(w, h, x, y) {}

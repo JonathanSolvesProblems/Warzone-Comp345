@@ -1,7 +1,7 @@
+#include "MapLoader.h"
 #include "Application.h"
 #include "GameObservers.h"
 #include <vector>
-#include "MapLoader.h"
 
 #define COLOR_GREY 8
 #define RED_BLACK 1
