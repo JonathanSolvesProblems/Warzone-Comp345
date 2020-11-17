@@ -33,9 +33,11 @@ public:
   ~View();
   void registerListener(ActionListener *action_listener);
   void deregisterListener(ActionListener *action_listener);
+
   virtual void activate();
   virtual void deactivate();
   virtual void display();
+
   virtual void notifyKeyboardEventPerformed(int key);
   virtual void notifyActivated();
   virtual void notifyDeactivated();

@@ -339,6 +339,7 @@ bool MapSelectionController::keyboardEventPerformed(int key)
   }
   return false;
 }
+
 void MapSelectionController::viewActivated() {
   map::Map map;
   MapLoader maploader;

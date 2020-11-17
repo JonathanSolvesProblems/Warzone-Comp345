@@ -1,5 +1,5 @@
 #pragma once
-#define DEBUG // Remove this to disabled debugging
+// #define DEBUG // Remove this to disabled debugging
 
 namespace map {
   class Map;
