@@ -75,7 +75,7 @@ private:
 };
 
 template <class T>
-VectorObservable<T>::VectorObservable(){}
+VectorObservable<T>::VectorObservable() {}
 
 template <class T>
 VectorObservable<T>::~VectorObservable() {}
