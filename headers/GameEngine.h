@@ -109,3 +109,38 @@ class MapMenuController : public ActionListener
   private:
     MenuModel *_menu_model;
 };
+
+
+class PhaseObserverView : public WindowView {
+  public:
+    PhaseObserverView(int w, int h, int x, int y);
+    // ~PhaseObserverView();
+
+    virtual void display();
+};
+
+class StatisticsObserverView : public WindowView
+{
+public:
+  StatisticsObserverView(int w, int h, int x, int y);
+  // ~StatisticsObserverView();
+
+  virtual void display();
+};
+
+class GameplayView : public WindowView {
+
+  public:
+    GameplayView(int w, int h, SettingsModel *sm);
+    ~GameplayView();
+    virtual void display();
+    virtual void activate();
+    virtual void deactivate();
+
+  private:
+    void create_phase_observer_view();
+    void create_stats_observer_view();
+    PhaseObserverView* _phase_view{nullptr};
+    StatisticsObserverView* _stats_view{nullptr};
+    SettingsModel* settings_model{nullptr};
+};

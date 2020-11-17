@@ -266,7 +266,7 @@ bool MapSelectionController::keyboardEventPerformed(int key) {
     // Load map file
     std::string map_file = _menu_model->getSelection();
 
-    Application::instance()->activateView(MAIN_MENU_VIEW);
+    Application::instance()->activateView(GAMEPLAY_VIEW);
 
     return true;
   } else if (key == KEY_BACKSPACE) {
@@ -277,3 +277,95 @@ bool MapSelectionController::keyboardEventPerformed(int key) {
 
 void MapSelectionController::viewActivated() {}
 void MapSelectionController::viewDeactivated() {}
+
+PhaseObserverView::PhaseObserverView(int w, int h, int x, int y) : WindowView(w, h, x, y) {}
+StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y) : WindowView(w, h, x, y) {}
+
+void PhaseObserverView::display() {
+  wclear(_window);
+  print_centered(height / 2, "Phase info");
+  WindowView::display();
+}
+
+void StatisticsObserverView::display() {
+  wclear(_window);
+  print_centered(height / 2, "Stats info");
+  WindowView::display();
+}
+
+GameplayView::GameplayView(int w, int h, SettingsModel *sm) {
+  settings_model = sm;
+  bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
+  this->start_x = 0;
+  this->start_y = headers_enabled * LINES / 4;
+  this->height = LINES - start_y;
+  this->width = COLS;
+
+  if (settings_model->phase_headers_enabled.get())
+    create_phase_observer_view();
+  if (settings_model->stats_headers_enabled.get())
+    create_stats_observer_view();
+}
+
+GameplayView::~GameplayView() {
+  if (_phase_view)
+    delete _phase_view;
+  if (_stats_view)
+    delete _stats_view;
+}
+
+void GameplayView::create_phase_observer_view() {
+  _phase_view = new PhaseObserverView(COLS / 2, LINES / 4, 0, 0);
+}
+
+void GameplayView::create_stats_observer_view()
+{
+  _stats_view = new StatisticsObserverView(COLS / 2, LINES / 4, COLS / 2, 0);
+}
+
+void GameplayView::display() {
+  int header_offset = 0;
+  if (_phase_view) {
+    _phase_view->display();
+  }
+  if (_stats_view) {
+    _stats_view->display();
+  }
+  if (!_window) {
+    activate();
+  }
+  wclear(_window);
+
+  print_centered(height / 2, "MAIN CONTENT");
+
+  WindowView::display();
+}
+
+void GameplayView::activate() {
+  bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
+  if (settings_model->phase_headers_enabled.get()) {
+    create_phase_observer_view();
+    _phase_view->activate();
+  }
+    
+  if (settings_model->stats_headers_enabled.get()) {
+    create_stats_observer_view();
+    _stats_view->activate();
+  }
+
+  WindowView::activate();
+  box(_window, 0, 0);
+  wrefresh(_window);
+}
+
+void GameplayView::deactivate() {
+  WindowView::deactivate();
+  if (_phase_view) {
+    _phase_view->deactivate();
+  }
+  if (_stats_view)
+  {
+    _stats_view->deactivate();
+  }
+}
+

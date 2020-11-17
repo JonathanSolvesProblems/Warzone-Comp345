@@ -28,6 +28,7 @@ int main () {
 
   MainMenuView *main_menu_view = new MainMenuView(54, LINES, game_model);
   MapSelectionView *map_selection_view = new MapSelectionView(54, LINES, 6, menu_model);
+  GameplayView *gameplay_view = new GameplayView(COLS, LINES - 1, game_model);
 
   main_menu_view->registerListener(main_game_controller);
 
@@ -37,6 +38,7 @@ int main () {
   std::shared_ptr<Application> application = Application::instance();
   application->registerView(MAIN_MENU_VIEW, main_menu_view);
   application->registerView(MAP_SELECTION_VIEW, map_selection_view);
+  application->registerView(GAMEPLAY_VIEW, gameplay_view);
   application->activateView(MAIN_MENU_VIEW);
 
   application->mainloop('q');
@@ -45,6 +47,7 @@ int main () {
 
   delete map_selection_view;
   delete main_menu_view;
+  delete gameplay_view;
   delete main_game_controller;
   delete map_selection_controller;
   delete map_menu_controller;
