@@ -15,12 +15,12 @@
 #define GAMEPLAY_VIEW 2
 
 class MainMenuView;
-class SettingsModel;
+class GameModel;
 class MainMenuController;
 
 class MainMenuController : public ActionListener {
   public:
-    MainMenuController(SettingsModel * sm);
+    MainMenuController(GameModel * sm);
     ~MainMenuController();
 
     virtual bool keyboardEventPerformed(int key);
@@ -29,19 +29,26 @@ class MainMenuController : public ActionListener {
     virtual void viewDeactivated();
 
   private:
-    SettingsModel *_settings_model;
+    GameModel *_settings_model;
 };
 
-struct SettingsModel {
+struct GameModel {
+  // Basic Settings
   ConcreteObservable<bool> phase_headers_enabled;
   ConcreteObservable<bool> stats_headers_enabled;
   ConcreteObservable<int> number_of_players;
+
+  ConcreteObservable<Phase> current_phase;
+  
+  Player* current_player;
+  VectorObservable<Player*> active_players;
 };
+
 
 class MainMenuView : public WindowView, public Observer
 {
 public:
-  MainMenuView(int w, int h, SettingsModel *sm);
+  MainMenuView(int w, int h, GameModel *sm);
   ~MainMenuView();
   virtual void display();
   virtual void update();
@@ -50,7 +57,7 @@ private:
   void display_banner(int &offset);
   void display_credits(int &offset);
   void display_menu(int &offset);
-  SettingsModel *_settings_model;
+  GameModel *_settings_model;
 };
 
 struct MenuModel {
@@ -133,7 +140,7 @@ public:
 class GameplayView : public WindowView {
 
   public:
-    GameplayView(int w, int h, SettingsModel *sm);
+    GameplayView(int w, int h, GameModel *sm);
     ~GameplayView();
     virtual void display();
     virtual void activate();
@@ -144,5 +151,5 @@ class GameplayView : public WindowView {
     void create_stats_observer_view();
     PhaseObserverView* _phase_view{nullptr};
     StatisticsObserverView* _stats_view{nullptr};
-    SettingsModel* settings_model{nullptr};
+    GameModel* settings_model{nullptr};
 };

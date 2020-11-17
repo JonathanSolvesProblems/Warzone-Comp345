@@ -14,7 +14,7 @@ int main () {
   initscr();
   initialize_ncurses_colors();
 
-  SettingsModel *game_model = new SettingsModel();
+  GameModel *game_model = new GameModel();
   game_model->phase_headers_enabled.set(true);
   game_model->number_of_players.set(2);
 

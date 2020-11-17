@@ -1,7 +1,7 @@
 #include "GameEngine.h"
 
 
-MainMenuView::MainMenuView(int w, int h, SettingsModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
+MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
 {
   _settings_model = mgm;
   _settings_model->phase_headers_enabled.attach(this);
@@ -101,7 +101,7 @@ void MainMenuView::update()
   display();
 }
 
-MainMenuController::MainMenuController(SettingsModel *mgm)
+MainMenuController::MainMenuController(GameModel *mgm)
 {
   _settings_model = mgm;
 }
@@ -366,7 +366,7 @@ void StatisticsObserverView::display() {
   WindowView::display();
 }
 
-GameplayView::GameplayView(int w, int h, SettingsModel *sm) {
+GameplayView::GameplayView(int w, int h, GameModel *sm) {
   settings_model = sm;
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
   this->start_x = 1;
