@@ -300,11 +300,6 @@ GameplayView::GameplayView(int w, int h, SettingsModel *sm) {
   this->start_y = headers_enabled * LINES / 4;
   this->height = LINES - start_y;
   this->width = COLS;
-
-  if (settings_model->phase_headers_enabled.get())
-    create_phase_observer_view();
-  if (settings_model->stats_headers_enabled.get())
-    create_stats_observer_view();
 }
 
 GameplayView::~GameplayView() {
@@ -343,6 +338,9 @@ void GameplayView::display() {
 
 void GameplayView::activate() {
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
+  this->start_y = headers_enabled * LINES / 4;
+  this->height = LINES - start_y;
+
   if (settings_model->phase_headers_enabled.get()) {
     create_phase_observer_view();
     _phase_view->activate();
