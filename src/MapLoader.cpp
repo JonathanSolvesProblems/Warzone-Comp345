@@ -625,7 +625,7 @@ vector<string> MapLoader::findMapFiles()
 
     for (auto& p : fs::directory_iterator("exampleMaps"))
     {
-        listOfFiles.push_back(p.path().filename());
+        listOfFiles.push_back(p.path().filename().string());
     }
     return listOfFiles;
 }
