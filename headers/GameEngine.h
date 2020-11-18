@@ -18,8 +18,7 @@
 
 class Player;
 
-// defining the different phases each player undergoes in an enum.
-enum Phase {REINFORCEMENT, ISSUE_ORDERS, ORDERS_EXECUTION};
+enum Phase {STARTUP, REINFORCEMENT, ISSUE_ORDERS, ORDERS_EXECUTION};
 
 // forward declarations
 class MainMenuView;
@@ -47,8 +46,8 @@ struct GameModel {
   ConcreteObservable<int> number_of_players;
 
   ConcreteObservable<Phase> current_phase;
-  
-  Player* current_player;
+
+  ConcreteObservable<Player*> current_player;
   VectorObservable<Player*> active_players;
 };
 
@@ -177,4 +176,21 @@ class GameplayView : public WindowView {
     PhaseObserverView* _phase_view{nullptr};
     StatisticsObserverView* _stats_view{nullptr};
     GameModel* settings_model{nullptr};
+};
+
+class GameplayController : public ActionListener {
+  public:
+    GameplayController(GameModel *gm);
+    ~GameplayController();
+
+    virtual bool keyboardEventPerformed(int key);
+
+    virtual void viewActivated();
+    virtual void viewDeactivated();
+
+  private:
+    void startupPhase();
+    void mainGameLoop();
+
+    GameModel *_game_model;
 };
