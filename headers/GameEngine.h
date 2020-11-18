@@ -49,6 +49,8 @@ struct GameModel {
 
   ConcreteObservable<Player*> current_player;
   VectorObservable<Player*> active_players;
+
+  map::Map* map;
 };
 
 
@@ -101,7 +103,7 @@ class MapSelectionView : public WindowView {
 
 class MapSelectionController : public ActionListener {
   public:
-    MapSelectionController(MenuModel *mm);
+    MapSelectionController(MenuModel *mm, GameModel *gm);
     ~MapSelectionController();
 
     virtual bool keyboardEventPerformed(int key);
@@ -110,6 +112,7 @@ class MapSelectionController : public ActionListener {
 
   private:
     MenuModel *_menu_model;
+    GameModel *_game_model;
 };
 
 class MapMenuController : public ActionListener

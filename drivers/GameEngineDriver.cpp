@@ -21,7 +21,7 @@ int main () {
   MenuModel *menu_model = new MenuModel();
 
   MainMenuController *main_game_controller = new MainMenuController(game_model);
-  MapSelectionController *map_selection_controller = new MapSelectionController(menu_model);
+  MapSelectionController *map_selection_controller = new MapSelectionController(menu_model, game_model);
   MapMenuController *map_menu_controller = new MapMenuController(menu_model);
 
   GameplayController *gameplay_controller = new GameplayController(game_model);
