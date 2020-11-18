@@ -295,12 +295,12 @@ MapMenuController::~MapMenuController() {}
 
 bool MapMenuController::keyboardEventPerformed(int key)
 {
-  if (key == KEY_UP)
+  if (key == KEY_UP || key == 'w')
   {
     _menu_model->error_message.set("");
     _menu_model->incrementItem(-1);
   }
-  else if (key == KEY_DOWN)
+  else if (key == KEY_DOWN || key == 's')
   {
     _menu_model->error_message.set("");
     _menu_model->incrementItem(1);
@@ -602,7 +602,6 @@ void GameplayController::mainGameLoop() {
   _game_model->current_phase.set(REINFORCEMENT);
 
   /* Play out game */
-  _game_model->
 
   // Application::instance()->activateView(MAIN_MENU_VIEW);
 }
