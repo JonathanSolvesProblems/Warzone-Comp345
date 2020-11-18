@@ -643,11 +643,29 @@ void GameplayController::startupPhase()
   for (int i = 0; i < num_players; i++)
   {
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
+
+   // sets the starting armies for each player accoridng to the number of players playing the game
+    switch(num_players) {
+    case 2:
+      new_player->setArmy(40);
+      break;
+    case 3:
+      new_player->setArmy(35);
+      break;
+    case 4:
+      new_player->setArmy(30);
+      break;
+    case 5:
+      new_player->setArmy(25);
+      break;
+  }
+
     newly_created_players.push_back(new_player);
   }
 
-  while (!newly_created_players.empty())
-  {
+// adding initial armys 
+
+  while (!newly_created_players.empty()) {
     int index = rand() % newly_created_players.size();
 
     Player *next = newly_created_players[index];
@@ -705,7 +723,6 @@ void GameplayController::assign_territories()
 void GameplayController::mainGameLoop()
 {
   _game_model->current_phase.set(REINFORCEMENT);
-
   /* Play out game */
 
   // Here to implement the logic for removing players if they no longer own anymore territories. Check with Anthony first.
