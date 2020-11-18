@@ -74,6 +74,7 @@ void ConcreteObservable<T>::set(T new_state)
 template <class T>
 T ConcreteObservable<T>::get()
 {
+  
   return state;
 }
 

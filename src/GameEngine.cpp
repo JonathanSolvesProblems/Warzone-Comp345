@@ -352,7 +352,7 @@ void MapSelectionController::viewDeactivated() {}
 PhaseObserverView::PhaseObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y) 
 {
      _game_model = gm;
-     _game_model->active_players.attach(this);
+     _game_model->current_player.attach(this);
      _game_model->current_phase.attach(this);
 
 }
@@ -360,12 +360,16 @@ PhaseObserverView::PhaseObserverView(int w, int h, int x, int y, GameModel *gm) 
 StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y) 
 {
     _game_model = gm;
+    _game_model->active_players.attach(this);
 }
 
 void PhaseObserverView::display() {
   wclear(_window);
   box(_window, 0, 0);
-  print_centered(height / 2, "reinforcement");
+  Player* current_player = _game_model->current_player.get();
+  if(current_player != nullptr) {
+     print_centered(height / 2, current_player->playerName);
+  }
   WindowView::display();
 }
 
@@ -385,12 +389,12 @@ void StatisticsObserverView::update() {
 }
 
 PhaseObserverView::~PhaseObserverView() {
-    _game_model->active_players.detach(this);
+    _game_model->current_player.detach(this);
     _game_model->current_phase.detach(this);
 }
 
 StatisticsObserverView::~StatisticsObserverView() {
-
+    _game_model->active_players.detach(this);
 }
 
 GameplayView::GameplayView(int w, int h, GameModel *sm) {
@@ -497,7 +501,7 @@ void GameplayController::startupPhase() {
   }
 
   while (!newly_created_players.empty()) {
-    int index = random() % newly_created_players.size();
+    int index = rand() % newly_created_players.size();
   
     Player *next = newly_created_players[index];
     _game_model->active_players.push_back(next);
