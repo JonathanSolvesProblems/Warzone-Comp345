@@ -539,8 +539,17 @@ void GameplayView::display() {
     if (index > height - 3) {
       break;
     }
+
+    int cp;
+    if (index == 0) {
+      cp = COLOR_PAIR(WHITE_BLACK);
+    } else {
+      cp = COLOR_PAIR(GREY_BLACK);
+    }
+    wattron(_window, cp);
     wmove(_window, 1 + index++, 1);
     wprintw(_window, msg.c_str());
+    wattroff(_window, cp);
   }
   box(_window, 0, 0);
   WindowView::display();
