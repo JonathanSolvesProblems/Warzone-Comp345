@@ -332,9 +332,8 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     }
 
     _game_model->map = new map::Map();
-    map::Map &map = *_game_model->map;
 
-    if (mapLoader.loadFile(map_file, map) && map.validate())
+    if (mapLoader.loadFile(map_file, *_game_model->map) && _game_model->map->validate())
     {
       // load file under
       Application::instance()->activateView(GAMEPLAY_VIEW);
@@ -530,7 +529,6 @@ void GameplayController::startupPhase() {
   _game_model->current_player.set(first);
 
   // TODO give territories to Players
-
   assign_territories();
 
 }
@@ -544,7 +542,13 @@ void GameplayController::assign_territories() {
 
   int index_of_next_player_to_receive_territory = 0;
   while (!territories.empty()) {
-    int territory_index = rand() % territories.size();
+    int r;
+#ifdef __linux__
+    r = random();
+#else
+    r = rand();
+#endif
+    int territory_index = r % territories.size();
 
     map::Territory* territory = territories[territory_index];
     Player* player = _game_model->active_players.get()[index_of_next_player_to_receive_territory];
