@@ -516,7 +516,8 @@ void GameplayController::startupPhase() {
     newly_created_players.erase(newly_created_players.begin() + index);
   }
 
-  _game_model->current_player.set(_game_model->active_players.get()[0]);
+  Player *first = _game_model->active_players.get()[0];
+  _game_model->current_player.set(first);
 
   // TODO give territories to Players
 }
