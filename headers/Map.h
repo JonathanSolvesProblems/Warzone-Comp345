@@ -144,6 +144,13 @@ public:
   Territory* getTerritory(int id) const;
 
   /*
+   * Returns a readonly iterator of the territories.
+   */
+  const std::vector<Territory *> getTerritories();
+
+
+
+  /*
    * Find a territory by name.
    * 
    * Args:
@@ -178,6 +185,8 @@ public:
    *        name, or nullptr if not found.
    */
   Continent* getContinent(std::string) const;
+
+  const std::vector<Continent *> getContinents();
 
   /*
    * Returns true iff the Map meets the following criteria:
@@ -311,6 +320,15 @@ public:
   /* Sets the number of armees on the territory. */
   void setArmees(int number);
 
+  /*Adds armees to the territory*/
+  void addArmees(int number);
+
+  /*Removes armees from the territroy */
+  void removeArmees(int number);
+
+  /*TODO: Places number of armees from source territroy to target */
+  //void migrateArmees(int number ,Territory& source, Territory& target);
+  
   /*
    * Returns the number of neighbours this territory has.
    */

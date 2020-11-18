@@ -1,4 +1,5 @@
 #pragma once
+#include "Map.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,9 +9,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "Map.h"
 
-using namespace std;
+
+using std::ostream;
+using std::string;
+using std::endl;
 
 class MapLoader
 {
@@ -47,14 +50,9 @@ public:
 	bool isCountry(string line, map::Map &test, bool &isValid); // isCountry method whih checks if the string is a country
 																															// isContinent method whcih checks if the strings is a continent
 public:
-	bool isContinent(string line, map::Map &test, bool &isValid);
+	bool isContinent(string line, map::Map &test, bool &isValid,  int &continentID);
 
 public:
 	bool mapSelection(map::Map &test);
 	vector<string> findMapFiles();
-
-	bool mapValidator(string filePath);
-	bool borderValidator(string line);
-	bool countryValidator(string line);
-	bool continentValidator(string line);
 };

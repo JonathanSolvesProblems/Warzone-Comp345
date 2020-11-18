@@ -23,26 +23,12 @@ namespace map
 
   Map::~Map()
   {
-  
-    while (continents->size())
-    {
-      Continent* continent = continents->back();
-      continents->pop_back();
-
-      for (Territory *territory : continent->getTerritories())
-      {
-        std::remove_if(
-            territories->begin(),
-            territories->end(),
-            [territory](Territory* t) {
-              return t == territory;
-            });
-        continent->removeTerritory(territory);
-        // delete territory;
-      }
+    for (Territory* t : *territories) {
+      delete t;
     }
-    continents->clear();
-    territories->clear();
+    for (Continent* c : *continents) {
+      delete c;
+    }
     delete continents;
     delete territories;
   }
@@ -100,6 +86,15 @@ namespace map
       }
     }
     return nullptr;
+  }
+  
+  const std::vector<Continent *> Map::getContinents() {
+    return *continents;
+  }
+
+  const std::vector<Territory *> Map::getTerritories()
+  {
+    return *territories;
   }
 
   Continent *Map::getContinent(int id) const
@@ -254,7 +249,6 @@ namespace map
     {
       neighbour->deleteNeighbour(this);
     }
-    neighbours->clear();
     delete neighbours;
 
     if (continent)
@@ -286,6 +280,21 @@ namespace map
   {
     armees = number;
   }
+
+  void Territory::addArmees(int number)
+  {
+    armees += number;
+  }
+
+  void Territory::removeArmees(int number)
+  {
+    armees -= number;
+  }
+
+  /*Places number of armees from source territroy to target*/
+  // void migrateArmees(int number ,Territory& source, Territory& target) {
+
+  // }
 
   std::string Territory::getName() const
   {
@@ -388,7 +397,7 @@ namespace map
       if ((*it) == territory)
       {
         neighbours->erase(it);
-        return (*it);
+        return nullptr;
       }
     }
     return nullptr;
@@ -463,15 +472,6 @@ namespace map
     delete bonus;
     delete name;
 
-    for (Territory *territory : *territories)
-    {
-      if (territory)
-      {
-        territory->setContinent(nullptr);
-        delete territory;
-      }
-    }
-    territories->clear();
     delete territories;
   }
 

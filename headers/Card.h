@@ -4,9 +4,11 @@
 #include <vector>
 #include <stdlib.h>
 #include <time.h>
+#include <memory>
 
-using namespace std;
-
+using std::vector;
+using std::ostream;
+using std::cout;
 // Card is an abstract class that will be the parent of all the card types.
 class Card {
 public:
@@ -70,12 +72,15 @@ class Hand {
 
 	vector<Card*> cards;
 public:
-
+	// default constructor
 	Hand(); 
+	// destructor
 	~Hand();
 
+	// equals operator.
 	Hand& operator=(const Hand& hand);
 
+	// adds card to deck.
 	void add(Card* drawn); 
 	void show(); // displays contents of hand
 
@@ -86,11 +91,17 @@ public:
 class Deck {
 private:
 	vector<Card*> _deck;
-public:
 	Deck(); 
+public:
+	static std::shared_ptr<Deck> instance();
+	Deck (const Deck  &) = delete;
 	~Deck(); 
+	// Plays card
 	void cardPlay(); 
+	// draws a card. Meant to be passed into the deck.
 	Card* draw(); 
+	// shuffles the deck
 	void shuffle(vector<Card*>& deck);
+	// overloading stream operator
 	friend ostream& operator<<(ostream& os, const Deck& deck);
 };

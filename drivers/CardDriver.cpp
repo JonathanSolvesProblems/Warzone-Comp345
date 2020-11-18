@@ -1,9 +1,11 @@
 #include "Card.h"
 
+using std::cout;
+
 int main() {
 	// creates deck of cards of all different kinds.
 	cout << "creating deck...\n\n";
-	Deck deck;
+	Deck& deck = *Deck::instance();
 
 	// creates a hand object that is filled by drawing cards from the deck.
 	cout << "Drawing 9 cards from the deck...\n\n";

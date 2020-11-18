@@ -6,13 +6,18 @@ class Player;
 #include "Card.h"
 #include "Orders.h"
 
+#include "GameObservers.h"
+
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
-using namespace std;
+using std::ostream;
+using std::vector;
+using std::unordered_set;
 
-class Player {
+class Player : public Observable {
 public:
 
 	// an order list
@@ -25,8 +30,15 @@ public:
 	//stores the player name
 	std::string playerName;
 
+	// Gets the number of armies the player has
+	int getArmees() const; 
+
+	// Sets the number of armies the player has
+	void setArmees(int number);
+
 	//stores a player's ID
 	int playerID;
+
 	
 	/// <summary>
 	/// Player constructor
@@ -93,5 +105,8 @@ public:
 	void removeTerritory(map::Territory*);
 
 	bool isOwner(map::Territory*);
+
+private:
+	int armees;
 };
 

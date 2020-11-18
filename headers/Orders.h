@@ -3,11 +3,20 @@
 class Order;
 class OrdersList;
 
+#include <cmath>
 #include <iostream>
 #include <list>
 #include "Map.h"
 #include "Player.h"
-using namespace std;
+#include <tuple>
+
+using std::ostream;
+using std::string;
+using std::list;
+using std::endl; 
+using std::tuple;
+
+static vector<tuple<Player*,Player*>> truces;
 
 /// <summary>
 /// Order Class
@@ -38,6 +47,10 @@ public:
 	/// Whether the order successfully executed or not.
 	/// </returns>
 	virtual bool execute() = 0;
+
+	string toString();
+
+	bool checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer);
 	/// <summary>
 	/// Sends the order description to the output stream.
 	/// </summary>
@@ -50,7 +63,7 @@ protected:
 	// Data members
 	string* _description{nullptr};
 	string* _effect{nullptr};
-	const Player* _issuingPlayer{nullptr};
+	Player* _issuingPlayer{nullptr};
 };
 
 /// <summary>
@@ -63,7 +76,7 @@ class AdvanceOrder : public Order {
 public:
 	// Constructors
 	AdvanceOrder();
-	AdvanceOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
+	AdvanceOrder(Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
 	AdvanceOrder(const AdvanceOrder& orderToCopy);
 	// Destructor
 	~AdvanceOrder();
@@ -94,7 +107,7 @@ private:
 	// Data members
 	map::Territory* _sourceTerritory{nullptr};
 	map::Territory* _targetTerritory{nullptr};
-	int* _numberOfArmies{nullptr};
+	int _numberOfArmies{0};
 };
 
 /// <summary>
@@ -107,7 +120,7 @@ class AirliftOrder : public Order {
 public:
 	// Constructors
 	AirliftOrder();
-	AirliftOrder(const Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
+	AirliftOrder(Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
 	AirliftOrder(const AirliftOrder& orderToCopy);
 	// Destructor
 	~AirliftOrder();
@@ -138,7 +151,7 @@ private:
 	// Data members
 	map::Territory* _sourceTerritory{nullptr};
 	map::Territory* _targetTerritory{nullptr};
-	int* _numberOfArmies{nullptr};
+	int _numberOfArmies{0};
 };
 
 /// <summary>
@@ -151,7 +164,7 @@ class BlockadeOrder : public Order {
 public:
 	// Constructors
 	BlockadeOrder();
-	BlockadeOrder(const Player& issuingPlayer, map::Territory& targetTerritory);
+	BlockadeOrder(Player& issuingPlayer, map::Territory& targetTerritory);
 	BlockadeOrder(const BlockadeOrder& orderToCopy);
 	// Destructor
 	~BlockadeOrder();
@@ -193,7 +206,7 @@ class BombOrder : public Order {
 public:
 	// Constructors
 	BombOrder();
-	BombOrder(const Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory);
+	BombOrder(Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory);
 	BombOrder(const BombOrder& orderToCopy);
 	// Destructor
 	~BombOrder();
@@ -236,7 +249,7 @@ class DeployOrder : public Order {
 public:
 	// Constructors
 	DeployOrder();
-	DeployOrder(const Player& issuingPlayer, map::Territory& targetTerritory, int numberOfArmies);
+	DeployOrder(Player& issuingPlayer, map::Territory& targetTerritory, int _numberOfArmies);
 	DeployOrder(const DeployOrder& orderToCopy);
 	// Destructor
 	~DeployOrder();
@@ -266,7 +279,7 @@ public:
 private:
 	// Data members
 	map::Territory* _targetTerritory{nullptr};
-	int* _numberOfArmies{nullptr};
+	int _numberOfArmies{0};
 };
 
 /// <summary>
@@ -311,6 +324,7 @@ private:
 	Player* _secondPlayer{nullptr};
 };
 
+
 /// <summary>
 /// This class contains a list of Order derived classes.
 /// </summary>
@@ -347,6 +361,8 @@ public:
 	/// </remarks>
 	/// <param name="index">The current index of order to be removed.</param>
 	void remove(int index);
+
+	string toString();
 	/// <summary>
 	/// Sends a list of the orders currently in the list to the output stream.
 	/// </summary>
@@ -357,6 +373,7 @@ public:
 	/// </summary>
 	/// <param name="ordersListToAssign">The orders list to copy over.</param>
 	OrdersList& operator=(OrdersList& ordersListToAssign);
+	
 private:
 	// Data members
 	list<Order*> _orders;

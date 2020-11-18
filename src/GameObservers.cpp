@@ -1,12 +1,44 @@
 #include "GameObservers.h"
-#include <iostream>
 
-Observer::Observer(){};
-Observer::~Observer(){};
 
-Observable::Observable()
+
+Observer::Observer(){}; 
+
+Observer::~Observer(){}; 
+
+Observable::Observable() 
 {
   _observers = new std::list<Observer *>;
+}
+
+
+Observer::Observer(const Observer &observableCopy) {
+    // shallow copy is intended for all of the views. Intentionally left blank because windows would overlap.
+}
+
+
+ostream& operator<<(ostream& out, const Observer& ObserverToStream) {
+	  return out;
+}
+
+
+Observer& Observer::operator=(const Observer& ObserverToAssign) {
+	return *this;
+}
+
+
+Observable::Observable(const Observable &observableCopy) {
+    // shallow copy is intended for all of the views. Intentionally left blank because windows would overlap.
+}
+
+
+ostream& operator<<(ostream& out, const Observable& ObservableToStream) {
+	  return out;
+}
+
+
+Observable& Observable::operator=(const Observable& observableToAssign) {
+	return *this;
 }
 
 Observable::~Observable()
@@ -14,7 +46,7 @@ Observable::~Observable()
   delete _observers;
 }
 
-void Observable::attach(Observer *ob)
+void Observable::attach(Observer *ob) 
 {
   _observers->push_back(ob);
 }
@@ -32,26 +64,20 @@ void Observable::notify()
   }
 }
 
-PhaseObserver::PhaseObserver() {};
-PhaseObserver::~PhaseObserver() {};
-void PhaseObserver::update() {};
-void PhaseObserver::display() {
-  // display phase information: 
-  // hardcoded test case.
-  std::cout << "Player 3: Reinforcement phase or Player 1: Issue orders phase.";
+StringLog::StringLog() {} 
 
-  // call getters from other parts to display them here. Need to get cursor to lineup with the window.
-};
+StringLog::~StringLog() {} 
 
-StatisticsObserver::StatisticsObserver() {};
-StatisticsObserver::~StatisticsObserver() {};
-void StatisticsObserver::update() {};
-void StatisticsObserver::display() {
-  // figuring out a way to display a graph to depict which percentage of territories are owned by which players.
-  // update when country has been conquered by player.
+void StringLog::append(std::string msg) { 
+  log.push_front(msg);
+  notify();
+}
 
-  // when player eliminated, remove from view.
+void StringLog::clear() { 
+  log.clear();
+  notify();
+}
 
-  // when player wins, update it, so that just shows that player and a winning message.
-
-};
+const std::list<std::string>& StringLog::get() { 
+  return log;
+}
