@@ -5,10 +5,10 @@
 #include <vector>
 #include <list>
 
-#ifdef _WIN32
-#include <Windows.h>
-#else
+#ifdef __linux__
 #include <unistd.h>
+#else
+//#include <Windows.h>
 #endif
 
 #define COLOR_GREY 8

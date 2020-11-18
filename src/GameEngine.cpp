@@ -593,7 +593,12 @@ void GameplayController::assign_territories() {
     territories.erase(territories.begin() + territory_index);
 
     index_of_next_player_to_receive_territory = ++index_of_next_player_to_receive_territory % _game_model->number_of_players.get();
+
+#ifdef __linux__
     usleep(10000);
+#else
+    //Sleep(100);
+#endif
   }
 }
 
