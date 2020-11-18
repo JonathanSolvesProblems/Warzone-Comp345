@@ -87,6 +87,7 @@ class Deck {
 private:
 	vector<Card*> _deck;
 public:
+	static std::shared_ptr<Deck> instance();
 	Deck(); 
 	~Deck(); 
 	void cardPlay(); 

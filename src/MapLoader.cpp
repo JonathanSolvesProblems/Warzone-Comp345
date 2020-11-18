@@ -13,13 +13,14 @@ MapLoader::MapLoader() {
 
 //copy constructor
 MapLoader::MapLoader(const MapLoader& copyto) {
-this->continents = copyto.continents;
-this->borders = copyto.borders;
-this->countries = copyto.countries;
+    this->continents = copyto.continents;
+    this->borders = copyto.borders;
+    this->countries = copyto.countries;
 }
 
 // destructor
 MapLoader::~MapLoader() {
+    
 }
 
 // OS stream operator 

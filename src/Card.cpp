@@ -48,6 +48,17 @@ Deck::~Deck() {
 	_deck.clear();
 }
 
+std::shared_ptr<Deck> Deck::instance()
+{
+  /*
+   * The first time the function is called, _singleton will be
+   * instantiated, and then subsequent calls will return that
+   * instance.
+   */
+  static std::shared_ptr<Deck>  _singleton(new Deck);
+  return _singleton;
+}
+
 Hand::~Hand() {
 	for (auto deck : cards)
 	{

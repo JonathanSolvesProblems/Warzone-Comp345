@@ -8,7 +8,7 @@ Order::Order() : Order("This is a generic order.", "This order has no effect.") 
 
 // Parameterized constructor
 Order::Order(string description, string effect) : _description(new string(description)), _effect(new string(effect)) {
-	// deliberately empty
+	// deliberately emptys
 }
 
 // Copy constructor
@@ -138,6 +138,7 @@ bool AdvanceOrder::execute() {
 			}
 			//All enemies are dead, and you still have armies left
 			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
+				this->_issuingPlayer->draw(*(Deck::instance()));
 				//change ownership to issuingPlayer
 				this->_targetTerritory->setOwner(this->_issuingPlayer);
 				//Change armies values
@@ -244,6 +245,7 @@ bool AirliftOrder::execute() {
 			}
 			//All enemies are dead, and you still have armies left
 			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
+				this->_issuingPlayer->draw(*(Deck::instance()));
 				//change ownership to issuingPlayer
 				this->_targetTerritory->setOwner(this->_issuingPlayer);
 				//Change armies values

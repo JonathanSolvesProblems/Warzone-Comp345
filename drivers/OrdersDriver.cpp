@@ -147,11 +147,16 @@ void advanceOrderTest() {
 	cout << "-------------------------" << endl;
 	newJersey.setArmees(20);
 	quebec.setArmees(4);
+
+	cout << "Hand BEFORE conquer: ";
+	anthony.hand->show();
 	cout << "Attacker wins:" << endl;
 	cout << "Before: " << newJersey << endl << quebec << endl;
 	advanceDiff = new AdvanceOrder(anthony, newJersey, quebec, 20);
 	advanceDiff->execute();
 	cout << "After: " << newJersey << endl << quebec << endl;
+	cout << "Hand AFTER conquer: ";
+	anthony.hand->show();
 	cout << "----------------------------------------------------" << endl;
 	delete advanceSame;
 	delete advanceDiff;
