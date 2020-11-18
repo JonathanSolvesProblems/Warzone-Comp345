@@ -442,3 +442,58 @@ void GameplayView::deactivate() {
   }
 }
 
+GameplayController::GameplayController(GameModel *gm) {
+  _game_model = gm;
+}
+
+GameplayController::~GameplayController() {
+}
+
+void GameplayController::viewActivated() {
+  startupPhase();
+  mainGameLoop();
+}
+
+bool GameplayController::keyboardEventPerformed(int key) { return false; }
+
+
+void GameplayController::startupPhase() {
+  _game_model->current_phase.set(STARTUP);
+
+  int num_players = _game_model->number_of_players.get();
+
+  srand(time(NULL));
+
+  std::vector<Player*> newly_created_players;
+  for (int i=0; i < num_players; i++) {
+    Player *new_player = new Player("Player " + std::to_string(i + 1), i);
+    newly_created_players.push_back(new_player);
+  }
+
+  while (!newly_created_players.empty()) {
+    int index = random() % newly_created_players.size();
+  
+    Player *next = newly_created_players[index];
+    _game_model->active_players.push_back(next);
+
+    newly_created_players.erase(newly_created_players.begin() + index);
+  }
+
+  _game_model->current_player.set(_game_model->active_players.get()[0]);
+
+  // TODO give territories to Players
+}
+
+void GameplayController::mainGameLoop() {
+  _game_model->current_phase.set(REINFORCEMENT);
+}
+
+void GameplayController::viewDeactivated() {
+  for (auto player : _game_model->active_players.get()) {
+    delete player;
+  }
+
+  // TODO We might want to remove these two lines
+  // _game_model->active_players.clear();
+  // _game_model->current_player.set(nullptr);
+}
