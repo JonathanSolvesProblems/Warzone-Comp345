@@ -802,16 +802,29 @@ void GameplayController::reinforcementPhase() {
 }
 
 void GameplayController::issueOrdersPhase() {
-
   _game_model->current_phase->set(ISSUE_ORDERS);
-  //Deployment Stage
-  deploySubPhase();
-  for (auto player : _game_model->active_players->get()) {
-    _game_model->current_player->set(player);
-    airliftSubPhase();
-    blockadeSubPhase();
-    advanceSubPhase();
+
+  std::vector<Player*> active_players = _game_model->active_players->get();
+  std::vector<Player*> players_wanting_to_issue_orders;
+  players_wanting_to_issue_orders.assign(active_players.begin(), active_players.end());
+  
+  int index_of_current_player = 0;
+  while (players_wanting_to_issue_orders.size()) {
+    Player *current = players_wanting_to_issue_orders[0];
+    _game_model->current_player.set(current);
+
+    Order* issued = current->issueOrder();
+    if (issued != nullptr) {
+      _game_model->log->append(current->playerName " issued: " + issued->toString());
+    } else {
+      // If no order was issued, that means the Player is done issuing orders, and should be removed from the pool
+      players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
+    }
+
+    // Go to next player who still wants to issue an order.
+    index_of_current_player = ++index_of_current_player % players_wanting_to_issue_orders.size();
   }
+
 }
 
 void GameplayController::deploySubPhase() {
@@ -919,7 +932,7 @@ int GameplayController::getPlayersBonus(Player* p) {
 
   for(auto continent : _game_model->map->getContinents()){
     for(auto territory : _game_model->map->getTerritories()){
-      if(territory->getOwner() != p){
+      if(territory->getOwner() != p){f
         ownsThisContinent = false;
         break;
         //Check next continent
