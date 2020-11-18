@@ -91,6 +91,7 @@ private:
 	Deck(); 
 public:
 	static std::shared_ptr<Deck> instance();
+	Deck (const Deck  &) = delete;
 	~Deck(); 
 	void cardPlay(); 
 	Card* draw(); 
