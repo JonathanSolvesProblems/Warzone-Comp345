@@ -533,6 +533,9 @@ OrdersList::OrdersList(const OrdersList &ordersListToCopy) {
 
 // Destructor
 OrdersList::~OrdersList() {
+	for (Order* order : _orders) {
+		delete order;
+	}
 	_orders.clear();
 }
 
