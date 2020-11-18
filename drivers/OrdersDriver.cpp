@@ -1,6 +1,8 @@
 #include "Orders.h"
 #include <string>
 
+using std::cout;
+
 template<typename T>
 void orderTest() {
 	T orderTest;

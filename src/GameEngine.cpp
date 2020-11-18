@@ -574,7 +574,7 @@ GameplayController::GameplayController(GameModel *gm)
 
 GameplayController::~GameplayController()
 {
-  
+
 }
 
 void GameplayController::viewActivated()
@@ -649,7 +649,7 @@ void GameplayController::assign_territories()
 #ifdef __linux__
     usleep(10000);
 #else
-    //Sleep(100);
+    Sleep(100);
 #endif
   }
 }

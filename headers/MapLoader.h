@@ -10,7 +10,9 @@
 #include <ctype.h>
 #include "Map.h"
 
-using namespace std;
+using std::ostream;
+using std::string;
+using std::endl;
 
 class MapLoader
 {

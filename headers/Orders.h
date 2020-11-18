@@ -7,7 +7,11 @@ class OrdersList;
 #include <list>
 #include "Map.h"
 #include "Player.h"
-using namespace std;
+
+using std::ostream;
+using std::string;
+using std::list;
+using std::endl; 
 
 /// <summary>
 /// Order Class

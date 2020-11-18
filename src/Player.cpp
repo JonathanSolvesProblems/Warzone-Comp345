@@ -4,7 +4,6 @@
 #include <string>
 #include <algorithm>
 
-using namespace std;
 
 Player::Player(string name, int pID) {
 	playerName = name;
