@@ -23,26 +23,12 @@ namespace map
 
   Map::~Map()
   {
-  
-    while (continents->size())
-    {
-      Continent* continent = continents->back();
-      continents->pop_back();
-
-      for (Territory *territory : continent->getTerritories())
-      {
-        std::remove_if(
-            territories->begin(),
-            territories->end(),
-            [territory](Territory* t) {
-              return t == territory;
-            });
-        continent->removeTerritory(territory);
-        // delete territory;
-      }
+    for (Territory* t : *territories) {
+      delete t;
     }
-    continents->clear();
-    territories->clear();
+    for (Continent* c : *continents) {
+      delete c;
+    }
     delete continents;
     delete territories;
   }
@@ -487,15 +473,6 @@ namespace map
     delete bonus;
     delete name;
 
-    for (Territory *territory : *territories)
-    {
-      if (territory)
-      {
-        territory->setContinent(nullptr);
-        delete territory;
-      }
-    }
-    territories->clear();
     delete territories;
   }
 
