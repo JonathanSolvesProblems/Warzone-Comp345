@@ -48,6 +48,8 @@ public:
 	/// </returns>
 	virtual bool execute() = 0;
 
+	string toString();
+
 	bool checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer);
 	/// <summary>
 	/// Sends the order description to the output stream.
@@ -359,6 +361,8 @@ public:
 	/// </remarks>
 	/// <param name="index">The current index of order to be removed.</param>
 	void remove(int index);
+
+	string toString();
 	/// <summary>
 	/// Sends a list of the orders currently in the list to the output stream.
 	/// </summary>

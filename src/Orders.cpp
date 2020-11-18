@@ -24,6 +24,10 @@ Order::~Order() {
 	delete _effect;
 }
 
+string Order::toString() {
+	return *_description;
+}
+
 // Overloads the stream insertion operator.
 ostream& operator<<(ostream& out, const Order& orderToStream) {
 	out << *(orderToStream._description);
@@ -580,6 +584,14 @@ ostream& operator<<(ostream& out, const OrdersList& ordersListToStream) {
 		out << **ordersIter << " ";
 	}
 	out << endl;
+	return out;
+}
+
+string OrdersList::toString() {
+	string out = "";
+	for (auto ordersIter : _orders) {
+		out += ordersIter->toString() + " ";
+	}
 	return out;
 }
 

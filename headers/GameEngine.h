@@ -340,13 +340,18 @@ class GameplayController : public ActionListener {
     */
     void mainGameLoop();
 
+    bool somePlayerHasArmies();
+
     /* Randomly assigns territories to players in round-robin order */
     void assign_territories();
 
     void reinforcementPhase();
     void issueOrdersPhase();
     void executeOrdersPhase();
+
+    bool reinforcementsAvailable();
     int getPlayersBonus(Player* p);
+    void deploySubPhase();
 
     GameModel *_game_model;
 };

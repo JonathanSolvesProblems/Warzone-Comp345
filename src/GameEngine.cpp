@@ -729,7 +729,7 @@ void GameplayController::assign_territories()
 #ifdef __linux__
     usleep(10000);
 #else
-    Sleep(100);
+    Sleep(50);
 #endif
   }
 }
@@ -738,9 +738,33 @@ void GameplayController::mainGameLoop() {
   
   _game_model->current_phase.set(REINFORCEMENT);
 
-  //reinforcementPhase();
+  reinforcementPhase();
+  issueOrdersPhase();
   /* Play out game */
 
+}
+
+bool GameplayController::reinforcementsAvailable() {
+  int numPlayers = _game_model->active_players.get().size();
+  Player* activePlayers = _game_model->active_players.get(); 
+
+  vector<int> playerArmies(numPlayers);
+  //int* armiesToBeDeployed = new int[numPlayers];
+
+  //Initial armies
+  // for(int i = 0; i < playerArmies.size(); i++) {
+  //   playerArmies.push_back(activePlayers->at(i));
+  // }
+
+  // while() {
+
+  // }
+  
+  for (auto player : _game_model->active_players.get()) {
+    if(player->getArmees() > 0)
+      return true;
+  }
+  return false;
 }
 
 void GameplayController::reinforcementPhase() {
@@ -772,11 +796,41 @@ void GameplayController::reinforcementPhase() {
    
     player->setArmees(player->getArmees() + armiesToAssign);
 
-   // _game_model->log->append("Total armies for plaer: " + std::to_string(player->getArmees()));
+    _game_model->log->append("Total armies for player: " + std::to_string(player->getArmees()));
   }
 }
 
+
+void GameplayController::deploySubPhase() {
+
+
+  while(GameplayController::reinforcementsAvailable()){
+    for (auto player : _game_model->active_players.get()) {
+      vector<map::Territory*> defendingTerrs = player->toDefend();
+      
+      srand(time(0));
+
+      int randomIndex = rand() % defendingTerrs.size();
+      map::Territory* randomTerr = defendingTerrs.at(randomIndex);
+
+      int randomArmies = rand() % player->getArmees();
+
+      if(randomArmies == 0){
+        randomArmies += 1;
+      }
+
+      DeployOrder* d = new DeployOrder(*player,*randomTerr,randomArmies);
+      player->issueOrder(d);
+
+      _game_model->log->append("New Orders issued: " + player->listOfOrders->toString());
+    }
+  } 
+}
+
 void GameplayController::issueOrdersPhase() {
+
+  //Deployment Stage
+  deploySubPhase();
 
 }
 
