@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include <algorithm> // for std::sort
 
 string convertEnum(Phase current_phase)
 {
@@ -416,25 +417,41 @@ void StatisticsObserverView::display()
   }
   else
   {
+      // sorting the players in descending order, based on how many territories they own.
+
+      // _game_model->active_players.begin(), _game_model-
+      // 
+
+      std::vector<Player*> sortedPlayers;
+      
+
+      sortedPlayers.assign(players.begin(), players.end());
+
+      std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](auto playerA, auto playerB){
+          return playerA->owned_territories.size() > playerB->owned_territories.size();
+      });
+
+    int row = 0;
     // else draw the graphic.
-    for (int i = 0; i < players.size(); i++)
+    for (auto player : sortedPlayers)
     {
 
       // gets the # of territories the player owns.
-      int number_of_territories = players[i]->owned_territories.size();
+      int number_of_territories = player->owned_territories.size();
 
       // percentage that the player owns for their territories.
       float percent_owned = (float)number_of_territories / _game_model->map->getTerritories().size();
 
       int cp;
 
+      
       // for future, need to be relative to size of player name.
       // if the player does not own anymore territories. Remove them from the statistics screen.
      
         // Order players by number of territories they own.
-        wmove(_window, 1 + 2 * i, 1);
-        wprintw(_window, players[i]->playerName.c_str());
-        waddch(_window, ' ');
+      wmove(_window, 1 + 2 * row++, 1);
+      wprintw(_window, player->playerName.c_str());
+      waddch(_window, ' ');
       
 
       if (percent_owned > 0.2)
