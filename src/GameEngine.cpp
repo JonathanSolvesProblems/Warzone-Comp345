@@ -133,14 +133,14 @@ bool MainMenuController::keyboardEventPerformed(int key)
     _settings_model->stats_headers_enabled.set(!current);
     return true;
   }
-  else if (key == KEY_UP)
+  else if (key == KEY_UP || key == 'w')
   {
     int nNumberOfPlayers = _settings_model->number_of_players.get() + 1;
     if (nNumberOfPlayers > 5)
       nNumberOfPlayers = 5;
     _settings_model->number_of_players.set(nNumberOfPlayers);
   }
-  else if (key == KEY_DOWN)
+  else if (key == KEY_DOWN || key == 's')
   {
     int nNumberOfPlayers = _settings_model->number_of_players.get() - 1;
     if (nNumberOfPlayers < 2)
@@ -595,12 +595,14 @@ void GameplayController::assign_territories() {
     index_of_next_player_to_receive_territory = ++index_of_next_player_to_receive_territory % _game_model->number_of_players.get();
     usleep(10000);
   }
+
 }
 
 void GameplayController::mainGameLoop() {
   _game_model->current_phase.set(REINFORCEMENT);
 
   /* Play out game */
+  _game_model->
 
   // Application::instance()->activateView(MAIN_MENU_VIEW);
 }
