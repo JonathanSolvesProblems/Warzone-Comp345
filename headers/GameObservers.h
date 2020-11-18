@@ -4,6 +4,10 @@
 #include <type_traits>
 #include <algorithm>
 #include <string>
+#include <iostream>
+#include <iostream>
+
+using std::ostream;
 
 // These are our observers, that will be notified by the Observable class for any changes. Class is abstract, to implement update method in the children.
 class Observer
@@ -11,6 +15,14 @@ class Observer
 public:
   ~Observer(); // destructor
   virtual void update() = 0; // abstract method to be implemented by observers.
+
+  Observer(const Observer& observerCopy); // copy constructor
+
+  // Overloads the stream insertion operator.
+  friend ostream& operator<<(ostream& out, const Observer& observerToStream);
+
+  // Overloads the equals operator
+  Observer& operator=(const Observer& o);
 
 protected:
   Observer(); // default constructor.
@@ -25,12 +37,19 @@ public:
   virtual void notify(); // notifies all observers attached to the Observable.
   Observable(); // default constructor
   ~Observable(); // destructor.
+  Observable(const Observable& observableCopy); // copy constructor
+
+  // Overloads the stream insertion operator.
+  friend ostream& operator<<(ostream& out, const Observable& ObservableToStream);
+
+  // Overloads the equals operator
+  Observable& operator=(const Observable& o);
 
 private:
   std::list<Observer *> *_observers; // all observers subscribed to the observable will be stored here.
 };
 
-// allows for multiple types across the observable and observer.
+// allows for multiple types across the observable and observer to cross reference each other.
 template <class T>
 class VectorObservable : public Observable, public Observer
 {
@@ -41,38 +60,42 @@ class VectorObservable : public Observable, public Observer
 
 public:
   VectorObservable(); // default constructor
-  VectorObservable(std::vector<T> &); 
+  
+ 
+  VectorObservable(std::vector<T> &); // 1 parameter constructor, accepts vector of template type.
+  VectorObservable(const VectorObservable& vectorObservableCopy); // copy constructor
+
   ~VectorObservable(); // destructor
 
-  void set(std::vector<T> &);
-  const std::vector<T> &get();
-  void push_back(T);
-  void remove(T);
-  void clear();
-  virtual void update();
+  void set(std::vector<T> &); // 1 parameter constructor.
+  const std::vector<T> &get(); // getter
+  void push_back(T); // push_back
+  void remove(T); // remove from template chosen class.
+  void clear(); // to clear observables.
+  virtual void update(); // update method that calls notify, overloading update from observer class. Has to be defined.
 
 private:
-  void silent_clear();
-  std::vector<T> state;
+  void silent_clear();// clears obsevers.
+  std::vector<T> state; // state of observer.
 };
 
+// prints messages from observable.
 class StringLog : public Observable {
 
   public:
-    StringLog();
-    ~StringLog();
+    StringLog(); // default constructor
+    ~StringLog(); // default constructor
 
-    void append(std::string msg);
-    void clear();
-    const std::list<std::string>& get();
+    void append(std::string msg); // append the message.
+    void clear();  // clear message.
+    const std::list<std::string>& get(); // get message.
 
   private:
   std::list<std::string> log;
 };
 
 // IMPLEMENTATION FOR TEMPLATE CLASSES
-// (Because template implemenations must be in the same file as the declaration)
-
+// **(Because template implemenations must be in the same file as the declaration)**
 template <class T>
 class ConcreteObservable : public Observable {
 public:
@@ -82,6 +105,7 @@ private:
   T state;
 };
 
+// adds a new state to concrete observable.
 template <class T>
 void ConcreteObservable<T>::set(T new_state)
 {
@@ -90,23 +114,23 @@ void ConcreteObservable<T>::set(T new_state)
 }
 
 template <class T>
-T ConcreteObservable<T>::get()
+T ConcreteObservable<T>::get() // returns the state with the concreteobservable
 {
-  
   return state;
 }
 
 template <class T>
-VectorObservable<T>::VectorObservable() {}
+VectorObservable<T>::VectorObservable() {} // default constructor implementation.
 
 template <class T>
-VectorObservable<T>::~VectorObservable() {}
+VectorObservable<T>::~VectorObservable() {} // destructor
 
 template <class T>
-VectorObservable<T>::VectorObservable(std::vector<T>& base) {
+VectorObservable<T>::VectorObservable(std::vector<T>& base) { // sets the state to base
   state = base;
 }
 
+// sets an observable to the base.
 template <class T>
 void VectorObservable<T>::set(std::vector<T> &base) {
   state = base;
@@ -119,12 +143,14 @@ void VectorObservable<T>::set(std::vector<T> &base) {
   notify();
 }
 
+// clears all data and notifies observers to do the same.
 template <class T>
 void VectorObservable<T>::clear() {
   silent_clear();
   notify();
 }
 
+// detaches all observers from observable.
 template <class T>
 void VectorObservable<T>::silent_clear() {
   while (state.size())
@@ -137,6 +163,7 @@ void VectorObservable<T>::silent_clear() {
   }
 }
 
+// remove element from observable. iterates through state to find it and erases it from state.
 template <class T>
 void VectorObservable<T>::remove(T el) {
   auto found = std::find(state.begin(), state.end(), el);
@@ -149,6 +176,7 @@ void VectorObservable<T>::remove(T el) {
   }
 }
 
+// push object into VectorObservable and attach it to the observable. Also push it into the state.
 template <class T>
 void VectorObservable<T>::push_back(T el) {
   if (el) {
@@ -157,11 +185,13 @@ void VectorObservable<T>::push_back(T el) {
   }
 }
 
+// calls notify method to update all observers.
 template <class T>
 void VectorObservable<T>::update() {
   notify();
 }
 
+// returns the state of the Observable 
 template <class T>
 const std::vector<T>& VectorObservable<T>::get() {
   return state;

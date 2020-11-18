@@ -1,4 +1,5 @@
 #pragma once
+#include "Map.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "Map.h"
+
 
 using std::ostream;
 using std::string;
