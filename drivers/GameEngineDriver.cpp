@@ -21,9 +21,9 @@ int main () {
 
   /* Declare game model and initialize some defaults */
   GameModel *game_model = new GameModel();
-  game_model->phase_headers_enabled.set(true);
-  game_model->stats_headers_enabled.set(true);
-  game_model->number_of_players.set(2);
+  game_model->phase_headers_enabled->set(true);
+  game_model->stats_headers_enabled->set(true);
+  game_model->number_of_players->set(2);
 
   /* Menu model for selecting Map files */
   MenuModel *menu_model = new MenuModel();
