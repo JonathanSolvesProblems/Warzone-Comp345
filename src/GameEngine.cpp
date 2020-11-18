@@ -486,9 +486,12 @@ void StatisticsObserverView::display()
 
       convertPercentage << percent_owned * 100;
 
-      std::string percent_ownedString = " " + std::string(convertPercentage.str()) + "%%";
-
-      wprintw(_window, percent_ownedString.c_str());
+      std::string percent_ownedString = " " + convertPercentage.str() + "%%";
+      std::string number_of_territories_ownedString = " (" + std::to_string(number_of_territories) + " territories)";
+      
+      std::string displayTerritoryStringInfo =  percent_ownedString + number_of_territories_ownedString;
+      
+      wprintw(_window, displayTerritoryStringInfo.c_str());
     }
   }
 
