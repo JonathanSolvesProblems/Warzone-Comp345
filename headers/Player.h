@@ -38,12 +38,7 @@ public:
 	//stores a player's ID
 	int playerID;
 
-	int army;
 	
-	int getArmy();
-	void setArmy(int soldiersAdded);
-	void addReinforcements(int soldiers);
-	void soldiersDied(int soldiers);
 	/// <summary>
 	/// Player constructor
 	/// </summary>

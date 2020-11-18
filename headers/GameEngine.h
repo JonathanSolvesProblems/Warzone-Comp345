@@ -328,10 +328,7 @@ class GameplayController : public ActionListener {
 
     /* Handles clean up */
     virtual void viewDeactivated();
-    virtual void reinforcementPhase();
-    virtual void issueOrdersPhase();
-    virtual void executeOrdersPhase();
-    virtual int getPlayersBonus(Player& p);
+    
 
   private:
     /* Creates the required number of players, determines a random order of play,
@@ -345,6 +342,11 @@ class GameplayController : public ActionListener {
 
     /* Randomly assigns territories to players in round-robin order */
     void assign_territories();
+
+    void reinforcementPhase();
+    void issueOrdersPhase();
+    void executeOrdersPhase();
+    int getPlayersBonus(Player* p);
 
     GameModel *_game_model;
 };

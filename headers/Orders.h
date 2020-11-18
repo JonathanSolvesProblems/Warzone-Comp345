@@ -14,6 +14,7 @@ using std::ostream;
 using std::string;
 using std::list;
 using std::endl; 
+using std::tuple;
 
 static vector<tuple<Player*,Player*>> truces;
 

@@ -42,8 +42,8 @@ bool Order::checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer) {
 		//cout << "truce count: " << *truceIter << endl;
 
 		tuple<Player*,Player*> truce = truces.at(i);
-		Player* p1 = get<0>(truce);
-		Player* p2 = get<1>(truce);
+		Player* p1 = std::get<0>(truce);
+		Player* p2 = std::get<1>(truce);
 
 		if( p1 ==  _issuingPlayer && p2 == _targetPlayer ) {
 			return true;
@@ -375,8 +375,8 @@ bool BombOrder::validate() {
 	// 	//cout << "truce count: " << *truceIter << endl;
 
 	// 	tuple<Player*,Player*> truce = truces.at(i);
-	// 	Player* p1 = get<0>(truce);
-	// 	Player* p2 = get<1>(truce);
+	// 	Player* p1 = std::get<0>(truce);
+	// 	Player* p2 = std::get<1>(truce);
 
 	// 	if( p1 ==  _issuingPlayer && p2 == _targetPlayer ) {
 	// 		return false;
@@ -507,8 +507,8 @@ bool NegotiateOrder::execute() {
 	if (validate()) {
 		tuple<Player*,Player*> truce;
 
-		get<0>(truce) = _issuingPlayer;
-		get<1>(truce) = _secondPlayer;
+		std::get<0>(truce) = _issuingPlayer;
+		std::get<1>(truce) = _secondPlayer;
 
 		truces.push_back(truce);
 		return true;

@@ -13,25 +13,7 @@ Player::Player(string name, int pID)
 	hand = new Hand();
 }
 
-int Player::getArmy()
-{
-	return army;
-}
 
-void Player::setArmy(int startingSoldiers)
-{
-	army = startingSoldiers;
-}
-
-void Player::addReinforcements(int soldiers)
-{
-	army += soldiers;
-}
-
-void Player::soldiersDied(int soldiers)
-{
-	army -= soldiers;
-}
 
 Player::Player(const Player &playerToCopy)
 {

@@ -672,7 +672,7 @@ void GameplayController::startupPhase()
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
 
     // sets the starting armies for each player accoridng to the number of players playing the game
-    new_player->setArmy(armies_per_player);
+    new_player->setArmees(armies_per_player);
 
     newly_created_players.push_back(new_player);
   }
@@ -735,33 +735,44 @@ void GameplayController::assign_territories()
 }
 
 void GameplayController::mainGameLoop() {
-
-
+  
   _game_model->current_phase.set(REINFORCEMENT);
 
-  
-
+  //reinforcementPhase();
   /* Play out game */
 
 }
 
 void GameplayController::reinforcementPhase() {
+  _game_model->log->append("Reinforcement phase started");
+    // Add assignArmies to player
   //Go through players
   for (auto player : _game_model->active_players.get()) {
     //Find total territory count for each player
     int ownedTerritories = player->owned_territories.size();
     int armiesToAssign = (int)floor(ownedTerritories / 3);
-
+    int bonus = getPlayersBonus(player);
     //assign continent bonus
+     _game_model->log->append("Initial armies: " + std::to_string(player->getArmees()));
+
+
+    if(bonus != 0)
+       _game_model->log->append("Bonus received: " + std::to_string(bonus));
+
     armiesToAssign += getPlayersBonus(player);
 
-    //Minimum 3 armies
+    //Minimum 3 armies if no armies
     if(armiesToAssign <= 3){
       armiesToAssign = 3;
     }
 
+    _game_model->log->append("Armies assigned in reinforcement phase: " + std::to_string(armiesToAssign));
     // Add assignArmies to player
+
+   
     player->setArmees(player->getArmees() + armiesToAssign);
+
+   // _game_model->log->append("Total armies for plaer: " + std::to_string(player->getArmees()));
   }
 }
 
@@ -773,7 +784,7 @@ void GameplayController::executeOrdersPhase() {
 
 }
 
-int GameplayController::getPlayersBonus(Player& p) {
+int GameplayController::getPlayersBonus(Player* p) {
   int totalBonus = 0;
   bool ownsThisContinent = true;
 
@@ -786,7 +797,9 @@ int GameplayController::getPlayersBonus(Player& p) {
       }
     }
     //They own the continent
-    totalBonus += continent->getBonus();
+    if(ownsThisContinent){
+      totalBonus += continent->getBonus();
+    }
   }
 
   return totalBonus;
