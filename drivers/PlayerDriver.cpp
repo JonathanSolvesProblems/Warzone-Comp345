@@ -17,6 +17,7 @@ int main() {
 	cout << "Greetings Player: " << player->playerName << "\n";
 	cout << "Your Player ID is: " << player->playerID << "\n";
 
+
 	cout << "Acquiring Territory: " << *(map.getTerritory(1)) << std::endl;
 	map.getTerritory(1)->setOwner(player);
 	cout << "Acquiring Territory: " << *(map.getTerritory(3)) << std::endl;
@@ -37,10 +38,9 @@ int main() {
 
 	// Card section
 	cout << "Drawing 3 cards to hand:" << std::endl;
-	Deck deck = Deck();
-	player->draw(deck);
-	player->draw(deck);
-	player->draw(deck);
+	player->draw(*Deck::instance());
+	player->draw(*Deck::instance());
+	player->draw(*Deck::instance());
 
 	cout << "Cards in hand:" << std::endl;
 	player->hand->show();
