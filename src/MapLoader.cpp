@@ -24,9 +24,10 @@ namespace fs = std::filesystem;
 #include <locale>
 #include <codecvt>
 
-std::wstring string_to_convert;
+using std::stringstream;
+using std::ifstream;
 
-using namespace std;
+std::wstring string_to_convert;
 
 // default constructor
 MapLoader::MapLoader()

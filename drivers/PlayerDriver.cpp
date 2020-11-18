@@ -3,6 +3,9 @@
 #include "MapLoader.h"
 using map::Territory;
 
+using std::cout;
+using std::endl;
+
 int main() {
 
 	map::Map map = map::Map();

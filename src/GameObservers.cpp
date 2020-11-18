@@ -3,6 +3,7 @@
 
 
 Observer::Observer(){};
+
 Observer::~Observer(){};
 
 Observable::Observable()

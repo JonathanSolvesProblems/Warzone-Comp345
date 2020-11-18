@@ -5,8 +5,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-using namespace std;
-
+using std::vector;
+using std::ostream;
+using std::cout;
 // Card is an abstract class that will be the parent of all the card types.
 class Card {
 public:

@@ -12,7 +12,9 @@ class Player;
 #include <vector>
 #include <string>
 
-using namespace std;
+using std::ostream;
+using std::vector;
+using std::unordered_set;
 
 class Player : public Observable {
 public:
