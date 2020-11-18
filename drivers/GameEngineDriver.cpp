@@ -1,8 +1,12 @@
 #include "GameEngine.h"
 
+/* Initializes colors and color pairs to be used with NCurses */
 void initialize_ncurses_colors() {
   start_color();
-  init_color(COLOR_GREY, 600, 600, 600);
+  /*         ID          RED  GREEEN  BLUE        */
+  init_color(COLOR_GREY, 600,   600,  600);
+
+  /*           ID         TEXT    BACKGROUND      */
   init_pair(RED_BLACK, COLOR_RED, COLOR_BLACK);
   init_pair(WHITE_BLACK, COLOR_WHITE, COLOR_BLACK);
   init_pair(GREY_BLACK, COLOR_GREY, COLOR_BLACK);
@@ -11,26 +15,32 @@ void initialize_ncurses_colors() {
 }
 
 int main () {
+  /* Enter Ncurses mode */
   initscr();
   initialize_ncurses_colors();
 
+  /* Declare game model and initialize some defaults */
   GameModel *game_model = new GameModel();
   game_model->phase_headers_enabled.set(true);
   game_model->stats_headers_enabled.set(true);
   game_model->number_of_players.set(2);
 
+  /* Menu model for selecting Map files */
   MenuModel *menu_model = new MenuModel();
 
+
+  /* Create controllers */
   MainMenuController *main_game_controller = new MainMenuController(game_model);
   MapSelectionController *map_selection_controller = new MapSelectionController(menu_model, game_model);
   MapMenuController *map_menu_controller = new MapMenuController(menu_model);
-
   GameplayController *gameplay_controller = new GameplayController(game_model);
 
+  /* Create Views */
   MainMenuView *main_menu_view = new MainMenuView(54, LINES, game_model);
   MapSelectionView *map_selection_view = new MapSelectionView(54, LINES, 6, menu_model);
   GameplayView *gameplay_view = new GameplayView(COLS - 2, LINES - 2, game_model);
 
+  /* Register Controllers as listeners to the corresponding View */
   main_menu_view->registerListener(main_game_controller);
 
   map_selection_view->registerListener(map_selection_controller);
@@ -38,16 +48,24 @@ int main () {
 
   gameplay_view->registerListener(gameplay_controller);
 
+  /* Register views to the Application singleton */
   std::shared_ptr<Application> application = Application::instance();
   application->registerView(MAIN_MENU_VIEW, main_menu_view);
   application->registerView(MAP_SELECTION_VIEW, map_selection_view);
   application->registerView(GAMEPLAY_VIEW, gameplay_view);
+
+  /* Activate the Main Menu View */
   application->activateView(MAIN_MENU_VIEW);
 
+  /* Begin the keyboard-event loop. Pressing <q> will terminate the program */
   application->mainloop('q');
+
+  /* Clear the screen before exiting, so the the terminal will function correctly afterwards */
   clear();
   refresh();
 
+
+  /* Delete pointers */
   delete map_selection_view;
   delete main_menu_view;
   delete gameplay_view;
@@ -60,6 +78,7 @@ int main () {
   delete game_model;
   delete menu_model;
 
+  /* Terminate Ncurses mode */
   endwin();
   return 0;
 }
