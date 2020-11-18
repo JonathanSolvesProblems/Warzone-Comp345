@@ -10,7 +10,7 @@ int main() {
 
 	map::Map map = map::Map();
 	MapLoader loader;
-	loader.loadFile("exampleMaps/solar.map", map);
+	loader.loadFile("solar.map", map);
 	
 	//Testing player class below...
 	Player* player = new Player("brenden", 2);
@@ -57,7 +57,6 @@ int main() {
 	cout << "Player's current list of orders:" << std::endl << *(player->listOfOrders) << std::endl;
 
 	delete player;
-	cout << "DESTROYED PLAYER!" << endl;
 
 	return 0;
 }
