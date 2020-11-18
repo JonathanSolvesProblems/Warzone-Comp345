@@ -249,7 +249,6 @@ namespace map
     {
       neighbour->deleteNeighbour(this);
     }
-    neighbours->clear();
     delete neighbours;
 
     if (continent)
@@ -398,7 +397,7 @@ namespace map
       if ((*it) == territory)
       {
         neighbours->erase(it);
-        return (*it);
+        return nullptr;
       }
     }
     return nullptr;

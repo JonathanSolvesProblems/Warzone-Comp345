@@ -54,9 +54,4 @@ public:
 public:
 	bool mapSelection(map::Map &test);
 	vector<string> findMapFiles();
-
-	bool mapValidator(string filePath, map::Map &test);
-	bool borderValidator(string line);
-	bool countryValidator(string line);
-	bool continentValidator(string line);
 };
