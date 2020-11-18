@@ -10,7 +10,7 @@ g++ -I .\headers -o build\GameEngineDriver\GameEngine.o -c src\GameEngine.cpp
 
 g++ -I .\headers -o build\GameEngineDriver\GameObservers.o -c src\GameObservers.cpp
 
-g++ -std=c++17 -I .\headers -o GameEngineDriver drivers\GameEngineDriver.cpp src\MapLoader.cpp build\GameEngineDriver\*.o -lpdcurses 
+g++ -std=c++17 -I .\headers -o GameEngineDriver drivers\GameEngineDriver.cpp src\MapLoader.cpp build\GameEngineDriver\*.o -lpdcurses -g
 
 del build\GameEngineDriver\*.o
 rmdir build\GameEngineDriver
