@@ -812,7 +812,7 @@ void GameplayController::issueOrdersPhase() {
   
   int index_of_current_player = 0;
   while (players_wanting_to_issue_orders.size()) {
-    Player *current = players_wanting_to_issue_orders[0];
+    Player *current = players_wanting_to_issue_orders[index_of_current_player];
     _game_model->current_player.set(current);
 
     // Allow the current player to issue 1 order, or return nullptr indicating they are finished
@@ -826,6 +826,11 @@ void GameplayController::issueOrdersPhase() {
 
     // Go to next player who still wants to issue an order.
     index_of_current_player = ++index_of_current_player % players_wanting_to_issue_orders.size();
+#ifdef __linux__
+    usleep(10000);
+#else
+    Sleep(50);
+#endif
   }
 }
 
