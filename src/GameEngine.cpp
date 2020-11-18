@@ -738,7 +738,7 @@ void GameplayController::mainGameLoop() {
   
   _game_model->current_phase.set(REINFORCEMENT);
 
-  //reinforcementPhase();
+  reinforcementPhase();
   /* Play out game */
 
 }
