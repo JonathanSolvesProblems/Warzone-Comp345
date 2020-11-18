@@ -57,7 +57,7 @@ ostream &operator<<(ostream &out, const MapLoader &o)
     return out;
 }
 // took from continent clas to make cglobal
-static int continentID = 1;
+
 //assignment operator
 //MapLoader& MapLoader::operator=(const MapLoader& o){}
 
@@ -68,6 +68,8 @@ static int continentID = 1;
 bool MapLoader::loadFile(string mapName, map::Map &test)
 {
 
+
+    int continentID = 1;
     bool continentsFound;
     bool countriesFound;
     bool bordersFound;
@@ -115,7 +117,7 @@ bool MapLoader::loadFile(string mapName, map::Map &test)
                     else
                     {
                         // checks to see if the line is a Continent
-                        if (isContinent(line, test, isValid) == false)
+                        if (isContinent(line, test, isValid,continentID) == false)
                         {
                             isValid = false;
                         }
@@ -181,6 +183,7 @@ bool MapLoader::loadFile(string mapName, map::Map &test)
         continents.clear();
         countries.clear();
         borders.clear();
+        
         return false;
     }
     else
@@ -287,10 +290,10 @@ bool MapLoader::isBorder(string line, map::Map &test, bool &isValid)
 };
 
 // isContinent method which checks to see if the string is a continent and adds it to the map by creating a continent obj
-bool MapLoader::isContinent(string line, map::Map &test, bool &isValid)
+bool MapLoader::isContinent(string line, map::Map &test, bool &isValid, int &continentID)
 {
     // a continent ID which follows standard syntax OF ALL FILES, which is to start at 1, and goes up to N continents
-    static int continentID = 1;
+   
     // arrays to store the contents of the line seperated by a space delimiter
     string continentsArr[99];
     // booleans to determine if the line is a continent
@@ -539,87 +542,6 @@ bool MapLoader::isCountry(string line, map::Map &test, bool &isValid)
     }
 };
 
-// create a map list that returns a list of maps to choose from and the selected map is tested rigth away.
-// if it isnt valid the user is prompted to select antoher map file.
-
-bool MapLoader::mapSelection(map::Map &test)
-{
-    // stores the option for the selected  map file
-    int option;
-    bool testMap = false;
-
-    // dislays all map files in the directory
-    vector<string> listOfFiles;
-
-    do
-    {
-        try
-        {
-            // stores the map files in a vector
-            listOfFiles = findMapFiles();
-
-            // prints out the map files
-            cout << "We have " << listOfFiles.size() << " map files in our system..." << endl;
-            for (int i = 0; i < listOfFiles.size(); i++)
-                cout << "Type in " << i << " to play on the " << listOfFiles[i] << " file." << endl;
-
-            // stores the option for the selected  map file
-            cout << "Please Type in the number that corresponds to the map of your choice:" << endl;
-
-            cin >> option;
-
-            if (!cin || option > listOfFiles.size() - 1 || option < 0) // or if(cin.fail())
-            {
-                // user didn't input a number
-                cin.clear();  // reset failbit
-                cin.ignore(); //skip bad input
-                // prompts the while loop to go to the next iteration
-                option = -1;
-                cout << "Please Type in a valid number!" << endl;
-            }
-
-            else
-            {
-                //stores the filepath in the string
-                string &map = listOfFiles[option];
-                string file = "exampleMaps\\" + map;
-
-                // checks to see if it is a valid map, will have to see if theres a way to keep the loop going
-                // seems that once its set, the continenets variabel never wants to be updated again.
-                if (mapValidator(file) == false)
-                {
-                    testMap = false;
-                }
-
-                else
-                {
-                    testMap = true;
-                    loadFile(file, test);
-                }
-
-                if (testMap == false)
-                {
-                    cout << "Sadly we can't play on this map because of an error, please choose another number!" << endl;
-                }
-
-                else
-                {
-                    cout << "Map Generated!" << endl;
-                }
-            }
-        }
-
-        catch (exception e)
-        {
-            cout << "Please Type in a valid number!" << endl;
-            option = -1;
-        }
-
-    } while (testMap == false || option > listOfFiles.size() - 1 || option < 0);
-
-    // returns whether if its a valid map or not
-    return testMap;
-};
 
 // finds the list of mapfiles in the selected folder and returns a vector of strings of the names of the map files
 vector<string> MapLoader::findMapFiles()
@@ -646,7 +568,7 @@ vector<string> MapLoader::findMapFiles()
 // takes in a string and has a dedicated filepath so all we have to do is attach the name of that string with the file extension
 // for instance if the folder is located in  "C:\\Users\\b1hom\\Desktop\\GameEngine\\MapFiles\\ then the map file seleced could be Solar.map and we
 // would just add it to the string.
-bool MapLoader::mapValidator(string mapName)
+bool MapLoader::mapValidator(string mapName, map::Map &test)
 {
     bool continentsFound = false;
     bool countriesFound = false;
@@ -761,8 +683,11 @@ bool MapLoader::mapValidator(string mapName)
     {
         return false;
     }
-    else
+    else{
+        MapLoader::loadFile(mapName,test);
         return true;
+    }
+        
 };
 
 // validator for border

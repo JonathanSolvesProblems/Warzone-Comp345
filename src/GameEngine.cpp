@@ -1,5 +1,14 @@
 #include "GameEngine.h"
 
+string convertEnum(Phase current_phase) {
+    switch(current_phase) {
+      case STARTUP: return "Startup Phase";
+      case REINFORCEMENT: return "Reinforcement Phase";
+      case ISSUE_ORDERS: return "Issue Orders Phase";
+      case ORDERS_EXECUTION: return "Orders Execution Phase";
+      default: return "Unknown Phase";
+    }
+}
 
 MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
 {
@@ -332,9 +341,8 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     }
 
     _game_model->map = new map::Map();
-    map::Map &map = *_game_model->map;
 
-    if (mapLoader.loadFile(map_file, map) && map.validate())
+    if (mapLoader.loadFile(map_file, *_game_model->map) && _game_model->map->validate())
     {
       // load file under
       Application::instance()->activateView(GAMEPLAY_VIEW);
@@ -376,7 +384,11 @@ void PhaseObserverView::display() {
   Player* current_player = _game_model->current_player.get();
   if(current_player != nullptr) {
      print_centered(height / 2, current_player->playerName);
-  }
+}
+
+
+  print_centered(height / 4, convertEnum(_game_model->current_phase.get()));
+
   WindowView::display();
 }
 // do phase after.
@@ -388,8 +400,28 @@ void StatisticsObserverView::display() {
 
   for(int i = 0; i < players.size(); i++)
   {
-      wmove(_window, 1, 1 + 9 * i); // for future, need to be relative to size of player name.
+      wmove(_window, 1 + 2*i, 1); // for future, need to be relative to size of player name.
       wprintw(_window, players[i]->playerName.c_str());
+      waddch(_window, ' ');
+
+      int number_of_territories = players[i]->owned_territories.size();
+      float percent_owned = (float) number_of_territories / _game_model->map->getTerritories().size();
+      int cp;
+      if (percent_owned > 0.2)
+      {
+        cp = COLOR_PAIR(BLACK_GREEN);
+      }
+      else
+      {
+        cp = COLOR_PAIR(BLACK_RED);
+      }
+
+      wattron(_window, cp);
+      for (int j = 0; j < width / 2 * percent_owned; j++)
+      {
+        waddch(_window, ' ');
+      }
+      wattroff(_window, cp);
   }
 
   // print_centered(height / 2, "stats");
@@ -430,23 +462,18 @@ GameplayView::~GameplayView() {
     delete _stats_view;
 }
 
-void GameplayView::create_phase_observer_view() {
-  _phase_view = new PhaseObserverView(COLS / 2 - 1, LINES / 4 - 1, 1, 1, settings_model);
+void GameplayView::create_phase_observer_view(int header_height)
+{
+  _phase_view = new PhaseObserverView(COLS / 2 - 1, header_height, 1, 1, settings_model);
 }
 
-void GameplayView::create_stats_observer_view()
+void GameplayView::create_stats_observer_view(int header_height)
 {
-  _stats_view = new StatisticsObserverView(COLS / 2 - 1, LINES / 4 - 1, COLS / 2, 1, settings_model);
+  _stats_view = new StatisticsObserverView(COLS / 2 - 1, header_height, COLS / 2, 1, settings_model);
 }
 
 void GameplayView::display() {
   int header_offset = 0;
-  if (_phase_view) {
-    _phase_view->display();
-  }
-  if (_stats_view) {
-    _stats_view->display();
-  }
   if (!_window) {
     activate();
   }
@@ -454,22 +481,29 @@ void GameplayView::display() {
   box(_window, 0, 0);
 
   print_centered(height / 2, "MAIN CONTENT");
-
   WindowView::display();
+
+  if (_phase_view) {
+    _phase_view->display();
+  }
+  if (_stats_view) {
+    _stats_view->display();
+  }
 }
 
 void GameplayView::activate() {
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
-  this->start_y = 1 + headers_enabled * LINES / 4;
+  int header_height = settings_model->number_of_players.get() * 2 + 1;
+  this->start_y = 1 + headers_enabled * header_height;
   this->height = LINES - start_y;
 
   if (settings_model->phase_headers_enabled.get()) {
-    create_phase_observer_view();
+    create_phase_observer_view(header_height);
     _phase_view->activate();
   }
     
   if (settings_model->stats_headers_enabled.get()) {
-    create_stats_observer_view();
+    create_stats_observer_view(header_height);
     _stats_view->activate();
   }
 
@@ -529,7 +563,6 @@ void GameplayController::startupPhase() {
   Player *first = _game_model->active_players.get()[0];
   _game_model->current_player.set(first);
 
-  // TODO give territories to Players
 
   assign_territories();
 
@@ -537,14 +570,21 @@ void GameplayController::startupPhase() {
 
 void GameplayController::assign_territories() {
   std::vector<map::Territory*> territories;
+  const std::vector<map::Territory*> original_territories = _game_model->map->getTerritories();
   territories.assign(
-    _game_model->map->getTerritories().begin(),
-    _game_model->map->getTerritories().end()
+    original_territories.begin(),
+    original_territories.end()
   );
 
   int index_of_next_player_to_receive_territory = 0;
   while (!territories.empty()) {
-    int territory_index = rand() % territories.size();
+    int r;
+#ifdef __linux__
+    r = random();
+#else
+    r = rand();
+#endif
+    int territory_index = r % territories.size();
 
     map::Territory* territory = territories[territory_index];
     Player* player = _game_model->active_players.get()[index_of_next_player_to_receive_territory];
@@ -553,11 +593,21 @@ void GameplayController::assign_territories() {
     territories.erase(territories.begin() + territory_index);
 
     index_of_next_player_to_receive_territory = ++index_of_next_player_to_receive_territory % _game_model->number_of_players.get();
+
+#ifdef __linux__
+    usleep(10000);
+#else
+    //Sleep(100);
+#endif
   }
 }
 
 void GameplayController::mainGameLoop() {
   _game_model->current_phase.set(REINFORCEMENT);
+
+  /* Play out game */
+
+  // Application::instance()->activateView(MAIN_MENU_VIEW);
 }
 
 void GameplayController::viewDeactivated() {

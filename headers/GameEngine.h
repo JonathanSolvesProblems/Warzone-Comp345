@@ -5,6 +5,12 @@
 #include <vector>
 #include <list>
 
+#ifdef __linux__
+#include <unistd.h>
+#else
+//#include <Windows.h>
+#endif
+
 #define COLOR_GREY 8
 #define RED_BLACK 1
 #define WHITE_BLACK 2
@@ -19,6 +25,8 @@
 class Player;
 
 enum Phase {STARTUP, REINFORCEMENT, ISSUE_ORDERS, ORDERS_EXECUTION};
+
+string convertEnum(Phase current_phase);
 
 // forward declarations
 class MainMenuView;
@@ -174,8 +182,8 @@ class GameplayView : public WindowView {
     virtual void deactivate();
 
   private:
-    void create_phase_observer_view();
-    void create_stats_observer_view();
+    void create_phase_observer_view(int header_height);
+    void create_stats_observer_view(int header_height);
     PhaseObserverView* _phase_view{nullptr};
     StatisticsObserverView* _stats_view{nullptr};
     GameModel* settings_model{nullptr};
