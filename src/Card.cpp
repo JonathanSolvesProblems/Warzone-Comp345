@@ -55,7 +55,7 @@ std::shared_ptr<Deck> Deck::instance()
    * instantiated, and then subsequent calls will return that
    * instance.
    */
-  static std::shared_ptr<Deck>  _singleton(new Deck);
+  static std::shared_ptr<Deck> _singleton(new Deck);
   return _singleton;
 }
 
