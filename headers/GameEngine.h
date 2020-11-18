@@ -5,6 +5,9 @@
 #include <vector>
 #include <list>
 #include <math.h>
+#include <algorithm> // for std::sort
+#include <sstream> // for percision of percentage float of territories owned.
+#include <iomanip>
 
 #ifdef __linux__
 #include <unistd.h>
