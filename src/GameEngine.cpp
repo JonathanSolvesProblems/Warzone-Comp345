@@ -473,22 +473,21 @@ void GameplayView::create_stats_observer_view(int header_height)
 }
 
 void GameplayView::display() {
-  int header_offset = 0;
   if (!_window) {
     activate();
   }
-  wclear(_window);
-  box(_window, 0, 0);
-
-  print_centered(height / 2, "MAIN CONTENT");
-  WindowView::display();
-
   if (_phase_view) {
     _phase_view->display();
   }
   if (_stats_view) {
     _stats_view->display();
   }
+
+  wclear(_window);
+  box(_window, 0, 0);
+
+  print_centered(height / 2, "MAIN CONTENT");
+  WindowView::display();
 }
 
 void GameplayView::activate() {
@@ -496,6 +495,14 @@ void GameplayView::activate() {
   int header_height = settings_model->number_of_players.get() * 2 + 1;
   this->start_y = 1 + headers_enabled * header_height;
   this->height = LINES - start_y;
+
+  if (_window && _window != stdscr)
+  {
+    deactivate();
+  }
+  _window = create_newwin(height, width, start_y, start_x);
+  box(_window, 0, 0);
+  display();
 
   if (settings_model->phase_headers_enabled.get()) {
     create_phase_observer_view(header_height);
@@ -506,10 +513,7 @@ void GameplayView::activate() {
     create_stats_observer_view(header_height);
     _stats_view->activate();
   }
-
-  WindowView::activate();
-  box(_window, 0, 0);
-  wrefresh(_window);
+  View::activate();
 }
 
 void GameplayView::deactivate() {
