@@ -1,8 +1,5 @@
 #include "Player.h"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
+
 
 Player::Player(string name, int pID)
 {

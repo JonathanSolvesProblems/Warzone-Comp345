@@ -10,9 +10,6 @@ THEN CHANGE YOUR CHARSET FROM UNI TO MULTYBYTE
 // ths map loader detects the files by headers (with correct formating or not) and reads the the file whether if it is valid or not.
 // the methods all return boolean values where if they return true, its because the file follows correct syntax and format.
 
-#include <fstream>
-#include <iostream>
-
 #ifdef __linux__
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;

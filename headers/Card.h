@@ -72,12 +72,15 @@ class Hand {
 
 	vector<Card*> cards;
 public:
-
+	// default constructor
 	Hand(); 
+	// destructor
 	~Hand();
 
+	// equals operator.
 	Hand& operator=(const Hand& hand);
 
+	// adds card to deck.
 	void add(Card* drawn); 
 	void show(); // displays contents of hand
 
@@ -93,8 +96,12 @@ public:
 	static std::shared_ptr<Deck> instance();
 	Deck (const Deck  &) = delete;
 	~Deck(); 
+	// Plays card
 	void cardPlay(); 
+	// draws a card. Meant to be passed into the deck.
 	Card* draw(); 
+	// shuffles the deck
 	void shuffle(vector<Card*>& deck);
+	// overloading stream operator
 	friend ostream& operator<<(ostream& os, const Deck& deck);
 };

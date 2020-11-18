@@ -1,7 +1,5 @@
 #include "GameEngine.h"
-#include <algorithm> // for std::sort
-#include <sstream> // for percision of percentage float of territories owned.
-#include <iomanip>
+
 
 string convertEnum(Phase current_phase)
 {
