@@ -47,13 +47,13 @@ public:
 	bool isCountry(string line, map::Map &test, bool &isValid); // isCountry method whih checks if the string is a country
 																															// isContinent method whcih checks if the strings is a continent
 public:
-	bool isContinent(string line, map::Map &test, bool &isValid);
+	bool isContinent(string line, map::Map &test, bool &isValid,  int &continentID);
 
 public:
 	bool mapSelection(map::Map &test);
 	vector<string> findMapFiles();
 
-	bool mapValidator(string filePath);
+	bool mapValidator(string filePath, map::Map &test);
 	bool borderValidator(string line);
 	bool countryValidator(string line);
 	bool continentValidator(string line);

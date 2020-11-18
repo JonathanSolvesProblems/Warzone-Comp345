@@ -183,8 +183,8 @@ class GameplayView : public WindowView {
     virtual void deactivate();
 
   private:
-    void create_phase_observer_view();
-    void create_stats_observer_view();
+    void create_phase_observer_view(int header_height);
+    void create_stats_observer_view(int header_height);
     PhaseObserverView* _phase_view{nullptr};
     StatisticsObserverView* _stats_view{nullptr};
     GameModel* settings_model{nullptr};

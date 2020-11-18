@@ -332,9 +332,8 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     }
 
     _game_model->map = new map::Map();
-    map::Map &map = *_game_model->map;
 
-    if (mapLoader.loadFile(map_file, map) && map.validate())
+    if (mapLoader.loadFile(map_file, *_game_model->map) && _game_model->map->validate())
     {
       // load file under
       Application::instance()->activateView(GAMEPLAY_VIEW);
@@ -392,7 +391,7 @@ void StatisticsObserverView::display() {
 
   for(int i = 0; i < players.size(); i++)
   {
-      wmove(_window, 1, 1 + 9 * i); // for future, need to be relative to size of player name.
+      wmove(_window, 1 + 2*i, 1); // for future, need to be relative to size of player name.
       wprintw(_window, players[i]->playerName.c_str());
   }
 
@@ -434,13 +433,14 @@ GameplayView::~GameplayView() {
     delete _stats_view;
 }
 
-void GameplayView::create_phase_observer_view() {
-  _phase_view = new PhaseObserverView(COLS / 2 - 1, LINES / 4 - 1, 1, 1, settings_model);
+void GameplayView::create_phase_observer_view(int header_height)
+{
+  _phase_view = new PhaseObserverView(COLS / 2 - 1, header_height, 1, 1, settings_model);
 }
 
-void GameplayView::create_stats_observer_view()
+void GameplayView::create_stats_observer_view(int header_height)
 {
-  _stats_view = new StatisticsObserverView(COLS / 2 - 1, LINES / 4 - 1, COLS / 2, 1, settings_model);
+  _stats_view = new StatisticsObserverView(COLS / 2 - 1, header_height, COLS / 2, 1, settings_model);
 }
 
 void GameplayView::display() {
@@ -464,16 +464,17 @@ void GameplayView::display() {
 
 void GameplayView::activate() {
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
-  this->start_y = 1 + headers_enabled * LINES / 4;
+  int header_height = settings_model->number_of_players.get() * 2 + 1;
+  this->start_y = 1 + headers_enabled * header_height;
   this->height = LINES - start_y;
 
   if (settings_model->phase_headers_enabled.get()) {
-    create_phase_observer_view();
+    create_phase_observer_view(header_height);
     _phase_view->activate();
   }
     
   if (settings_model->stats_headers_enabled.get()) {
-    create_stats_observer_view();
+    create_stats_observer_view(header_height);
     _stats_view->activate();
   }
 
@@ -533,22 +534,28 @@ void GameplayController::startupPhase() {
   Player *first = _game_model->active_players.get()[0];
   _game_model->current_player.set(first);
 
-  // TODO give territories to Players
 
-  // assign_territories();
+  assign_territories();
 
 }
 
 void GameplayController::assign_territories() {
   std::vector<map::Territory*> territories;
+  const std::vector<map::Territory*> original_territories = _game_model->map->getTerritories();
   territories.assign(
-    _game_model->map->getTerritories().begin(),
-    _game_model->map->getTerritories().end()
+    original_territories.begin(),
+    original_territories.end()
   );
 
   int index_of_next_player_to_receive_territory = 0;
   while (!territories.empty()) {
-    int territory_index = rand() % territories.size();
+    int r;
+#ifdef __linux__
+    r = random();
+#else
+    r = rand();
+#endif
+    int territory_index = r % territories.size();
 
     map::Territory* territory = territories[territory_index];
     Player* player = _game_model->active_players.get()[index_of_next_player_to_receive_territory];
