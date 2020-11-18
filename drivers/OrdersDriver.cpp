@@ -239,7 +239,7 @@ void blockadeOrderTest() {
 	cout << "Owner BEFORE blockade: " << *newJersey.getOwner() << endl;
 	validBlockade->execute();
 	cout << "Number of armies AFTER blockade in New Jersey (should be double): " << newJersey.getArmees() << endl;
-	cout << "Owner AFTER blockade (should be 0): " << newJersey.getOwner() << endl;
+	cout << "Owner AFTER blockade (should be 0 for neutral): " << newJersey.getOwner() << endl;
 
 	// Anthony blockades Quebec (bad)
 	cout << "Player executes blockade on enemy territory(invalid)" << endl;

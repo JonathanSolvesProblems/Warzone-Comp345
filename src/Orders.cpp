@@ -245,6 +245,7 @@ bool AirliftOrder::execute() {
 			}
 			//All enemies are dead, and you still have armies left
 			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
+				//Draw card
 				this->_issuingPlayer->draw(*(Deck::instance()));
 				//change ownership to issuingPlayer
 				this->_targetTerritory->setOwner(this->_issuingPlayer);
