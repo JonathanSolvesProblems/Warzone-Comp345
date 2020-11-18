@@ -808,7 +808,10 @@ void GameplayController::issueOrdersPhase() {
   _game_model->current_phase->set(ISSUE_ORDERS);
   //Deployment Stage
   deploySubPhase();
-  airliftSubPhase();
+  for (auto player : _game_model->active_players->get()) {
+    _game_model->current_player->set(player);
+    airliftSubPhase();
+  }
 }
 
 void GameplayController::deploySubPhase() {
@@ -837,8 +840,7 @@ void GameplayController::deploySubPhase() {
       DeployOrder* d = new DeployOrder(*player,*randomTerr,randomArmies);
       player->issueOrder(d);
 
-      _game_model->log->append("Armies left: " + std::to_string(player->getArmees()));
-      _game_model->log->append("New Orders issued: " + player->listOfOrders->toString());
+      _game_model->log->append("New Order issued: " + d->toString());
     }
   } 
 }
@@ -852,8 +854,17 @@ bool GameplayController::reinforcementsAvailable() {
   return false;
 }
 
-void GamePlayController::airliftSubPhase() {
-
+void GameplayController::airliftSubPhase() {
+  srand(time(nullptr));
+  int numberOfTerritories = _game_model->map->getTerritories().size();
+  map::Territory* sourceTerritory = player->owned_territories.at(rand() % player->owned_territories.size());
+  map::Territory* targetTerritory = _game_model->map->getTerritory(rand() % numberOfTerritories);
+  int numberOfArmies = 0;
+  if (sourceTerritory->getArmees() != 0) {
+    numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
+  }
+  player->issueOrder(new AirliftOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
+  _game_model->log->append("New Order issued: AirliftOrder");
 }
 
 void GameplayController::executeOrdersPhase() {

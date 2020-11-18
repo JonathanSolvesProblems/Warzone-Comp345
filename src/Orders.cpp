@@ -374,22 +374,6 @@ bool BombOrder::validate() {
 	if(_targetTerritory->getOwner() == _issuingPlayer)
 		return false;
 
-	// TODO:NOT WORKING!!!!!!
-	// for (int i = 0; i < truces.size();i++) {
-	// 	//cout << "truce count: " << *truceIter << endl;
-
-	// 	tuple<Player*,Player*> truce = truces.at(i);
-	// 	Player* p1 = std::get<0>(truce);
-	// 	Player* p2 = std::get<1>(truce);
-
-	// 	if( p1 ==  _issuingPlayer && p2 == _targetPlayer ) {
-	// 		return false;
-	// 	}
-	// 	if( p1 == _targetPlayer && p2 == _issuingPlayer) {
-	// 		return false;
-	// 	}
-	// }
-
 	if(checkIfTruce(_issuingPlayer,_targetPlayer)) {
 		return false;
 	}
