@@ -93,10 +93,17 @@ public:
 	const vector<map::Territory*> toAttack();
 
 	/// <summary>
-	/// Adds order being passed to the player's list of orders
+	/// Adds order to the player's list of orders
 	/// </summary>
-	/// <param name="o">Order being passed</param>
-	void issueOrder(Order *o);
+	/// <returns>Order to issue, nullptr if player is done</returns>
+	Order* issueOrder();
+
+    Order* issueAdvanceOrder();
+    Order* issueAirliftOrder();
+    Order* issueBombOrder();
+    Order* issueBlockadeOrder();
+	Order* issueDeployOrder();
+    // Order* issueNegotiateOrder();
 
 	// Adds a territory to myTerritories (Does not set the Territory's owner)
 	void addTerritory(map::Territory*);

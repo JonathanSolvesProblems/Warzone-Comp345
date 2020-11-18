@@ -834,46 +834,6 @@ void GameplayController::issueOrdersPhase() {
   }
 }
 
-void GameplayController::deploySubPhase() {
-
-  srand(time(nullptr));
-  while(reinforcementsAvailable()){
-    for (auto player : _game_model->active_players->get()) {
-      if (player->getArmees() <= 0) {
-        continue;
-      }
-
-      vector<map::Territory*> defendingTerrs = player->toDefend();
-      
-
-      int randomIndex = rand() % defendingTerrs.size();
-      map::Territory* randomTerr = defendingTerrs.at(randomIndex);
-
-      int randomArmies = rand() % player->getArmees();
-
-      if(randomArmies == 0){
-        randomArmies += 1;
-      }
-
-      player->setArmees(player->getArmees() - randomArmies);
-
-      DeployOrder* d = new DeployOrder(*player,*randomTerr,randomArmies);
-      player->issueOrder(d);
-
-      _game_model->log->append("New Order issued: " + d->toString());
-    }
-  } 
-}
-
-bool GameplayController::reinforcementsAvailable() {
-
-  for (auto player : _game_model->active_players->get()) {
-    if(player->getArmees() > 0)
-      return true;
-  }
-  return false;
-}
-
 void GameplayController::airliftSubPhase() {
   srand(time(nullptr));
   int numberOfTerritories = _game_model->map->getTerritories().size();

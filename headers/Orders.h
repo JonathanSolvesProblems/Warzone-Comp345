@@ -361,6 +361,7 @@ public:
 	/// </remarks>
 	/// <param name="index">The current index of order to be removed.</param>
 	void remove(int index);
+	bool empty();
 
 	string toString();
 	/// <summary>

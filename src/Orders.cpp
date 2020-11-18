@@ -565,6 +565,10 @@ void OrdersList::remove(int index) {
 	}
 }
 
+bool OrdersList::empty() {
+	return _orders.empty();
+}
+
 // Overloads the stream insertion operator
 ostream& operator<<(ostream& out, const OrdersList& ordersListToStream) {
 	for (auto ordersIter = ordersListToStream._orders.begin(); ordersIter != ordersListToStream._orders.end(); ordersIter++) {

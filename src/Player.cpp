@@ -84,10 +84,36 @@ const vector<map::Territory *> Player::toAttack()
 }
 
 //Calls orderList's add method
-void Player::issueOrder(Order *o)
+Order* Player::issueOrder()
 {
-	listOfOrders->add(o);
+	if (listOfOrders->empty()) {
+
+	}
+	if (armees > 0) {
+		return issueDeployOrder();
+	}
 }
+
+Order* Player::issueDeployOrder()
+{
+  	srand(time(nullptr));
+	
+	int randomIndex = rand() % toDefend().size();
+	map::Territory* randomTerr = toDefend().at(randomIndex);
+
+	int randomArmies = rand() % getArmees();
+
+	if(randomArmies == 0){
+		randomArmies += 1;
+	}
+
+	armees = armees - randomArmies;
+
+	DeployOrder* d = new DeployOrder(*this, *randomTerr, randomArmies);
+	listOfOrders->add(d);
+
+	return d;
+} 
 
 //Three cards get added to hand
 void Player::draw(Deck &deck)
