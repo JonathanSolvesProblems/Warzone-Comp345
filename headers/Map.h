@@ -144,6 +144,11 @@ public:
   Territory* getTerritory(int id) const;
 
   /*
+   * Returns a readonly iterator of the territories.
+   */
+  const std::vector<Territory *> getTerritories();
+
+  /*
    * Find a territory by name.
    * 
    * Args:

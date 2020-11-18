@@ -526,9 +526,34 @@ void GameplayController::startupPhase() {
     newly_created_players.erase(newly_created_players.begin() + index);
   }
 
-  _game_model->current_player.set(_game_model->active_players.get()[0]);
+  Player *first = _game_model->active_players.get()[0];
+  _game_model->current_player.set(first);
 
   // TODO give territories to Players
+
+  assign_territories();
+
+}
+
+void GameplayController::assign_territories() {
+  std::vector<map::Territory*> territories;
+  territories.assign(
+    _game_model->map->getTerritories().begin(),
+    _game_model->map->getTerritories().end()
+  );
+
+  int index_of_next_player_to_receive_territory = 0;
+  while (!territories.empty()) {
+    int territory_index = rand() % territories.size();
+
+    map::Territory* territory = territories[territory_index];
+    Player* player = _game_model->active_players.get()[index_of_next_player_to_receive_territory];
+    player->addTerritory(territory);
+
+    territories.erase(territories.begin() + territory_index);
+
+    index_of_next_player_to_receive_territory = ++index_of_next_player_to_receive_territory % _game_model->number_of_players.get();
+  }
 }
 
 void GameplayController::mainGameLoop() {
@@ -536,6 +561,8 @@ void GameplayController::mainGameLoop() {
 }
 
 void GameplayController::viewDeactivated() {
+  delete _game_model->map;
+
   for (auto player : _game_model->active_players.get()) {
     delete player;
   }

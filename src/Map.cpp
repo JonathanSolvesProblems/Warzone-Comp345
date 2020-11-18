@@ -102,6 +102,11 @@ namespace map
     return nullptr;
   }
 
+  const std::vector<Territory *> Map::getTerritories()
+  {
+    return *territories;
+  }
+
   Continent *Map::getContinent(int id) const
   {
     for (Continent *continent : *continents)

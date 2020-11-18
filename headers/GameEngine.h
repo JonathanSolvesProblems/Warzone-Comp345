@@ -195,5 +195,7 @@ class GameplayController : public ActionListener {
     void startupPhase();
     void mainGameLoop();
 
+    void assign_territories();
+
     GameModel *_game_model;
 };
