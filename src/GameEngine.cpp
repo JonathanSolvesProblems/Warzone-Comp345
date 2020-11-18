@@ -20,11 +20,13 @@ string convertEnum(Phase current_phase)
   }
 }
 
-GameModel::GameModel() {
+GameModel::GameModel()
+{
   log = new StringLog();
 }
 
-GameModel::~GameModel() {
+GameModel::~GameModel()
+{
   delete log;
 }
 
@@ -427,19 +429,18 @@ void StatisticsObserverView::display()
   }
   else
   {
-      // sorting the players in descending order, based on how many territories they own.
+    // sorting the players in descending order, based on how many territories they own.
 
-      // _game_model->active_players.begin(), _game_model-
-      // 
+    // _game_model->active_players.begin(), _game_model-
+    //
 
-      std::vector<Player*> sortedPlayers;
-      
+    std::vector<Player *> sortedPlayers;
 
-      sortedPlayers.assign(players.begin(), players.end());
+    sortedPlayers.assign(players.begin(), players.end());
 
-      std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](auto playerA, auto playerB){
-          return playerA->owned_territories.size() > playerB->owned_territories.size();
-      });
+    std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](auto playerA, auto playerB) {
+      return playerA->owned_territories.size() > playerB->owned_territories.size();
+    });
 
     int row = 0;
     // else draw the graphic.
@@ -454,15 +455,13 @@ void StatisticsObserverView::display()
 
       int cp;
 
-      
       // for future, need to be relative to size of player name.
       // if the player does not own anymore territories. Remove them from the statistics screen.
-     
-        // Order players by number of territories they own.
+
+      // Order players by number of territories they own.
       wmove(_window, 1 + 2 * row++, 1);
       wprintw(_window, player->playerName.c_str());
       waddch(_window, ' ');
-      
 
       if (percent_owned > 0.2)
       {
@@ -536,7 +535,8 @@ GameplayView::~GameplayView()
     delete _stats_view;
 }
 
-void GameplayView::update() {
+void GameplayView::update()
+{
   display();
 }
 
@@ -550,11 +550,14 @@ void GameplayView::create_stats_observer_view(int header_height)
   _stats_view = new StatisticsObserverView(COLS / 2 - 1, header_height, COLS / 2, 1, settings_model);
 }
 
-void GameplayView::display() {
-  if (!_window) {
+void GameplayView::display()
+{
+  if (!_window)
+  {
     activate();
   }
-  if (_phase_view) {
+  if (_phase_view)
+  {
     _phase_view->display();
   }
   if (_stats_view)
@@ -565,12 +568,26 @@ void GameplayView::display() {
   wclear(_window);
 
   int index = 0;
-  for (std::string msg : settings_model->log->get()) {
-    if (index > height - 3) {
+  for (std::string msg : settings_model->log->get())
+  {
+    if (index > height - 3)
+    {
       break;
     }
+
+    int cp;
+    if (index == 0)
+    {
+      cp = COLOR_PAIR(WHITE_BLACK);
+    }
+    else
+    {
+      cp = COLOR_PAIR(GREY_BLACK);
+    }
+    wattron(_window, cp);
     wmove(_window, 1 + index++, 1);
     wprintw(_window, msg.c_str());
+    wattroff(_window, cp);
   }
   box(_window, 0, 0);
   WindowView::display();
@@ -591,7 +608,8 @@ void GameplayView::activate()
   box(_window, 0, 0);
   display();
 
-  if (settings_model->phase_headers_enabled.get()) {
+  if (settings_model->phase_headers_enabled.get())
+  {
     create_phase_observer_view(header_height);
     _phase_view->activate();
   }
@@ -624,7 +642,6 @@ GameplayController::GameplayController(GameModel *gm)
 
 GameplayController::~GameplayController()
 {
-
 }
 
 void GameplayController::viewActivated()
@@ -644,11 +661,20 @@ void GameplayController::startupPhase()
   srand(time(NULL));
 
   std::vector<Player *> newly_created_players;
+
+  int armies_per_player = 50 - 5 * num_players;
+
   for (int i = 0; i < num_players; i++)
   {
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
+
+    // sets the starting armies for each player accoridng to the number of players playing the game
+    new_player->setArmy(armies_per_player);
+
     newly_created_players.push_back(new_player);
   }
+
+  // adding initial armys
 
   while (!newly_created_players.empty())
   {
@@ -703,17 +729,15 @@ void GameplayController::assign_territories()
     Sleep(100);
 #endif
   }
-
 }
 
 void GameplayController::mainGameLoop()
 {
   _game_model->current_phase.set(REINFORCEMENT);
-
   /* Play out game */
 
   // Here to implement the logic for removing players if they no longer own anymore territories. Check with Anthony first.
-        // _game_model->active_players.remove(_game_model->current_player.get()); 
+  // _game_model->active_players.remove(_game_model->current_player.get());
 
   // Application::instance()->activateView(MAIN_MENU_VIEW);
 }
