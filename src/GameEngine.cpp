@@ -811,6 +811,7 @@ void GameplayController::issueOrdersPhase() {
   for (auto player : _game_model->active_players->get()) {
     _game_model->current_player->set(player);
     airliftSubPhase();
+    blockadeSubPhase();
   }
 }
 
@@ -857,6 +858,7 @@ bool GameplayController::reinforcementsAvailable() {
 void GameplayController::airliftSubPhase() {
   srand(time(nullptr));
   int numberOfTerritories = _game_model->map->getTerritories().size();
+  auto player = _game_model->current_player->get();
   map::Territory* sourceTerritory = player->owned_territories.at(rand() % player->owned_territories.size());
   map::Territory* targetTerritory = _game_model->map->getTerritory(rand() % numberOfTerritories);
   int numberOfArmies = 0;
@@ -865,6 +867,14 @@ void GameplayController::airliftSubPhase() {
   }
   player->issueOrder(new AirliftOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
   _game_model->log->append("New Order issued: AirliftOrder");
+}
+
+void GameplayController::blockadeSubPhase() {
+  srand(time(nullptr));
+  auto player = _game_model->current_player->get();
+  map::Territory* targetTerritory = player->owned_territories.at(rand() % player->owned_territories.size());
+  player->issueOrder(new BlockadeOrder(*player, *targetTerritory));
+  _game_model->log->append("New Order issued: BlockadeOrder");
 }
 
 void GameplayController::executeOrdersPhase() {

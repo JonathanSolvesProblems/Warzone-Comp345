@@ -355,6 +355,7 @@ class GameplayController : public ActionListener {
     int getPlayersBonus(Player* p);
     void deploySubPhase();
     void airliftSubPhase();
+    void blockadeSubPhase();
 
     GameModel *_game_model;
 };
