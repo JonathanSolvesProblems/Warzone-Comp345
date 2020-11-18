@@ -92,6 +92,27 @@ Order* Player::issueOrder()
 	if (armees > 0) {
 		return issueDeployOrder();
 	}
+	return nullptr;
+}
+
+Order* Player::issueAdvanceOrder() {
+
+  srand(time(nullptr));
+
+  map::Territory* sourceTerritory = owned_territories.at(rand() % owned_territories.size());
+  //Get source territories neighbors
+
+  std::vector<map::Territory *> neighbours = sourceTerritory->getNeighbours();
+
+  map::Territory* targetTerritory = neighbours.at(rand() % neighbours.size());
+
+  int numberOfArmies = 0;
+  if (sourceTerritory->getArmees() != 0) {
+    numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
+  }
+
+  player->issueOrder(new AdvanceOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
+  _game_model->log->append("New Order issued: AdvcanceOrder");
 }
 
 Order* Player::issueDeployOrder()
@@ -107,13 +128,45 @@ Order* Player::issueDeployOrder()
 		randomArmies += 1;
 	}
 
-	armees = armees - randomArmies;
-
 	DeployOrder* d = new DeployOrder(*this, *randomTerr, randomArmies);
 	listOfOrders->add(d);
 
 	return d;
-} 
+}
+
+// void GameplayController::airliftSubPhase() {
+//   srand(time(nullptr));
+//   int numberOfTerritories = _game_model->map->getTerritories().size();
+//   auto player = _game_model->current_player->get();
+
+//   map::Territory* sourceTerritory = player->owned_territories.at(rand() % player->owned_territories.size());
+//   map::Territory* targetTerritory = _game_model->map->getTerritory(rand() % numberOfTerritories);
+//   int numberOfArmies = 0;
+//   if (sourceTerritory->getArmees() != 0) {
+//     numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
+//   }
+//   player->issueOrder(new AirliftOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
+//   _game_model->log->append("New Order issued: AirliftOrder");
+// }
+
+// void GameplayController::blockadeSubPhase() {
+//   srand(time(nullptr));
+//   auto player = _game_model->current_player->get();
+//   map::Territory* targetTerritory = player->owned_territories.at(rand() % player->owned_territories.size());
+//   player->issueOrder(new BlockadeOrder(*player, *targetTerritory));
+//   _game_model->log->append("New Order issued: BlockadeOrder");
+// }
+
+// void GameplayController::bombSubPhase() {
+//   //Bomb random enemy territory
+  
+//   std::vector<map::Territory *> allTerritories = _game_model->map->getTerritories();
+
+//   std::vector<map::Territory *> ownedTerritories = _game_model->current_player->get()->owned_territories;
+
+//   // allTerritories
+
+// }
 
 //Three cards get added to hand
 void Player::draw(Deck &deck)

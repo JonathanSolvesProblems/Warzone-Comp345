@@ -430,7 +430,7 @@ DeployOrder::~DeployOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool DeployOrder::validate() {
 	//If target targetTerritory belongs to player, return true
-	if(_targetTerritory->getOwner() == _issuingPlayer )
+	if(_targetTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _issuingPlayer->getArmees())
 		return true;
 	return false;
 }
@@ -441,6 +441,8 @@ bool DeployOrder::execute() {
 
 		//Add passed number of armees to target territory
 		this->_targetTerritory->addArmees(this->_numberOfArmies);
+
+		_issuingPlayer->setArmees(_issuingPlayer->getArmees() - _numberOfArmies);
 
 		cout << *_effect << endl;
 		return true;
