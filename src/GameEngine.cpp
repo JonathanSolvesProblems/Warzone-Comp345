@@ -379,11 +379,21 @@ void PhaseObserverView::display() {
   }
   WindowView::display();
 }
-
+// do phase after.
 void StatisticsObserverView::display() {
   wclear(_window);
   box(_window, 0, 0);
-  print_centered(height / 2, "stats");
+
+  std::vector<Player*> players = _game_model->active_players.get();
+
+  for(int i = 0; i < players.size(); i++)
+  {
+      wmove(_window, 1, 1 + 9 * i); // for future, need to be relative to size of player name.
+      wprintw(_window, players[i]->playerName.c_str());
+  }
+
+  // print_centered(height / 2, "stats");
+  // show player list next
   WindowView::display();
 }
 
