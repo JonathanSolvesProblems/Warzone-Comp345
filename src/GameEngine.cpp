@@ -417,7 +417,7 @@ void StatisticsObserverView::display() {
       }
 
       wattron(_window, cp);
-      for (int j = 0; j < 10 * percent_owned; j++)
+      for (int j = 0; j < width / 2 * percent_owned; j++)
       {
         waddch(_window, ' ');
       }
@@ -474,12 +474,6 @@ void GameplayView::create_stats_observer_view(int header_height)
 
 void GameplayView::display() {
   int header_offset = 0;
-  if (_phase_view) {
-    _phase_view->display();
-  }
-  if (_stats_view) {
-    _stats_view->display();
-  }
   if (!_window) {
     activate();
   }
@@ -487,8 +481,14 @@ void GameplayView::display() {
   box(_window, 0, 0);
 
   print_centered(height / 2, "MAIN CONTENT");
-
   WindowView::display();
+
+  if (_phase_view) {
+    _phase_view->display();
+  }
+  if (_stats_view) {
+    _stats_view->display();
+  }
 }
 
 void GameplayView::activate() {
@@ -593,6 +593,7 @@ void GameplayController::assign_territories() {
     territories.erase(territories.begin() + territory_index);
 
     index_of_next_player_to_receive_territory = ++index_of_next_player_to_receive_territory % _game_model->number_of_players.get();
+    usleep(10000);
   }
 }
 

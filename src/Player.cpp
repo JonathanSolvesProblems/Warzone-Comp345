@@ -80,6 +80,7 @@ void Player::draw(Deck& deck) {
 
 void Player::addTerritory(map::Territory* territory) {
 	if (territory) {
+		this->notify();
 		this->owned_territories.push_back(territory);
 	}
 }

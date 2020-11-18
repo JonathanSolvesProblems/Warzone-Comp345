@@ -16,6 +16,7 @@ int main () {
 
   GameModel *game_model = new GameModel();
   game_model->phase_headers_enabled.set(true);
+  game_model->stats_headers_enabled.set(true);
   game_model->number_of_players.set(2);
 
   MenuModel *menu_model = new MenuModel();
