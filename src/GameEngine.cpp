@@ -389,6 +389,26 @@ void StatisticsObserverView::display() {
   {
       wmove(_window, 1 + 2*i, 1); // for future, need to be relative to size of player name.
       wprintw(_window, players[i]->playerName.c_str());
+      waddch(_window, ' ');
+
+      int number_of_territories = players[i]->owned_territories.size();
+      float percent_owned = (float) number_of_territories / _game_model->map->getTerritories().size();
+      int cp;
+      if (percent_owned > 0.2)
+      {
+        cp = COLOR_PAIR(BLACK_GREEN);
+      }
+      else
+      {
+        cp = COLOR_PAIR(BLACK_RED);
+      }
+
+      wattron(_window, cp);
+      for (int j = 0; j < 10 * percent_owned; j++)
+      {
+        waddch(_window, ' ');
+      }
+      wattroff(_window, cp);
   }
 
   // print_centered(height / 2, "stats");
@@ -565,6 +585,10 @@ void GameplayController::assign_territories() {
 
 void GameplayController::mainGameLoop() {
   _game_model->current_phase.set(REINFORCEMENT);
+
+  /* Play out game */
+
+  // Application::instance()->activateView(MAIN_MENU_VIEW);
 }
 
 void GameplayController::viewDeactivated() {
