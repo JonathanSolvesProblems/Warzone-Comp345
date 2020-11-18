@@ -14,7 +14,7 @@ int main()
     map::Map test;
     MapLoader map;
 
-        if (map.mapValidator("hello.map", test) == true)
+    if (map.loadFile("france.map", test) == true)
     {
         // remove 2 at the end
         cout << "Continents  " << map.continents.size() << " \n";
@@ -37,43 +37,6 @@ int main()
             cout << "failll" << endl;
         }
 
-
-        // have to run a forloop through all the neighbors to display if it is a neighbour
-
-        // try to figure out how to send a vector containign the IDs of the neighborung territoryeis
-
-        // to get the list of neighbours you can do a forloop  with a try catch and store the successful ones in the vector
-        // so the sequence is we display the terrotories the user has
-        // then we prompt for them to select a territory to make a decision on
-        // then we run this for loop to get the list of places you could attack
-        // cout<< *test.getTerritory(1)->getNeighbour
-    }
-
-    else
-    {
-   
-        cout << "Invalid file... System terminating" << endl;
-    }
-
-    
-
-    if (map.mapValidator("france.map", test) == true)
-    {
-        cout << "countries size : " << map.countries.size() << endl;
-
-        // remove 2 at the end
-        cout << "Continents  " << map.continents.size() << " \n";
-
-        cout << "Countries and Neighbours: "
-             << "\n";
-        for (int s = 0; s < map.borders.size(); s++)
-        {
-            cout << "Country: " << *test.getTerritory(s + 1) << " Has " << test.getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(test.getTerritory(s + 1)->getContinent()) << endl;
-        }
-
-         if(test.validate()){
-             cout<< "done";
-         }
         // have to run a forloop through all the neighbors to display if it is a neighbour
 
         // try to figure out how to send a vector containign the IDs of the neighborung territoryeis
@@ -90,10 +53,6 @@ int main()
 
         cout << "Invalid file... System terminating" << endl;
     }
-
-   
-     
-
 
     return 0;
 }
