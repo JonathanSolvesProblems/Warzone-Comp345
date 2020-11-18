@@ -1,10 +1,11 @@
 #include "GameEngine.h"
 
 /* Initializes colors and color pairs to be used with NCurses */
-void initialize_ncurses_colors() {
+void initialize_ncurses_colors()
+{
   start_color();
   /*         ID          RED  GREEEN  BLUE        */
-  init_color(COLOR_GREY, 600,   600,  600);
+  init_color(COLOR_GREY, 600, 600, 600);
 
   /*           ID         TEXT    BACKGROUND      */
   init_pair(RED_BLACK, COLOR_RED, COLOR_BLACK);
@@ -14,7 +15,22 @@ void initialize_ncurses_colors() {
   init_pair(BLACK_GREEN, COLOR_BLACK, COLOR_GREEN);
 }
 
-int main () {
+/*
+ * A NOTE REGARDING MEMORY LEAKS
+ * 
+ * The NCurses library does not free all memory, and results in memory leaks under normal operation.
+ * See the following link for more information:
+ * 
+ * https://invisible-island.net/ncurses/ncurses.faq.html#config_leaks
+ * 
+ * Using the Valgrind tool, we checked the memory leaks for GameEngineDriver.cpp and found that
+ * they all originated from NCurses and is a normal part of the libaries internal functioning.
+ * You can confirm this by commenting out all code between initscr() and endwin(), and you will
+ * see that the memory leaked is approximately the same as when our program runs. The difference
+ * is due to the way that NCurses operates when drawing to the screen.
+ */
+int main()
+{
   /* Enter Ncurses mode */
   initscr();
   initialize_ncurses_colors();
@@ -27,7 +43,6 @@ int main () {
 
   /* Menu model for selecting Map files */
   MenuModel *menu_model = new MenuModel();
-
 
   /* Create controllers */
   MainMenuController *main_game_controller = new MainMenuController(game_model);
@@ -63,7 +78,6 @@ int main () {
   /* Clear the screen before exiting, so the the terminal will function correctly afterwards */
   clear();
   refresh();
-
 
   /* Delete pointers */
   delete map_selection_view;
