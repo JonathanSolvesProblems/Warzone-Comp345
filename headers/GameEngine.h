@@ -18,8 +18,10 @@
 
 class Player;
 
+// defining the different phases each player undergoes in an enum.
 enum Phase {REINFORCEMENT, ISSUE_ORDERS, ORDERS_EXECUTION};
 
+// forward declarations
 class MainMenuView;
 class GameModel;
 class MainMenuController;
@@ -125,23 +127,39 @@ class MapMenuController : public ActionListener
     MenuModel *_menu_model;
 };
 
-
-class PhaseObserverView : public WindowView {
+/*
+observes the phase that the player is on and which player it is.
+*/
+class PhaseObserverView : public WindowView, public Observer
+{
   public:
-    PhaseObserverView(int w, int h, int x, int y);
-    // ~PhaseObserverView();
+    PhaseObserverView(int w, int h, int x, int y, GameModel *gm);
+    ~PhaseObserverView();
+
+    virtual void update();
 
     virtual void display();
+
+private:
+    GameModel * _game_model;
 };
 
-class StatisticsObserverView : public WindowView 
+/*
+Statistics observer for keeping track of the percentage of the territories that each player owns.
+The players that are still in game. If they lose, they will be removed from the statisticsobserver.
+*/
+class StatisticsObserverView : public WindowView, public Observer 
 {
 public:
-  StatisticsObserverView(int w, int h, int x, int y);
-  // ~StatisticsObserverView();
+  StatisticsObserverView(int w, int h, int x, int y, GameModel *gm);
+  ~StatisticsObserverView();
+
+  virtual void update();
 
   virtual void display();
 
+private:
+    GameModel * _game_model;
 };
 
 class GameplayView : public WindowView {

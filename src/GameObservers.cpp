@@ -1,6 +1,7 @@
 #include "GameObservers.h"
 #include <iostream>
 
+
 Observer::Observer(){};
 Observer::~Observer(){};
 

@@ -349,8 +349,18 @@ void MapSelectionController::viewActivated() {
 }
 void MapSelectionController::viewDeactivated() {}
 
-PhaseObserverView::PhaseObserverView(int w, int h, int x, int y) : WindowView(w, h, x, y) {}
-StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y) : WindowView(w, h, x, y) {}
+PhaseObserverView::PhaseObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y) 
+{
+     _game_model = gm;
+     _game_model->active_players.attach(this);
+     _game_model->current_phase.attach(this);
+
+}
+
+StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y) 
+{
+    _game_model = gm;
+}
 
 void PhaseObserverView::display() {
   wclear(_window);
@@ -362,9 +372,25 @@ void PhaseObserverView::display() {
 void StatisticsObserverView::display() {
   wclear(_window);
   box(_window, 0, 0);
-  // trouble calling enum here.
   print_centered(height / 2, "stats");
   WindowView::display();
+}
+
+void PhaseObserverView::update() {
+    display();
+}
+
+void StatisticsObserverView::update() {
+    display();
+}
+
+PhaseObserverView::~PhaseObserverView() {
+    _game_model->active_players.detach(this);
+    _game_model->current_phase.detach(this);
+}
+
+StatisticsObserverView::~StatisticsObserverView() {
+
 }
 
 GameplayView::GameplayView(int w, int h, GameModel *sm) {
@@ -384,12 +410,12 @@ GameplayView::~GameplayView() {
 }
 
 void GameplayView::create_phase_observer_view() {
-  _phase_view = new PhaseObserverView(COLS / 2 - 1, LINES / 4 - 1, 1, 1);
+  _phase_view = new PhaseObserverView(COLS / 2 - 1, LINES / 4 - 1, 1, 1, settings_model);
 }
 
 void GameplayView::create_stats_observer_view()
 {
-  _stats_view = new StatisticsObserverView(COLS / 2 - 1, LINES / 4 - 1, COLS / 2, 1);
+  _stats_view = new StatisticsObserverView(COLS / 2 - 1, LINES / 4 - 1, COLS / 2, 1, settings_model);
 }
 
 void GameplayView::display() {
