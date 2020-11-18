@@ -813,12 +813,12 @@ void GameplayController::issueOrdersPhase() {
   int index_of_current_player = 0;
   while (players_wanting_to_issue_orders.size()) {
     Player *current = players_wanting_to_issue_orders[index_of_current_player];
-    _game_model->current_player.set(current);
+    _game_model->current_player->set(current);
 
     // Allow the current player to issue 1 order, or return nullptr indicating they are finished
     Order* issued = current->issueOrder();
     if (issued != nullptr) {
-      _game_model->log->append(current->playerName " issued: " + issued->toString());
+      _game_model->log->append(current->playerName + " issued: " + issued->toString());
     } else {
       // If no order was issued, that means the Player is done issuing orders, and should be removed from the pool
       players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
@@ -923,7 +923,7 @@ void GameplayController::bombSubPhase() {
   
   std::vector<map::Territory *> allTerritories = _game_model->map->getTerritories();
 
-  std::vector<map::Territory *> ownedTerritories = _game_model->current_player->owned_territories();
+  std::vector<map::Territory *> ownedTerritories = _game_model->current_player->get()->owned_territories;
 
   // allTerritories
 
@@ -939,7 +939,7 @@ int GameplayController::getPlayersBonus(Player* p) {
 
   for(auto continent : _game_model->map->getContinents()){
     for(auto territory : _game_model->map->getTerritories()){
-      if(territory->getOwner() != p){f
+      if(territory->getOwner() != p){
         ownsThisContinent = false;
         break;
         //Check next continent
