@@ -5,12 +5,13 @@
 #include <vector>
 #include <list>
 
-#ifdef _WIN32
-#include <Windows.h>
-#else
+#ifdef __linux__
 #include <unistd.h>
+#else
+#include <Windows.h>
 #endif
 
+// Define constants to represent color pairs to be used with NCurses
 #define COLOR_GREY 8
 #define RED_BLACK 1
 #define WHITE_BLACK 2
@@ -18,14 +19,18 @@
 #define BLACK_RED 4
 #define BLACK_GREEN 5
 
+
+// Define constants to represent View ids
 #define MAIN_MENU_VIEW 0
 #define MAP_SELECTION_VIEW 1
 #define GAMEPLAY_VIEW 2
 
 class Player;
 
+// All possible game phases
 enum Phase {STARTUP, REINFORCEMENT, ISSUE_ORDERS, ORDERS_EXECUTION};
 
+// Converts Phase enum to a std::string for display
 string convertEnum(Phase current_phase);
 
 // forward declarations
@@ -33,31 +38,54 @@ class MainMenuView;
 class GameModel;
 class MainMenuController;
 
+/* Handles keyboard events on the main menu, updates game settings */
 class MainMenuController : public ActionListener {
   public:
+    /* Accepts a pointer to the GameModel used to store the settings */
     MainMenuController(GameModel * sm);
     ~MainMenuController();
 
+    /* Toggles the game observer headers, and navigates to the next view */
     virtual bool keyboardEventPerformed(int key);
-
+    
+    /* Not used */
     virtual void viewActivated();
+
+    /* Not used */
     virtual void viewDeactivated();
 
   private:
+    /* Pointer to settings */
     GameModel *_settings_model;
 };
 
+/* A POD to store Observables used by the game */
 struct GameModel {
   // Basic Settings
   ConcreteObservable<bool> phase_headers_enabled;
   ConcreteObservable<bool> stats_headers_enabled;
   ConcreteObservable<int> number_of_players;
 
+  // Tracks the current game phase
   ConcreteObservable<Phase> current_phase;
 
+  /*
+   * Tracks the current player.
+   * Note: It only updates when the pointer changes, not when
+   * the contents of the Player object change
+   */
   ConcreteObservable<Player*> current_player;
+
+  /*
+   * Tracks the currently active players.
+   * Updates when the underlying vector changes, i.e adding/removing
+   * AND when the Players themselves change.
+   */
   VectorObservable<Player*> active_players;
 
+  /*
+   * Not Observable, but necessary for gameplay none the less
+   */
   map::Map* map;
 };
 
