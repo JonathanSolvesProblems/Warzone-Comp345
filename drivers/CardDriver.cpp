@@ -1,5 +1,7 @@
 #include "Card.h"
 
+using std::cout;
+
 int main() {
 	// creates deck of cards of all different kinds.
 	cout << "creating deck...\n\n";

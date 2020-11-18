@@ -1,5 +1,6 @@
 #include "Orders.h"
 #include <string>
+using std::cout;
 
 // Setup players
 Player anthony = Player("Anthony", 12345678);
@@ -11,6 +12,7 @@ map::Continent freedomland = map::Continent(1, "Freedomland", 99);
 map::Territory quebec = map::Territory(0, "Quebec", canada);
 map::Territory newJersey = map::Territory(1, "New Jersey", freedomland);
 map::Territory texas = map::Territory(2, "Texas", freedomland);
+
 
 template<typename T>
 void orderTest() {

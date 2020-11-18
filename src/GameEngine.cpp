@@ -1,13 +1,33 @@
 #include "GameEngine.h"
+#include <algorithm> // for std::sort
+#include <sstream> // for percision of percentage float of territories owned.
+#include <iomanip>
 
-string convertEnum(Phase current_phase) {
-    switch(current_phase) {
-      case STARTUP: return "Startup Phase";
-      case REINFORCEMENT: return "Reinforcement Phase";
-      case ISSUE_ORDERS: return "Issue Orders Phase";
-      case ORDERS_EXECUTION: return "Orders Execution Phase";
-      default: return "Unknown Phase";
-    }
+string convertEnum(Phase current_phase)
+{
+  switch (current_phase)
+  {
+  case STARTUP:
+    return "Startup Phase";
+  case REINFORCEMENT:
+    return "Reinforcement Phase";
+  case ISSUE_ORDERS:
+    return "Issue Orders Phase";
+  case ORDERS_EXECUTION:
+    return "Orders Execution Phase";
+  default:
+    return "Unknown Phase";
+  }
+}
+
+GameModel::GameModel()
+{
+  log = new StringLog();
+}
+
+GameModel::~GameModel()
+{
+  delete log;
 }
 
 MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
@@ -133,14 +153,14 @@ bool MainMenuController::keyboardEventPerformed(int key)
     _settings_model->stats_headers_enabled.set(!current);
     return true;
   }
-  else if (key == KEY_UP)
+  else if (key == KEY_UP || key == 'w')
   {
     int nNumberOfPlayers = _settings_model->number_of_players.get() + 1;
     if (nNumberOfPlayers > 5)
       nNumberOfPlayers = 5;
     _settings_model->number_of_players.set(nNumberOfPlayers);
   }
-  else if (key == KEY_DOWN)
+  else if (key == KEY_DOWN || key == 's')
   {
     int nNumberOfPlayers = _settings_model->number_of_players.get() - 1;
     if (nNumberOfPlayers < 2)
@@ -238,17 +258,16 @@ void MapSelectionView::notifyKeyboardEventPerformed(int key)
   }
 }
 
-
-void MapSelectionView::registerMenuListener(ActionListener *listener) {
+void MapSelectionView::registerMenuListener(ActionListener *listener)
+{
   _menu_view->registerListener(listener);
 }
 
-
-void MapSelectionView::activate() {
+void MapSelectionView::activate()
+{
   WindowView::activate();
   _menu_view->activate();
 }
-
 
 void MapSelectionView::deactivate()
 {
@@ -256,8 +275,8 @@ void MapSelectionView::deactivate()
   _menu_view->deactivate();
 }
 
-
-void MapSelectionView::display() {
+void MapSelectionView::display()
+{
   if (!_window)
   {
     activate();
@@ -295,12 +314,12 @@ MapMenuController::~MapMenuController() {}
 
 bool MapMenuController::keyboardEventPerformed(int key)
 {
-  if (key == KEY_UP)
+  if (key == KEY_UP || key == 'w')
   {
     _menu_model->error_message.set("");
     _menu_model->incrementItem(-1);
   }
-  else if (key == KEY_DOWN)
+  else if (key == KEY_DOWN || key == 's')
   {
     _menu_model->error_message.set("");
     _menu_model->incrementItem(1);
@@ -315,7 +334,7 @@ bool MapMenuController::keyboardEventPerformed(int key)
 void MapMenuController::viewActivated() {}
 void MapMenuController::viewDeactivated() {}
 
-MapSelectionController::MapSelectionController(MenuModel *mm, GameModel* gm)
+MapSelectionController::MapSelectionController(MenuModel *mm, GameModel *gm)
 {
   _menu_model = mm;
   _game_model = gm;
@@ -336,7 +355,8 @@ bool MapSelectionController::keyboardEventPerformed(int key)
 
     MapLoader mapLoader;
 
-    if (_game_model->map) {
+    if (_game_model->map)
+    {
       delete _game_model->map;
     }
 
@@ -346,7 +366,9 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     {
       // load file under
       Application::instance()->activateView(GAMEPLAY_VIEW);
-    } else {
+    }
+    else
+    {
       _menu_model->error_message.set("This is a invalid file! Please choose another!");
     }
 
@@ -355,7 +377,8 @@ bool MapSelectionController::keyboardEventPerformed(int key)
   return false;
 }
 
-void MapSelectionController::viewActivated() {
+void MapSelectionController::viewActivated()
+{
   map::Map map;
   MapLoader maploader;
 
@@ -364,49 +387,82 @@ void MapSelectionController::viewActivated() {
 }
 void MapSelectionController::viewDeactivated() {}
 
-PhaseObserverView::PhaseObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y) 
+PhaseObserverView::PhaseObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y)
 {
-     _game_model = gm;
-     _game_model->current_player.attach(this);
-     _game_model->current_phase.attach(this);
-
+  _game_model = gm;
+  _game_model->current_player.attach(this);
+  _game_model->current_phase.attach(this);
 }
 
-StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y) 
+StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y)
 {
-    _game_model = gm;
-    _game_model->active_players.attach(this);
+  _game_model = gm;
+  _game_model->active_players.attach(this);
 }
 
-void PhaseObserverView::display() {
+void PhaseObserverView::display()
+{
   wclear(_window);
   box(_window, 0, 0);
-  Player* current_player = _game_model->current_player.get();
-  if(current_player != nullptr) {
-     print_centered(height / 2, current_player->playerName);
-}
-
+  Player *current_player = _game_model->current_player.get();
+  if (current_player != nullptr)
+  {
+    print_centered(height / 2, current_player->playerName);
+  }
 
   print_centered(height / 4, convertEnum(_game_model->current_phase.get()));
 
   WindowView::display();
 }
 // do phase after.
-void StatisticsObserverView::display() {
+void StatisticsObserverView::display()
+{
   wclear(_window);
   box(_window, 0, 0);
 
-  std::vector<Player*> players = _game_model->active_players.get();
+  std::vector<Player *> players = _game_model->active_players.get();
 
-  for(int i = 0; i < players.size(); i++)
+  if (players.size() == 1)
   {
-      wmove(_window, 1 + 2*i, 1); // for future, need to be relative to size of player name.
-      wprintw(_window, players[i]->playerName.c_str());
+    // draw the winning message.
+    print_centered(height / 2, "Congratulations! " + players[0]->playerName + " has won the game!");
+  }
+  else
+  {
+    // sorting the players in descending order, based on how many territories they own.
+
+    // _game_model->active_players.begin(), _game_model-
+    //
+
+    std::vector<Player *> sortedPlayers;
+
+    sortedPlayers.assign(players.begin(), players.end());
+
+    std::sort(sortedPlayers.begin(), sortedPlayers.end(), [](auto playerA, auto playerB) {
+      return playerA->owned_territories.size() > playerB->owned_territories.size();
+    });
+
+    int row = 0;
+    // else draw the graphic.
+    for (auto player : sortedPlayers)
+    {
+
+      // gets the # of territories the player owns.
+      int number_of_territories = player->owned_territories.size();
+
+      // percentage that the player owns for their territories.
+      float percent_owned = (float)number_of_territories / _game_model->map->getTerritories().size();
+
+      int cp;
+
+      // for future, need to be relative to size of player name.
+      // if the player does not own anymore territories. Remove them from the statistics screen.
+
+      // Order players by number of territories they own.
+      wmove(_window, 1 + 2 * row++, 1);
+      wprintw(_window, player->playerName.c_str());
       waddch(_window, ' ');
 
-      int number_of_territories = players[i]->owned_territories.size();
-      float percent_owned = (float) number_of_territories / _game_model->map->getTerritories().size();
-      int cp;
       if (percent_owned > 0.2)
       {
         cp = COLOR_PAIR(BLACK_GREEN);
@@ -422,32 +478,51 @@ void StatisticsObserverView::display() {
         waddch(_window, ' ');
       }
       wattroff(_window, cp);
+
+      std::ostringstream convertPercentage;
+
+      convertPercentage << std::fixed;
+      convertPercentage << std::setprecision(2);
+
+      convertPercentage << percent_owned * 100;
+
+      std::string percent_ownedString = " " + convertPercentage.str() + "%%";
+      std::string number_of_territories_ownedString = " (" + std::to_string(number_of_territories) + " territories)";
+      
+      std::string displayTerritoryStringInfo =  percent_ownedString + number_of_territories_ownedString;
+      
+      wprintw(_window, displayTerritoryStringInfo.c_str());
+    }
   }
 
-  // print_centered(height / 2, "stats");
-  // show player list next
   WindowView::display();
 }
 
-void PhaseObserverView::update() {
-    display();
+void PhaseObserverView::update()
+{
+  display();
 }
 
-void StatisticsObserverView::update() {
-    display();
+void StatisticsObserverView::update()
+{
+  display();
 }
 
-PhaseObserverView::~PhaseObserverView() {
-    _game_model->current_player.detach(this);
-    _game_model->current_phase.detach(this);
+PhaseObserverView::~PhaseObserverView()
+{
+  _game_model->current_player.detach(this);
+  _game_model->current_phase.detach(this);
 }
 
-StatisticsObserverView::~StatisticsObserverView() {
-    _game_model->active_players.detach(this);
+StatisticsObserverView::~StatisticsObserverView()
+{
+  _game_model->active_players.detach(this);
 }
 
-GameplayView::GameplayView(int w, int h, GameModel *sm) {
+GameplayView::GameplayView(int w, int h, GameModel *sm)
+{
   settings_model = sm;
+  settings_model->log->attach(this);
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
   this->start_x = 1;
   this->start_y = headers_enabled * LINES / 4;
@@ -455,11 +530,17 @@ GameplayView::GameplayView(int w, int h, GameModel *sm) {
   this->width = w;
 }
 
-GameplayView::~GameplayView() {
+GameplayView::~GameplayView()
+{
   if (_phase_view)
     delete _phase_view;
   if (_stats_view)
     delete _stats_view;
+}
+
+void GameplayView::update()
+{
+  display();
 }
 
 void GameplayView::create_phase_observer_view(int header_height)
@@ -472,49 +553,83 @@ void GameplayView::create_stats_observer_view(int header_height)
   _stats_view = new StatisticsObserverView(COLS / 2 - 1, header_height, COLS / 2, 1, settings_model);
 }
 
-void GameplayView::display() {
-  int header_offset = 0;
-  if (!_window) {
+void GameplayView::display()
+{
+  if (!_window)
+  {
     activate();
   }
-  wclear(_window);
-  box(_window, 0, 0);
-
-  print_centered(height / 2, "MAIN CONTENT");
-  WindowView::display();
-
-  if (_phase_view) {
+  if (_phase_view)
+  {
     _phase_view->display();
   }
-  if (_stats_view) {
+  if (_stats_view)
+  {
     _stats_view->display();
   }
+
+  wclear(_window);
+
+  int index = 0;
+  for (std::string msg : settings_model->log->get())
+  {
+    if (index > height - 3)
+    {
+      break;
+    }
+
+    int cp;
+    if (index == 0)
+    {
+      cp = COLOR_PAIR(WHITE_BLACK);
+    }
+    else
+    {
+      cp = COLOR_PAIR(GREY_BLACK);
+    }
+    wattron(_window, cp);
+    wmove(_window, 1 + index++, 1);
+    wprintw(_window, msg.c_str());
+    wattroff(_window, cp);
+  }
+  box(_window, 0, 0);
+  WindowView::display();
 }
 
-void GameplayView::activate() {
+void GameplayView::activate()
+{
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
   int header_height = settings_model->number_of_players.get() * 2 + 1;
   this->start_y = 1 + headers_enabled * header_height;
   this->height = LINES - start_y;
 
-  if (settings_model->phase_headers_enabled.get()) {
+  if (_window && _window != stdscr)
+  {
+    deactivate();
+  }
+  _window = create_newwin(height, width, start_y, start_x);
+  box(_window, 0, 0);
+  display();
+
+  if (settings_model->phase_headers_enabled.get())
+  {
     create_phase_observer_view(header_height);
     _phase_view->activate();
   }
-    
-  if (settings_model->stats_headers_enabled.get()) {
+
+  if (settings_model->stats_headers_enabled.get())
+  {
     create_stats_observer_view(header_height);
     _stats_view->activate();
   }
-
-  WindowView::activate();
-  box(_window, 0, 0);
-  wrefresh(_window);
+  View::activate();
 }
 
-void GameplayView::deactivate() {
+void GameplayView::deactivate()
+{
   WindowView::deactivate();
-  if (_phase_view) {
+  if (_phase_view)
+  {
     _phase_view->deactivate();
   }
   if (_stats_view)
@@ -523,37 +638,51 @@ void GameplayView::deactivate() {
   }
 }
 
-GameplayController::GameplayController(GameModel *gm) {
+GameplayController::GameplayController(GameModel *gm)
+{
   _game_model = gm;
 }
 
-GameplayController::~GameplayController() {
+GameplayController::~GameplayController()
+{
 }
 
-void GameplayController::viewActivated() {
+void GameplayController::viewActivated()
+{
   startupPhase();
   mainGameLoop();
 }
 
 bool GameplayController::keyboardEventPerformed(int key) { return false; }
 
-
-void GameplayController::startupPhase() {
+void GameplayController::startupPhase()
+{
   _game_model->current_phase.set(STARTUP);
 
   int num_players = _game_model->number_of_players.get();
 
   srand(time(NULL));
 
-  std::vector<Player*> newly_created_players;
-  for (int i=0; i < num_players; i++) {
+  std::vector<Player *> newly_created_players;
+
+  int armies_per_player = 50 - 5 * num_players;
+
+  for (int i = 0; i < num_players; i++)
+  {
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
+
+    // sets the starting armies for each player accoridng to the number of players playing the game
+    new_player->setArmy(armies_per_player);
+
     newly_created_players.push_back(new_player);
   }
 
-  while (!newly_created_players.empty()) {
+  // adding initial armys
+
+  while (!newly_created_players.empty())
+  {
     int index = rand() % newly_created_players.size();
-  
+
     Player *next = newly_created_players[index];
     _game_model->active_players.push_back(next);
 
@@ -563,21 +692,23 @@ void GameplayController::startupPhase() {
   Player *first = _game_model->active_players.get()[0];
   _game_model->current_player.set(first);
 
+  // for testing winning condition.
+  // _game_model->active_players.remove(_game_model->active_players.get()[0]);
 
   assign_territories();
-
 }
 
-void GameplayController::assign_territories() {
-  std::vector<map::Territory*> territories;
-  const std::vector<map::Territory*> original_territories = _game_model->map->getTerritories();
+void GameplayController::assign_territories()
+{
+  std::vector<map::Territory *> territories;
+  const std::vector<map::Territory *> original_territories = _game_model->map->getTerritories();
   territories.assign(
-    original_territories.begin(),
-    original_territories.end()
-  );
+      original_territories.begin(),
+      original_territories.end());
 
   int index_of_next_player_to_receive_territory = 0;
-  while (!territories.empty()) {
+  while (!territories.empty())
+  {
     int r;
 #ifdef __linux__
     r = random();
@@ -586,9 +717,10 @@ void GameplayController::assign_territories() {
 #endif
     int territory_index = r % territories.size();
 
-    map::Territory* territory = territories[territory_index];
-    Player* player = _game_model->active_players.get()[index_of_next_player_to_receive_territory];
+    map::Territory *territory = territories[territory_index];
+    Player *player = _game_model->active_players.get()[index_of_next_player_to_receive_territory];
     player->addTerritory(territory);
+    _game_model->log->append("Assigned " + territory->getName() + " to " + player->playerName);
 
     territories.erase(territories.begin() + territory_index);
 
@@ -597,7 +729,7 @@ void GameplayController::assign_territories() {
 #ifdef __linux__
     usleep(10000);
 #else
-    //Sleep(100);
+    Sleep(100);
 #endif
   }
 }
@@ -660,10 +792,12 @@ int GameplayController::getPlayersBonus(Player& p) {
   return totalBonus;
 }
 
-void GameplayController::viewDeactivated() {
+void GameplayController::viewDeactivated()
+{
   delete _game_model->map;
 
-  for (auto player : _game_model->active_players.get()) {
+  for (auto player : _game_model->active_players.get())
+  {
     delete player;
   }
   

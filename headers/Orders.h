@@ -9,7 +9,11 @@ class OrdersList;
 #include "Map.h"
 #include "Player.h"
 #include <tuple>
-using namespace std;
+
+using std::ostream;
+using std::string;
+using std::list;
+using std::endl; 
 
 static vector<tuple<Player*,Player*>> truces;
 

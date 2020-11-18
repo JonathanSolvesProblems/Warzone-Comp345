@@ -12,7 +12,9 @@ class Player;
 #include <vector>
 #include <string>
 
-using namespace std;
+using std::ostream;
+using std::vector;
+using std::unordered_set;
 
 class Player : public Observable {
 public:
@@ -35,7 +37,13 @@ public:
 
 	//stores a player's ID
 	int playerID;
+
+	int army;
 	
+	int getArmy();
+	void setArmy(int soldiersAdded);
+	void addReinforcements(int soldiers);
+	void soldiersDied(int soldiers);
 	/// <summary>
 	/// Player constructor
 	/// </summary>

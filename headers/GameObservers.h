@@ -3,30 +3,34 @@
 #include <vector>
 #include <type_traits>
 #include <algorithm>
+#include <string>
 
+// These are our observers, that will be notified by the Observable class for any changes. Class is abstract, to implement update method in the children.
 class Observer
 {
 public:
-  ~Observer();
-  virtual void update() = 0;
+  ~Observer(); // destructor
+  virtual void update() = 0; // abstract method to be implemented by observers.
 
 protected:
-  Observer();
+  Observer(); // default constructor.
 };
 
+// This is the subject that will notify all observers subscribed to it.
 class Observable
 {
 public:
-  virtual void attach(Observer *o);
-  virtual void detach(Observer *o);
-  virtual void notify();
-  Observable();
-  ~Observable();
+  virtual void attach(Observer *o); // attach observer, will be called to notify.
+  virtual void detach(Observer *o); // detach observer, will remove from the notification chain.
+  virtual void notify(); // notifies all observers attached to the Observable.
+  Observable(); // default constructor
+  ~Observable(); // destructor.
 
 private:
-  std::list<Observer *> *_observers;
+  std::list<Observer *> *_observers; // all observers subscribed to the observable will be stored here.
 };
 
+// allows for multiple types across the observable and observer.
 template <class T>
 class VectorObservable : public Observable, public Observer
 {
@@ -36,9 +40,9 @@ class VectorObservable : public Observable, public Observer
   static_assert(std::is_base_of<Observable, type>::value, "T must be of base Observable*");
 
 public:
-  VectorObservable();
-  VectorObservable(std::vector<T> &);
-  ~VectorObservable();
+  VectorObservable(); // default constructor
+  VectorObservable(std::vector<T> &); 
+  ~VectorObservable(); // destructor
 
   void set(std::vector<T> &);
   const std::vector<T> &get();
@@ -50,6 +54,20 @@ public:
 private:
   void silent_clear();
   std::vector<T> state;
+};
+
+class StringLog : public Observable {
+
+  public:
+    StringLog();
+    ~StringLog();
+
+    void append(std::string msg);
+    void clear();
+    const std::list<std::string>& get();
+
+  private:
+  std::list<std::string> log;
 };
 
 // IMPLEMENTATION FOR TEMPLATE CLASSES

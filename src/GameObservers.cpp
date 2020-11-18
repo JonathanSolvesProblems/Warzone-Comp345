@@ -3,6 +3,7 @@
 
 
 Observer::Observer(){};
+
 Observer::~Observer(){};
 
 Observable::Observable()
@@ -31,4 +32,22 @@ void Observable::notify()
   {
     ob->update();
   }
+}
+
+StringLog::StringLog() {}
+
+StringLog::~StringLog() {}
+
+void StringLog::append(std::string msg) {
+  log.push_front(msg);
+  notify();
+}
+
+void StringLog::clear() {
+  log.clear();
+  notify();
+}
+
+const std::list<std::string>& StringLog::get() {
+  return log;
 }
