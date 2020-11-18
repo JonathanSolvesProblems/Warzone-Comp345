@@ -1,5 +1,7 @@
 #include "GameEngine.h"
 #include <algorithm> // for std::sort
+#include <sstream> // for percision of percentage float of territories owned.
+#include <iomanip>
 
 string convertEnum(Phase current_phase)
 {
@@ -476,6 +478,17 @@ void StatisticsObserverView::display()
         waddch(_window, ' ');
       }
       wattroff(_window, cp);
+
+      std::ostringstream convertPercentage;
+
+      convertPercentage << std::fixed;
+      convertPercentage << std::setprecision(2);
+
+      convertPercentage << percent_owned * 100;
+
+      std::string percent_ownedString = " " + std::string(convertPercentage.str()) + "%%";
+
+      wprintw(_window, percent_ownedString.c_str());
     }
   }
 
