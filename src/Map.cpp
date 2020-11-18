@@ -23,7 +23,7 @@ namespace map
 
   Map::~Map()
   {
-    std::cout << "ENTERING MAP DESTRUCTOR";
+  
     while (continents->size())
     {
       Continent* continent = continents->back();
@@ -100,6 +100,11 @@ namespace map
       }
     }
     return nullptr;
+  }
+
+  const std::vector<Territory *> Map::getTerritories()
+  {
+    return *territories;
   }
 
   Continent *Map::getContinent(int id) const

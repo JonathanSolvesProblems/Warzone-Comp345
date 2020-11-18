@@ -365,5 +365,6 @@ CardDriver
 PlayerDriver
 OrdersDriver
 MapLoaderDriver
+GameEngineDriver
 
 *.exe

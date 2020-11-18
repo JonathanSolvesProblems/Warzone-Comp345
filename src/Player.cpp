@@ -52,10 +52,6 @@ Player::~Player()
 	delete hand;
 	delete listOfOrders;
 
-	for (map::Territory* territory : owned_territories) {
-		if (territory)
-			territory->setOwner(nullptr);
-	}
 	owned_territories.clear();
 
 #ifdef DEBUG

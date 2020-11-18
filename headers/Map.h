@@ -1,5 +1,5 @@
 #pragma once
-#define DEBUG // Remove this to disabled debugging
+// #define DEBUG // Remove this to disabled debugging
 
 namespace map {
   class Map;
@@ -142,6 +142,11 @@ public:
    *        or nullptr if not found.
    */
   Territory* getTerritory(int id) const;
+
+  /*
+   * Returns a readonly iterator of the territories.
+   */
+  const std::vector<Territory *> getTerritories();
 
   /*
    * Find a territory by name.
