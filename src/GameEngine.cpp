@@ -1,5 +1,14 @@
 #include "GameEngine.h"
 
+string convertEnum(Phase current_phase) {
+    switch(current_phase) {
+      case STARTUP: return "Startup Phase";
+      case REINFORCEMENT: return "Reinforcement Phase";
+      case ISSUE_ORDERS: return "Issue Orders Phase";
+      case ORDERS_EXECUTION: return "Orders Execution Phase";
+      default: return "Unknown Phase";
+    }
+}
 
 MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
 {
