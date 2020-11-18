@@ -769,7 +769,7 @@ void GameplayController::mainGameLoop() {
 }
 
 void GameplayController::reinforcementPhase() {
-  
+
   _game_model->current_phase->set(REINFORCEMENT);
   _game_model->log->append("Reinforcement phase started");
   
@@ -808,11 +808,12 @@ void GameplayController::issueOrdersPhase() {
   _game_model->current_phase->set(ISSUE_ORDERS);
   //Deployment Stage
   deploySubPhase();
-
+  airliftSubPhase();
 }
 
 void GameplayController::deploySubPhase() {
 
+  srand(time(nullptr));
   while(reinforcementsAvailable()){
     for (auto player : _game_model->active_players->get()) {
       if (player->getArmees() <= 0) {
@@ -821,7 +822,6 @@ void GameplayController::deploySubPhase() {
 
       vector<map::Territory*> defendingTerrs = player->toDefend();
       
-      srand(time(0));
 
       int randomIndex = rand() % defendingTerrs.size();
       map::Territory* randomTerr = defendingTerrs.at(randomIndex);
@@ -837,7 +837,7 @@ void GameplayController::deploySubPhase() {
       DeployOrder* d = new DeployOrder(*player,*randomTerr,randomArmies);
       player->issueOrder(d);
 
-      _game_model->log->append(std::to_string(player->getArmees()));
+      _game_model->log->append("Armies left: " + std::to_string(player->getArmees()));
       _game_model->log->append("New Orders issued: " + player->listOfOrders->toString());
     }
   } 
@@ -850,6 +850,10 @@ bool GameplayController::reinforcementsAvailable() {
       return true;
   }
   return false;
+}
+
+void GamePlayController::airliftSubPhase() {
+
 }
 
 void GameplayController::executeOrdersPhase() {
