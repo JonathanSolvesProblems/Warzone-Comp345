@@ -17,6 +17,14 @@ string convertEnum(Phase current_phase)
   }
 }
 
+GameModel::GameModel() {
+  log = new StringLog();
+}
+
+GameModel::~GameModel() {
+  delete log;
+}
+
 MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
 {
   _settings_model = mgm;
@@ -482,6 +490,7 @@ StatisticsObserverView::~StatisticsObserverView()
 GameplayView::GameplayView(int w, int h, GameModel *sm)
 {
   settings_model = sm;
+  settings_model->log->attach(this);
   bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
   this->start_x = 1;
   this->start_y = headers_enabled * LINES / 4;
@@ -495,6 +504,10 @@ GameplayView::~GameplayView()
     delete _phase_view;
   if (_stats_view)
     delete _stats_view;
+}
+
+void GameplayView::update() {
+  display();
 }
 
 void GameplayView::create_phase_observer_view(int header_height)
@@ -520,9 +533,16 @@ void GameplayView::display() {
   }
 
   wclear(_window);
-  box(_window, 0, 0);
 
-  print_centered(height / 2, "MAIN CONTENT");
+  int index = 0;
+  for (std::string msg : settings_model->log->get()) {
+    if (index > height - 3) {
+      break;
+    }
+    wmove(_window, 1 + index++, 1);
+    wprintw(_window, msg.c_str());
+  }
+  box(_window, 0, 0);
   WindowView::display();
 }
 
@@ -641,6 +661,7 @@ void GameplayController::assign_territories()
     map::Territory *territory = territories[territory_index];
     Player *player = _game_model->active_players.get()[index_of_next_player_to_receive_territory];
     player->addTerritory(territory);
+    _game_model->log->append("Assigned " + territory->getName() + " to " + player->playerName);
 
     territories.erase(territories.begin() + territory_index);
 

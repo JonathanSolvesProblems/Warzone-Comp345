@@ -3,6 +3,7 @@
 #include <vector>
 #include <type_traits>
 #include <algorithm>
+#include <string>
 
 // These are our observers, that will be notified by the Observable class for any changes. Class is abstract, to implement update method in the children.
 class Observer
@@ -53,6 +54,20 @@ public:
 private:
   void silent_clear();
   std::vector<T> state;
+};
+
+class StringLog : public Observable {
+
+  public:
+    StringLog();
+    ~StringLog();
+
+    void append(std::string msg);
+    void clear();
+    const std::list<std::string>& get();
+
+  private:
+  std::list<std::string> log;
 };
 
 // IMPLEMENTATION FOR TEMPLATE CLASSES

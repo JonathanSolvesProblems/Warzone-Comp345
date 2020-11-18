@@ -61,6 +61,9 @@ class MainMenuController : public ActionListener {
 
 /* A POD to store Observables used by the game */
 struct GameModel {
+  GameModel();
+  ~GameModel();
+
   // Basic Settings
   ConcreteObservable<bool> phase_headers_enabled;
   ConcreteObservable<bool> stats_headers_enabled;
@@ -86,7 +89,9 @@ struct GameModel {
   /*
    * Not Observable, but necessary for gameplay none the less
    */
-  map::Map* map;
+  map::Map* map {nullptr};
+
+  StringLog* log {nullptr};
 };
 
 
@@ -200,12 +205,13 @@ private:
     GameModel * _game_model;
 };
 
-class GameplayView : public WindowView {
+class GameplayView : public WindowView, public Observer {
 
   public:
     GameplayView(int w, int h, GameModel *sm);
     ~GameplayView();
     virtual void display();
+    virtual void update();
     virtual void activate();
     virtual void deactivate();
 
