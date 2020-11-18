@@ -531,15 +531,16 @@ void GameplayController::startupPhase() {
   _game_model->current_player.set(first);
 
   // TODO give territories to Players
-  // assign_territories();
+  assign_territories();
 
 }
 
 void GameplayController::assign_territories() {
   std::vector<map::Territory*> territories;
+  const std::vector<map::Territory*> original_territories = _game_model->map->getTerritories();
   territories.assign(
-    _game_model->map->getTerritories().begin(),
-    _game_model->map->getTerritories().end()
+    original_territories.begin(),
+    original_territories.end()
   );
 
   int index_of_next_player_to_receive_territory = 0;
