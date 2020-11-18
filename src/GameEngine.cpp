@@ -306,9 +306,10 @@ bool MapMenuController::keyboardEventPerformed(int key)
 void MapMenuController::viewActivated() {}
 void MapMenuController::viewDeactivated() {}
 
-MapSelectionController::MapSelectionController(MenuModel *mm)
+MapSelectionController::MapSelectionController(MenuModel *mm, GameModel* gm)
 {
   _menu_model = mm;
+  _game_model = gm;
 }
 
 MapSelectionController::~MapSelectionController() {}
@@ -324,8 +325,14 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     // else you have to prompt an error message in a screen
     std::string map_file = _menu_model->getSelection();
 
-    map::Map map;
     MapLoader mapLoader;
+
+    if (_game_model->map) {
+      delete _game_model->map;
+    }
+
+    _game_model->map = new map::Map();
+    map::Map &map = *_game_model->map;
 
     if (mapLoader.loadFile(map_file, map) && map.validate())
     {
