@@ -67,26 +67,26 @@ struct GameModel {
   ~GameModel();
 
   // Basic Settings
-  ConcreteObservable<bool> phase_headers_enabled;
-  ConcreteObservable<bool> stats_headers_enabled;
-  ConcreteObservable<int> number_of_players;
+  ConcreteObservable<bool>* phase_headers_enabled{nullptr};
+  ConcreteObservable<bool> *stats_headers_enabled{nullptr};
+  ConcreteObservable<int> *number_of_players{nullptr};
 
   // Tracks the current game phase
-  ConcreteObservable<Phase> current_phase;
+  ConcreteObservable<Phase> *current_phase{nullptr};
 
   /*
    * Tracks the current player.
    * Note: It only updates when the pointer changes, not when
    * the contents of the Player object change
    */
-  ConcreteObservable<Player*> current_player;
+  ConcreteObservable<Player *> *current_player{nullptr};
 
   /*
    * Tracks the currently active players.
    * Updates when the underlying vector changes, i.e adding/removing
    * AND when the Players themselves change.
    */
-  VectorObservable<Player*> active_players;
+  VectorObservable<Player *> *active_players{nullptr};
 
   /*
    * Not Observable, but necessary for gameplay none the less
@@ -131,14 +131,16 @@ private:
 
 /* Structure to hold data necessary for rendering the map selection */
 struct MenuModel {
+    MenuModel();
+    ~MenuModel();
     /* Stores the list of files in the directory */
-    ConcreteObservable<std::vector<std::string>> map_file_list;
+    ConcreteObservable<std::vector<std::string>>* map_file_list;
 
     /* Stores the index of the currently selected file */
-    ConcreteObservable<int> selected_index;
+    ConcreteObservable<int>* selected_index;
 
     /* Stores an error message to be shown, when empty, no message is shown */
-    ConcreteObservable<std::string> error_message;
+    ConcreteObservable<std::string>* error_message;
 
     /* Increments the currently selected index, and wraps around */
     void incrementItem(int inc);
@@ -340,13 +342,18 @@ class GameplayController : public ActionListener {
     */
     void mainGameLoop();
 
+    bool somePlayerHasArmies();
+
     /* Randomly assigns territories to players in round-robin order */
     void assign_territories();
 
     void reinforcementPhase();
     void issueOrdersPhase();
     void executeOrdersPhase();
+
+    bool reinforcementsAvailable();
     int getPlayersBonus(Player* p);
+    void deploySubPhase();
 
     GameModel *_game_model;
 };

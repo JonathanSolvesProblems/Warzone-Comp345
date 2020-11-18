@@ -23,26 +23,40 @@ string convertEnum(Phase current_phase)
 GameModel::GameModel()
 {
   log = new StringLog();
+  phase_headers_enabled = new ConcreteObservable<bool>();
+  stats_headers_enabled = new ConcreteObservable<bool>();
+  number_of_players = new ConcreteObservable<int>();
+
+  current_phase = new ConcreteObservable<Phase>();
+  current_player = new ConcreteObservable<Player*>();
+  active_players = new VectorObservable<Player *>();
 }
 
 GameModel::~GameModel()
 {
   delete log;
+  delete phase_headers_enabled;
+  delete stats_headers_enabled;
+  delete number_of_players;
+
+  delete current_phase;
+  delete current_player;
+  delete active_players;
 }
 
 MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
 {
   _settings_model = mgm;
-  _settings_model->phase_headers_enabled.attach(this);
-  _settings_model->stats_headers_enabled.attach(this);
-  _settings_model->number_of_players.attach(this);
+  _settings_model->phase_headers_enabled->attach(this);
+  _settings_model->stats_headers_enabled->attach(this);
+  _settings_model->number_of_players->attach(this);
 };
 
 MainMenuView::~MainMenuView()
 {
-  _settings_model->phase_headers_enabled.detach(this);
-  _settings_model->stats_headers_enabled.detach(this);
-  _settings_model->number_of_players.detach(this);
+  _settings_model->phase_headers_enabled->detach(this);
+  _settings_model->stats_headers_enabled->detach(this);
+  _settings_model->number_of_players->detach(this);
 }
 
 void MainMenuView::display_banner(int &offset)
@@ -76,12 +90,12 @@ void MainMenuView::display_menu(int &offset)
   wattron(_window, COLOR_PAIR(RED_BLACK));
   print_centered(offset + 3, "Number of Players (UP/DOWN):  ");
   wattron(_window, COLOR_PAIR(WHITE_BLACK));
-  print_centered(offset + 5, std::to_string(_settings_model->number_of_players.get()).c_str());
+  print_centered(offset + 5, std::to_string(_settings_model->number_of_players->get()).c_str());
   wattron(_window, COLOR_PAIR(RED_BLACK));
   print_centered(offset + 7, "Press SPACE to begin");
   wattroff(_window, COLOR_PAIR(RED_BLACK));
 
-  if (_settings_model->phase_headers_enabled.get())
+  if (_settings_model->phase_headers_enabled->get())
   {
     wattron(_window, COLOR_PAIR(BLACK_GREEN));
     print_centered(offset + 9, " PHASE HEADER ENABLED  (p) ");
@@ -94,7 +108,7 @@ void MainMenuView::display_menu(int &offset)
     wattroff(_window, COLOR_PAIR(BLACK_RED));
   }
 
-  if (_settings_model->stats_headers_enabled.get())
+  if (_settings_model->stats_headers_enabled->get())
   {
     wattron(_window, COLOR_PAIR(BLACK_GREEN));
     print_centered(offset + 11, " STATS HEADER ENABLED  (o) ");
@@ -143,29 +157,29 @@ bool MainMenuController::keyboardEventPerformed(int key)
 {
   if (key == 'p')
   {
-    bool current = _settings_model->phase_headers_enabled.get();
-    _settings_model->phase_headers_enabled.set(!current);
+    bool current = _settings_model->phase_headers_enabled->get();
+    _settings_model->phase_headers_enabled->set(!current);
     return true;
   }
   else if (key == 'o')
   {
-    bool current = _settings_model->stats_headers_enabled.get();
-    _settings_model->stats_headers_enabled.set(!current);
+    bool current = _settings_model->stats_headers_enabled->get();
+    _settings_model->stats_headers_enabled->set(!current);
     return true;
   }
   else if (key == KEY_UP || key == 'w')
   {
-    int nNumberOfPlayers = _settings_model->number_of_players.get() + 1;
+    int nNumberOfPlayers = _settings_model->number_of_players->get() + 1;
     if (nNumberOfPlayers > 5)
       nNumberOfPlayers = 5;
-    _settings_model->number_of_players.set(nNumberOfPlayers);
+    _settings_model->number_of_players->set(nNumberOfPlayers);
   }
   else if (key == KEY_DOWN || key == 's')
   {
-    int nNumberOfPlayers = _settings_model->number_of_players.get() - 1;
+    int nNumberOfPlayers = _settings_model->number_of_players->get() - 1;
     if (nNumberOfPlayers < 2)
       nNumberOfPlayers = 2;
-    _settings_model->number_of_players.set(nNumberOfPlayers);
+    _settings_model->number_of_players->set(nNumberOfPlayers);
   }
   else if (key == ' ')
   {
@@ -181,16 +195,16 @@ void MainMenuController::viewDeactivated() {}
 MapMenuView::MapMenuView(int w, int h, MenuModel *mm) : WindowView(w, h, (COLS - w) / 2, LINES - h)
 {
   _menu_model = mm;
-  _menu_model->map_file_list.attach(this);
-  _menu_model->selected_index.attach(this);
-  _menu_model->error_message.attach(this);
+  _menu_model->map_file_list->attach(this);
+  _menu_model->selected_index->attach(this);
+  _menu_model->error_message->attach(this);
 }
 
 MapMenuView::~MapMenuView()
 {
-  _menu_model->map_file_list.detach(this);
-  _menu_model->selected_index.detach(this);
-  _menu_model->error_message.detach(this);
+  _menu_model->map_file_list->detach(this);
+  _menu_model->selected_index->detach(this);
+  _menu_model->error_message->detach(this);
 }
 
 void MapMenuView::update()
@@ -210,8 +224,8 @@ void MapMenuView::display()
   box(_window, 0, 0);
   wattroff(_window, COLOR_PAIR(RED_BLACK));
 
-  std::vector<std::string> maps = _menu_model->map_file_list.get();
-  int active_index = _menu_model->selected_index.get();
+  std::vector<std::string> maps = _menu_model->map_file_list->get();
+  int active_index = _menu_model->selected_index->get();
   for (int i = 0; i < maps.size(); i++)
   {
     if (i == active_index)
@@ -225,10 +239,10 @@ void MapMenuView::display()
       print_centered(1 + i * 2, maps[i]);
     }
   }
-  if (_menu_model->error_message.get() != "")
+  if (_menu_model->error_message->get() != "")
   {
     wattron(_window, COLOR_PAIR(BLACK_RED));
-    print_centered(height / 2, _menu_model->error_message.get());
+    print_centered(height / 2, _menu_model->error_message->get());
     wattroff(_window, COLOR_PAIR(BLACK_RED));
   }
 
@@ -294,15 +308,27 @@ void MapSelectionView::display()
   WindowView::display();
 }
 
+MenuModel::MenuModel() {
+  map_file_list = new ConcreteObservable<std::vector<std::string>>();
+  selected_index = new ConcreteObservable<int>();
+  error_message = new ConcreteObservable<std::string>();
+}
+
+MenuModel::~MenuModel() {
+  delete map_file_list;
+  delete selected_index;
+  delete error_message;
+}
+
 void MenuModel::incrementItem(int inc)
 {
-  int current = selected_index.get();
-  selected_index.set((current + inc) % map_file_list.get().size());
+  int current = selected_index->get();
+  selected_index->set((current + inc) % map_file_list->get().size());
 }
 
 std::string MenuModel::getSelection()
 {
-  return map_file_list.get()[selected_index.get()];
+  return map_file_list->get()[selected_index->get()];
 }
 
 MapMenuController::MapMenuController(MenuModel *mm)
@@ -316,12 +342,12 @@ bool MapMenuController::keyboardEventPerformed(int key)
 {
   if (key == KEY_UP || key == 'w')
   {
-    _menu_model->error_message.set("");
+    _menu_model->error_message->set("");
     _menu_model->incrementItem(-1);
   }
   else if (key == KEY_DOWN || key == 's')
   {
-    _menu_model->error_message.set("");
+    _menu_model->error_message->set("");
     _menu_model->incrementItem(1);
   }
   else
@@ -369,7 +395,7 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     }
     else
     {
-      _menu_model->error_message.set("This is a invalid file! Please choose another!");
+      _menu_model->error_message->set("This is a invalid file! Please choose another!");
     }
 
     return true;
@@ -383,34 +409,34 @@ void MapSelectionController::viewActivated()
   MapLoader maploader;
 
   std::vector<std::string> map_list = maploader.findMapFiles();
-  _menu_model->map_file_list.set(map_list);
+  _menu_model->map_file_list->set(map_list);
 }
 void MapSelectionController::viewDeactivated() {}
 
 PhaseObserverView::PhaseObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y)
 {
   _game_model = gm;
-  _game_model->current_player.attach(this);
-  _game_model->current_phase.attach(this);
+  _game_model->current_player->attach(this);
+  _game_model->current_phase->attach(this);
 }
 
 StatisticsObserverView::StatisticsObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y)
 {
   _game_model = gm;
-  _game_model->active_players.attach(this);
+  _game_model->active_players->attach(this);
 }
 
 void PhaseObserverView::display()
 {
   wclear(_window);
   box(_window, 0, 0);
-  Player *current_player = _game_model->current_player.get();
+  Player *current_player = _game_model->current_player->get();
   if (current_player != nullptr)
   {
     print_centered(height / 2, current_player->playerName);
   }
 
-  print_centered(height / 4, convertEnum(_game_model->current_phase.get()));
+  print_centered(height / 4, convertEnum(_game_model->current_phase->get()));
 
   WindowView::display();
 }
@@ -420,7 +446,7 @@ void StatisticsObserverView::display()
   wclear(_window);
   box(_window, 0, 0);
 
-  std::vector<Player *> players = _game_model->active_players.get();
+  std::vector<Player *> players = _game_model->active_players->get();
 
   if (players.size() == 1)
   {
@@ -510,20 +536,20 @@ void StatisticsObserverView::update()
 
 PhaseObserverView::~PhaseObserverView()
 {
-  _game_model->current_player.detach(this);
-  _game_model->current_phase.detach(this);
+  _game_model->current_player->detach(this);
+  _game_model->current_phase->detach(this);
 }
 
 StatisticsObserverView::~StatisticsObserverView()
 {
-  _game_model->active_players.detach(this);
+  _game_model->active_players->detach(this);
 }
 
 GameplayView::GameplayView(int w, int h, GameModel *sm)
 {
   settings_model = sm;
   settings_model->log->attach(this);
-  bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
+  bool headers_enabled = settings_model->phase_headers_enabled->get() || settings_model->stats_headers_enabled->get();
   this->start_x = 1;
   this->start_y = headers_enabled * LINES / 4;
   this->height = h - start_y;
@@ -598,8 +624,8 @@ void GameplayView::display()
 
 void GameplayView::activate()
 {
-  bool headers_enabled = settings_model->phase_headers_enabled.get() || settings_model->stats_headers_enabled.get();
-  int header_height = settings_model->number_of_players.get() * 2 + 1;
+  bool headers_enabled = settings_model->phase_headers_enabled->get() || settings_model->stats_headers_enabled->get();
+  int header_height = settings_model->number_of_players->get() * 2 + 1;
   this->start_y = 1 + headers_enabled * header_height;
   this->height = LINES - start_y;
 
@@ -611,13 +637,13 @@ void GameplayView::activate()
   box(_window, 0, 0);
   display();
 
-  if (settings_model->phase_headers_enabled.get())
+  if (settings_model->phase_headers_enabled->get())
   {
     create_phase_observer_view(header_height);
     _phase_view->activate();
   }
 
-  if (settings_model->stats_headers_enabled.get())
+  if (settings_model->stats_headers_enabled->get())
   {
     create_stats_observer_view(header_height);
     _stats_view->activate();
@@ -657,9 +683,9 @@ bool GameplayController::keyboardEventPerformed(int key) { return false; }
 
 void GameplayController::startupPhase()
 {
-  _game_model->current_phase.set(STARTUP);
+  _game_model->current_phase->set(STARTUP);
 
-  int num_players = _game_model->number_of_players.get();
+  int num_players = _game_model->number_of_players->get();
 
   srand(time(NULL));
 
@@ -684,13 +710,13 @@ void GameplayController::startupPhase()
     int index = rand() % newly_created_players.size();
 
     Player *next = newly_created_players[index];
-    _game_model->active_players.push_back(next);
+    _game_model->active_players->push_back(next);
 
     newly_created_players.erase(newly_created_players.begin() + index);
   }
 
-  Player *first = _game_model->active_players.get()[0];
-  _game_model->current_player.set(first);
+  Player *first = _game_model->active_players->get()[0];
+  _game_model->current_player->set(first);
 
   // for testing winning condition.
   // _game_model->active_players.remove(_game_model->active_players.get()[0]);
@@ -718,36 +744,62 @@ void GameplayController::assign_territories()
     int territory_index = r % territories.size();
 
     map::Territory *territory = territories[territory_index];
-    Player *player = _game_model->active_players.get()[index_of_next_player_to_receive_territory];
+    Player *player = _game_model->active_players->get()[index_of_next_player_to_receive_territory];
     player->addTerritory(territory);
     _game_model->log->append("Assigned " + territory->getName() + " to " + player->playerName);
 
     territories.erase(territories.begin() + territory_index);
 
-    index_of_next_player_to_receive_territory = ++index_of_next_player_to_receive_territory % _game_model->number_of_players.get();
+    index_of_next_player_to_receive_territory = ++index_of_next_player_to_receive_territory % _game_model->number_of_players->get();
 
 #ifdef __linux__
     usleep(10000);
 #else
-    Sleep(100);
+    Sleep(50);
 #endif
   }
 }
 
 void GameplayController::mainGameLoop() {
-  
-  _game_model->current_phase.set(REINFORCEMENT);
 
   reinforcementPhase();
+<<<<<<< HEAD
+=======
+  issueOrdersPhase();
+>>>>>>> 8f1cc5d9a9dfd482c155b55c718a01f0c8084be1
   /* Play out game */
 
+}
+
+bool GameplayController::reinforcementsAvailable() {
+  int numPlayers = _game_model->active_players.get().size();
+  Player* activePlayers = _game_model->active_players.get(); 
+
+  vector<int> playerArmies(numPlayers);
+  //int* armiesToBeDeployed = new int[numPlayers];
+
+  //Initial armies
+  // for(int i = 0; i < playerArmies.size(); i++) {
+  //   playerArmies.push_back(activePlayers->at(i));
+  // }
+
+  // while() {
+
+  // }
+  
+  for (auto player : _game_model->active_players.get()) {
+    if(player->getArmees() > 0)
+      return true;
+  }
+  return false;
 }
 
 void GameplayController::reinforcementPhase() {
   _game_model->log->append("Reinforcement phase started");
     // Add assignArmies to player
   //Go through players
-  for (auto player : _game_model->active_players.get()) {
+  for (auto player : _game_model->active_players->get())
+  {
     //Find total territory count for each player
     int ownedTerritories = player->owned_territories.size();
     int armiesToAssign = (int)floor(ownedTerritories / 3);
@@ -772,11 +824,41 @@ void GameplayController::reinforcementPhase() {
    
     player->setArmees(player->getArmees() + armiesToAssign);
 
-   // _game_model->log->append("Total armies for plaer: " + std::to_string(player->getArmees()));
+    _game_model->log->append("Total armies for player: " + std::to_string(player->getArmees()));
   }
 }
 
+
+void GameplayController::deploySubPhase() {
+
+
+  while(GameplayController::reinforcementsAvailable()){
+    for (auto player : _game_model->active_players.get()) {
+      vector<map::Territory*> defendingTerrs = player->toDefend();
+      
+      srand(time(0));
+
+      int randomIndex = rand() % defendingTerrs.size();
+      map::Territory* randomTerr = defendingTerrs.at(randomIndex);
+
+      int randomArmies = rand() % player->getArmees();
+
+      if(randomArmies == 0){
+        randomArmies += 1;
+      }
+
+      DeployOrder* d = new DeployOrder(*player,*randomTerr,randomArmies);
+      player->issueOrder(d);
+
+      _game_model->log->append("New Orders issued: " + player->listOfOrders->toString());
+    }
+  } 
+}
+
 void GameplayController::issueOrdersPhase() {
+
+  //Deployment Stage
+  deploySubPhase();
 
 }
 
@@ -809,7 +891,7 @@ void GameplayController::viewDeactivated()
 {
   delete _game_model->map;
 
-  for (auto player : _game_model->active_players.get())
+  for (auto player : _game_model->active_players->get())
   {
     delete player;
   }
