@@ -804,7 +804,9 @@ void GameplayController::reinforcementPhase() {
 void GameplayController::issueOrdersPhase() {
   _game_model->current_phase->set(ISSUE_ORDERS);
 
+  /* Copy all active players into a pool of players waiting to issue orders */
   std::vector<Player*> active_players = _game_model->active_players->get();
+
   std::vector<Player*> players_wanting_to_issue_orders;
   players_wanting_to_issue_orders.assign(active_players.begin(), active_players.end());
   
@@ -813,6 +815,7 @@ void GameplayController::issueOrdersPhase() {
     Player *current = players_wanting_to_issue_orders[0];
     _game_model->current_player.set(current);
 
+    // Allow the current player to issue 1 order, or return nullptr indicating they are finished
     Order* issued = current->issueOrder();
     if (issued != nullptr) {
       _game_model->log->append(current->playerName " issued: " + issued->toString());
@@ -824,7 +827,6 @@ void GameplayController::issueOrdersPhase() {
     // Go to next player who still wants to issue an order.
     index_of_current_player = ++index_of_current_player % players_wanting_to_issue_orders.size();
   }
-
 }
 
 void GameplayController::deploySubPhase() {
