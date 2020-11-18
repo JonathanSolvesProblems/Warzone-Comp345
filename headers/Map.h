@@ -148,6 +148,8 @@ public:
    */
   const std::vector<Territory *> getTerritories();
 
+
+
   /*
    * Find a territory by name.
    * 
@@ -183,6 +185,8 @@ public:
    *        name, or nullptr if not found.
    */
   Continent* getContinent(std::string) const;
+
+  const std::vector<Continent *> getContinents();
 
   /*
    * Returns true iff the Map meets the following criteria:

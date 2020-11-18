@@ -4,6 +4,7 @@
 #include "Player.h"
 #include <vector>
 #include <list>
+#include <math.h>
 
 #ifdef __linux__
 #include <unistd.h>
@@ -42,6 +43,7 @@ class MainMenuController : public ActionListener {
 
     virtual void viewActivated();
     virtual void viewDeactivated();
+    
 
   private:
     GameModel *_settings_model;
@@ -198,6 +200,10 @@ class GameplayController : public ActionListener {
 
     virtual void viewActivated();
     virtual void viewDeactivated();
+    virtual void reinforcementPhase();
+    virtual void issueOrdersPhase();
+    virtual void executeOrdersPhase();
+    virtual int getPlayersBonus(Player& p);
 
   private:
     void startupPhase();

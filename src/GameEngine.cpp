@@ -603,11 +603,61 @@ void GameplayController::assign_territories() {
 }
 
 void GameplayController::mainGameLoop() {
+
+
   _game_model->current_phase.set(REINFORCEMENT);
+
+  
 
   /* Play out game */
 
-  // Application::instance()->activateView(MAIN_MENU_VIEW);
+}
+
+void GameplayController::reinforcementPhase() {
+  //Go through players
+  for (auto player : _game_model->active_players.get()) {
+    //Find total territory count for each player
+    int ownedTerritories = player->owned_territories.size();
+    int armiesToAssign = (int)floor(ownedTerritories / 3);
+
+    //assign continent bonus
+    armiesToAssign += getPlayersBonus(player);
+
+    //Minimum 3 armies
+    if(armiesToAssign <= 3){
+      armiesToAssign = 3;
+    }
+
+    // Add assignArmies to player
+    player->setArmees(player->getArmees() + armiesToAssign);
+  }
+}
+
+void GameplayController::issueOrdersPhase() {
+
+}
+
+void GameplayController::executeOrdersPhase() {
+
+}
+
+int GameplayController::getPlayersBonus(Player& p) {
+  int totalBonus = 0;
+  bool ownsThisContinent = true;
+
+  for(auto continent : _game_model->map->getContinents()){
+    for(auto territory : _game_model->map->getTerritories()){
+      if(territory->getOwner() != p){
+        ownsThisContinent = false;
+        break;
+        //Check next continent
+      }
+    }
+    //They own the continent
+    totalBonus += continent->getBonus();
+  }
+
+  return totalBonus;
 }
 
 void GameplayController::viewDeactivated() {
@@ -616,7 +666,7 @@ void GameplayController::viewDeactivated() {
   for (auto player : _game_model->active_players.get()) {
     delete player;
   }
-
+  
   // TODO We might want to remove these two lines
   // _game_model->active_players.clear();
   // _game_model->current_player.set(nullptr);
