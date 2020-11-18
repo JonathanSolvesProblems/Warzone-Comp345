@@ -20,6 +20,15 @@ class Player;
 
 enum Phase {STARTUP, REINFORCEMENT, ISSUE_ORDERS, ORDERS_EXECUTION};
 
+inline string convertEnum(Phase current_phase) {
+    switch(current_phase) {
+      case STARTUP: return "Startup Phase";
+      case REINFORCEMENT: return "Reinforcement Phase";
+      case ISSUE_ORDERS: return "Issue Orders Phase";
+      case ORDERS_EXECUTION: return "Orders Execution Phase";
+    }
+}
+
 // forward declarations
 class MainMenuView;
 class GameModel;

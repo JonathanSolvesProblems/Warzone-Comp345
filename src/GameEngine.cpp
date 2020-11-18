@@ -376,7 +376,11 @@ void PhaseObserverView::display() {
   Player* current_player = _game_model->current_player.get();
   if(current_player != nullptr) {
      print_centered(height / 2, current_player->playerName);
-  }
+}
+
+
+  print_centered(height / 4, convertEnum(_game_model->current_phase.get()));
+
   WindowView::display();
 }
 // do phase after.
@@ -531,7 +535,7 @@ void GameplayController::startupPhase() {
 
   // TODO give territories to Players
 
-  assign_territories();
+  // assign_territories();
 
 }
 
