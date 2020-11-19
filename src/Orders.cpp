@@ -32,7 +32,7 @@ string Order::getEffect() {
 	return *_effect;
 }
 
-int Order::getPriority() {
+int Order::getPriority() const {
 	return priority;
 }
 
@@ -599,11 +599,14 @@ void OrdersList::remove(int index) {
 
 Order *OrdersList::next()
 {
-	std::stable_sort(_orders.begin(), _orders.end(), [](Order *a, Order *b) {
-		return a->getPriority() < b->getPriority();
+	std::vector<Order*> _orders_vector;
+	_orders_vector.assign(_orders.begin(), _orders.end());
+	std::stable_sort(_orders_vector.begin(), _orders_vector.end(), [](auto a, auto b){
+		return b->getPriority() < a->getPriority();
 	});
-	Order* next_order = _orders.front();
-	_orders.pop_front();
+
+	Order* next_order = _orders_vector.back();
+	_orders_vector.pop_back();
 	return next_order;
 }
 
