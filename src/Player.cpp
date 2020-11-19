@@ -94,6 +94,10 @@ Order* Player::issueOrder()
 	return nullptr;
 }
 
+Order* Player::nextOrder() {
+	return listOfOrders->next();
+}
+
 Order* Player::issueAdvanceOrder() {
 
   srand(time(nullptr));
@@ -110,12 +114,17 @@ Order* Player::issueAdvanceOrder() {
     numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
   }
 
+<<<<<<< HEAD
 //   player->issueOrder(new AdvanceOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
 //   _game_model->log->append("New Order issued: AdvcanceOrder");
 	
 	//TEMP
 	AdvanceOrder* o = new AdvanceOrder();
 	return o;
+=======
+  player->issueOrder(new AdvanceOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
+  _game_model(->log->append("New Order issued: AdvcanceOrder");
+>>>>>>> a24668980a42c2883f26dca98bfc9b864085e875
 }
 
 Order* Player::issueDeployOrder()

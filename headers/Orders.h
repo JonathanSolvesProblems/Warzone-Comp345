@@ -50,6 +50,10 @@ public:
 
 	string toString();
 
+	string getEffect();
+
+	virtual int getPriority();
+
 	bool checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer);
 	/// <summary>
 	/// Sends the order description to the output stream.
@@ -64,6 +68,7 @@ protected:
 	string* _description{nullptr};
 	string* _effect{nullptr};
 	Player* _issuingPlayer{nullptr};
+	int priority{3};
 };
 
 /// <summary>
@@ -108,6 +113,7 @@ private:
 	map::Territory* _sourceTerritory{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int _numberOfArmies{0};
+
 };
 
 /// <summary>
@@ -152,6 +158,7 @@ private:
 	map::Territory* _sourceTerritory{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int _numberOfArmies{0};
+	int priority{1};
 };
 
 /// <summary>
@@ -194,6 +201,7 @@ public:
 private:
 	// Data members
 	map::Territory* _targetTerritory{nullptr};
+	int priority{2};
 };
 
 /// <summary>
@@ -280,6 +288,7 @@ private:
 	// Data members
 	map::Territory* _targetTerritory{nullptr};
 	int _numberOfArmies{0};
+	int priority{0};
 };
 
 /// <summary>
@@ -360,6 +369,9 @@ public:
 	/// Remove is used instead of delete because delete is a reserved keyword.
 	/// </remarks>
 	/// <param name="index">The current index of order to be removed.</param>
+
+	// Returns the next order in priority: Deploy, airlift, blockade, others
+	Order* next();
 	void remove(int index);
 	bool empty();
 
