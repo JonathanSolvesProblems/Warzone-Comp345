@@ -2,7 +2,7 @@
 
 // --------------------------- Order Class ---------------------------
 // Default constructor
-Order::Order() : Order("This is a generic order.", "This order has no effect.") {
+Order::Order() : Order("This is a generic order.", "Not Yet Executed") {
 	// deliberately empty
 }
 
@@ -190,7 +190,8 @@ AdvanceOrder& AdvanceOrder::operator=(const AdvanceOrder& advanceOrderToAssign) 
 
 // ----------------------- AirliftOrder Class ------------------------
 // Default constructor
-AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from one of the current player's territories to any other territory.") {
+AirliftOrder::AirliftOrder() : Order("Airlift Order", "Not Yet Executed")
+{
 	// deliberately empty
 }
 
@@ -303,7 +304,8 @@ AirliftOrder& AirliftOrder::operator=(const AirliftOrder& airliftOrderToAssign) 
 
 // ---------------------- BlockadeOrder Class ------------------------
 // Default constructor
-BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of armies on one of the current player's territories and make it a neutral territory.") {
+BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Not Yet Executed")
+{
 	// deliberately empty
 }
 
@@ -366,7 +368,8 @@ BlockadeOrder& BlockadeOrder::operator=(const BlockadeOrder& blockadeOrderToAssi
 
 // ------------------------ BombOrder Class --------------------------
 // Default constructor
-BombOrder::BombOrder() : Order("Bomb Order", "Destroy half of the armies located on an opponent's territory that is adjacent to one of the current player's territories.") {
+BombOrder::BombOrder() : Order("Bomb Order", "Not Yet Executed")
+{
 	// deliberately empty
 }
 
@@ -426,7 +429,8 @@ BombOrder& BombOrder::operator=(const BombOrder& bombOrderToAssign) {
 
 // ------------------------ DeployOrder Class ------------------------
 // Default constructor
-DeployOrder::DeployOrder() : Order("Deploy Order", "Place some armies on one of the current player's territories.") {
+DeployOrder::DeployOrder() : Order("Deploy Order", "Not Yet Executed")
+{
 	// deliberately empty
 }
 
@@ -486,7 +490,7 @@ DeployOrder& DeployOrder::operator=(const DeployOrder& deployOrderToAssign) {
 
 // --------------------- NegotiateOrder Class ------------------------
 // Default constructor
-NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks between the current player and another player until the end of the turn.") {
+NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Not Yet Executed") {
 	// deliberately empty
 }
 
