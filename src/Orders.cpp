@@ -97,14 +97,11 @@ AdvanceOrder::~AdvanceOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
-
-	map::Territory* ptr = _sourceTerritory->getNeighbour(_targetTerritory->getID());
-	
-	if(ptr == nullptr)
+	if (!_sourceTerritory->hasNeighbour(_targetTerritory->getID()))
 		return false;
 
-		
-	if(_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _issuingPlayer->getArmees()) {
+	if (_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _sourceTerritory->getArmees())
+	{
 		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())){
 			return false;
 		}

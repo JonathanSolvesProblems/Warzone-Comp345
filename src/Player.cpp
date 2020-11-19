@@ -91,15 +91,15 @@ Order* Player::issueOrder()
 		_targetsThisRound = toAttack();
 		_defencesThisRound = toDefend();
 		_armees_to_deploy_this_round = armees;
-		hand->add(Deck::instance()->draw());
-		hand->add(Deck::instance()->draw());
+		// hand->add(Deck::instance()->draw());
+		// hand->add(Deck::instance()->draw());
 	}
 
 	if (_armees_to_deploy_this_round > 0)
 	{
 		return issueDeployOrder();
 	}
-	else if (rand() % 10 > 5 && (!_targetsThisRound.empty() || !_defencesThisRound.empty()))
+	else if (rand() % 10 > 3 && !_targetsThisRound.empty())
 	{
 		return issueAdvanceOrder();
 	}
@@ -131,16 +131,8 @@ Order* Player::nextOrder() {
 
 Order* Player::issueAdvanceOrder() {
 	map::Territory *targetTerritory{nullptr};
-	if (!_targetsThisRound.empty())
-	{
-		targetTerritory = _targetsThisRound.front();
-		_targetsThisRound.erase(_targetsThisRound.begin());
-	}
-	else
-	{
-		targetTerritory = _defencesThisRound.front();
-		_targetsThisRound.erase(_defencesThisRound.begin());
-	}
+	targetTerritory = _targetsThisRound.front();
+	_targetsThisRound.erase(_targetsThisRound.begin());
 
 	const vector<map::Territory*> &sourceTerritories = targetTerritory->getNeighbours();
 	map::Territory* sourceTerritory{nullptr};
@@ -149,8 +141,6 @@ Order* Player::issueAdvanceOrder() {
 		sourceTerritory = t;
 		if (isOwner(sourceTerritory)) break;
 	}
-
-	if (sourceTerritory == nullptr) throw;
 
 	int numberOfArmies = 0;
 	if (sourceTerritory->getArmees() != 0) {
@@ -258,10 +248,13 @@ void Player::removeTerritory(map::Territory *territory)
 {
 	if (territory)
 	{
-		std::remove(
-				owned_territories.begin(),
-				owned_territories.end(),
-				territory);
+		for (int i  = 0; i < owned_territories.size(); i++) {
+			if (owned_territories.at(i) == territory) {
+				owned_territories.erase(owned_territories.begin() + i);
+				break;
+			}
+		}
+		notify();
 	}
 }
 
