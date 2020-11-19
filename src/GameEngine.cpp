@@ -866,7 +866,7 @@ void GameplayController::executeOrdersPhase() {
     if (order_to_execute != nullptr)
     {
       order_to_execute->execute();
-      _game_model->log->append("Executed " + order_to_execute->toString() + ": " + order_to_execute->getEffect());
+      _game_model->log->append(current->playerName + " executed " + order_to_execute->toString() + ": " + order_to_execute->getEffect());
     }
     else
     {
