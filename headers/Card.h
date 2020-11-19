@@ -81,7 +81,9 @@ public:
 	Hand& operator=(const Hand& hand);
 
 	// adds card to deck.
-	void add(Card* drawn); 
+	void add(Card* drawn);
+	Card* playCard();
+	int size();
 	void show(); // displays contents of hand
 
 	friend ostream& operator<<(ostream& os, const Hand& hand);
