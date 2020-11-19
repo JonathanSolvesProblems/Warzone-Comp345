@@ -13,24 +13,32 @@ using std::ostream;
 class Observer
 {
 public:
-  ~Observer(); // destructor
-  virtual void update() = 0; // abstract method to be implemented by observers.
+  // destructor
+  ~Observer(); 
+  // abstract method to be implemented by observers.
+  virtual void update() = 0;
 
 protected:
-  Observer(); // default constructor.
+  // default constructor.
+  Observer(); 
 };
 
 // This is the subject that will notify all observers subscribed to it.
 class Observable
 {
 public:
-  
-  virtual void attach(Observer *o); // attach observer, will be called to notify.
-  virtual void detach(Observer *o); // detach observer, will remove from the notification chain.
-  virtual void notify(); // notifies all observers attached to the Observable.
-  Observable(); // default constructor
-  ~Observable(); // destructor.
-  Observable(const Observable& observableCopy); // copy constructor
+  // attach observer, will be called to notify.
+  virtual void attach(Observer *o);
+  // detach observer, will remove from the notification chain.
+  virtual void detach(Observer *o); 
+  // notifies all observers attached to the Observable.
+  virtual void notify(); 
+  // default constructor
+  Observable(); 
+  // destructor
+  ~Observable(); 
+  // copy constructor
+  Observable(const Observable& observableCopy); 
 
   // Overloads the stream insertion operator.
   friend ostream& operator<<(ostream& out, const Observable& ObservableToStream);
@@ -39,7 +47,8 @@ public:
   Observable& operator=(const Observable& o);
 
 private:
-  std::list<Observer *> *_observers; // all observers subscribed to the observable will be stored here.
+  // all observers subscribed to the observable will be stored here.
+  std::list<Observer *> *_observers; 
 };
 
 // allows for multiple types across the observable and observer to cross reference each other.
@@ -52,37 +61,52 @@ class VectorObservable : public Observable, public Observer
   static_assert(std::is_base_of<Observable, type>::value, "T must be of base Observable*");
 
 public:
-  VectorObservable(); // default constructor
+  // default constructor
+  VectorObservable(); 
   
- 
-  VectorObservable(std::vector<T> &); // 1 parameter constructor, accepts vector of template type.
-  VectorObservable(const VectorObservable& vectorObservableCopy); // copy constructor
+  // 1 parameter constructor, accepts vector of template type.
+  VectorObservable(std::vector<T> &); 
+  // copy constructor
+  VectorObservable(const VectorObservable& vectorObservableCopy); 
 
-  ~VectorObservable(); // destructor
+  // destructor
+  ~VectorObservable(); 
 
-  void set(std::vector<T> &); // 1 parameter constructor.
-  const std::vector<T> &get(); // getter
-  void push_back(T); // push_back
-  void remove(T); // remove from template chosen class.
-  void clear(); // to clear observables.
-  virtual void update(); // update method that calls notify, overloading update from observer class. Has to be defined.
+  // 1 parameter constructor.
+  void set(std::vector<T> &); 
+  // getter
+  const std::vector<T> &get(); 
+  // push_back
+  void push_back(T); 
+  // remove from template chosen class.
+  void remove(T); 
+  // to clear observables.
+  void clear(); 
+  // update method that calls notify, overloading update from observer class. Has to be defined.
+  virtual void update(); 
 
 private:
-  void silent_clear();// clears obsevers.
-  std::vector<T> state; // state of observer.
+  // clears obsevers.
+  void silent_clear();
+  // state of observer.
+  std::vector<T> state; 
 };
 
 // prints messages from observable.
 class StringLog : public Observable {
 
   public:
-    StringLog(); // default constructor
-    ~StringLog(); // default constructor
+    // default constructor
+    StringLog(); 
+    // default constructor
+    ~StringLog(); 
 
-    void append(std::string msg); // append the message.
-    void clear();  // clear message.
-    const std::list<std::string>& get(); // get message.
-
+    // append the message.
+    void append(std::string msg); 
+    // clear message.
+    void clear();  
+    // get message.
+    const std::list<std::string>& get(); 
   private:
   std::list<std::string> log;
 };
@@ -92,17 +116,22 @@ class StringLog : public Observable {
 template <class T>
 class ConcreteObservable : public Observable {
 public:
-  void set(T new_state); // set new state
-  ConcreteObservable(); // default constructor 
-  ConcreteObservable(const ConcreteObservable<T>&); // copy constructor
+  // set new state
+  void set(T new_state); 
+  // default constructor 
+  ConcreteObservable(); 
+  // copy constructor
+  ConcreteObservable(const ConcreteObservable<T>&); 
   T get(); // get state
 private:
   T state;
 };
 
+// default constructor
 template <class T>
 ConcreteObservable<T>::ConcreteObservable() {} 
 
+// copy constructor
 template <class T>
 ConcreteObservable<T>::ConcreteObservable(const ConcreteObservable<T>& copy) {
     state = copy.state;
@@ -113,23 +142,28 @@ template <class T>
 void ConcreteObservable<T>::set(T new_state)
 {
   state = new_state;
+  // notify observers
   notify();
 }
 
+// returns the state with the concreteobservable
 template <class T>
-T ConcreteObservable<T>::get() // returns the state with the concreteobservable
+T ConcreteObservable<T>::get() 
 {
   return state;
 }
 
+// default constructor implementation.
 template <class T>
-VectorObservable<T>::VectorObservable() {} // default constructor implementation.
+VectorObservable<T>::VectorObservable() {} 
 
+// destructor
 template <class T>
-VectorObservable<T>::~VectorObservable() {} // destructor
+VectorObservable<T>::~VectorObservable() {} 
 
+// sets the state to base
 template <class T>
-VectorObservable<T>::VectorObservable(std::vector<T>& base) { // sets the state to base
+VectorObservable<T>::VectorObservable(std::vector<T>& base) { 
   state = base;
 }
 

@@ -350,12 +350,18 @@ class GameplayController : public ActionListener {
     /* Randomly assigns territories to players in round-robin order */
     void assign_territories();
 
+    // calls reinforcementPhase
     void reinforcementPhase();
+
+    // calls issueOrdersPhase
     void issueOrdersPhase();
+
+    // calls executeOrdersPhase
     void executeOrdersPhase();
 
     void removeDeadPlayers();
 
+    // gets player bonus.
     int getPlayersBonus(Player* p);
 
     GameModel *_game_model;

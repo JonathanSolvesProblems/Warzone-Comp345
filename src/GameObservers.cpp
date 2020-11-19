@@ -18,6 +18,7 @@ Observable::Observable(const Observable &observableCopy) {
 }
 
 ostream& operator<<(ostream& out, const Observable& ObservableToStream) {
+    out << "intentially blank. Used to show operator overloading for stream operator. Won't be called for our cases.";
 	  return out;
 }
 
