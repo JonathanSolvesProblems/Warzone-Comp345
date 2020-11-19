@@ -751,9 +751,6 @@ void GameplayController::startupPhase()
   Player *first = _game_model->active_players->get()[0];
   _game_model->current_player->set(first);
 
-  // for testing winning condition.
-  // _game_model->active_players.remove(_game_model->active_players.get()[0]);
-
   assign_territories();
 }
 

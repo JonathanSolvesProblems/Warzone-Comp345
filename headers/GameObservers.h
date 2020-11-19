@@ -24,6 +24,7 @@ protected:
 class Observable
 {
 public:
+  
   virtual void attach(Observer *o); // attach observer, will be called to notify.
   virtual void detach(Observer *o); // detach observer, will remove from the notification chain.
   virtual void notify(); // notifies all observers attached to the Observable.
@@ -91,16 +92,16 @@ class StringLog : public Observable {
 template <class T>
 class ConcreteObservable : public Observable {
 public:
-  void set(T new_state);
-  ConcreteObservable();
-  ConcreteObservable(const ConcreteObservable<T>&);
-  T get();
+  void set(T new_state); // set new state
+  ConcreteObservable(); // default constructor 
+  ConcreteObservable(const ConcreteObservable<T>&); // copy constructor
+  T get(); // get state
 private:
   T state;
 };
 
 template <class T>
-ConcreteObservable<T>::ConcreteObservable() {}
+ConcreteObservable<T>::ConcreteObservable() {} 
 
 template <class T>
 ConcreteObservable<T>::ConcreteObservable(const ConcreteObservable<T>& copy) {
