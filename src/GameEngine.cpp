@@ -746,9 +746,9 @@ void GameplayController::assign_territories()
     index_of_next_player_to_receive_territory = ++index_of_next_player_to_receive_territory % _game_model->number_of_players->get();
 
 #ifdef __linux__
-    usleep(10000);
+    usleep(HIT_DA_BREAKS * 100);
 #else
-    Sleep(50);
+    Sleep(HIT_DA_BREAKS);
 #endif
   }
 }
@@ -836,9 +836,9 @@ void GameplayController::issueOrdersPhase() {
       players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
     }
 #ifdef __linux__
-    usleep(30000);
+    usleep(HIT_DA_BREAKS * 300);
 #else
-    Sleep(100);
+    Sleep(HIT_DA_BREAKS * 3);
 #endif
   }
 }
@@ -878,9 +878,9 @@ void GameplayController::executeOrdersPhase() {
 
     // Go to next player who still has orders to execute
 #ifdef __linux__
-        usleep(30000);
+    usleep(HIT_DA_BREAKS * 300);
 #else
-        Sleep(100);
+    Sleep(HIT_DA_BREAKS * 300);
 #endif
   }
   removeDeadPlayers();
