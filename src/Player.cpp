@@ -105,7 +105,6 @@ Order* Player::nextOrder() {
 }
 
 Order* Player::issueAdvanceOrder() {
-
   srand(time(nullptr));
 
   map::Territory* targetTerritory = *(_targetsThisRound.begin());
@@ -122,8 +121,8 @@ Order* Player::issueAdvanceOrder() {
     numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
   }
 
-  player->issueOrder(new AdvanceOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
-  _game_model(->log->append("New Order issued: AdvcanceOrder");
+  AdvanceOrder* o = new AdvanceOrder();
+  return o;
 }
 
 Order* Player::issueDeployOrder()
