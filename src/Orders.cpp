@@ -403,6 +403,8 @@ bool BombOrder::validate() {
 	if(checkIfTruce(_issuingPlayer,_targetPlayer)) {
 		return false;
 	}
+
+
 	return true;
 }
 
@@ -412,8 +414,10 @@ bool BombOrder::execute() {
 		//Territory being bombed belongs to enemy player, half of the armies get removed
 		_targetTerritory->removeArmees(ceil(_targetTerritory->getArmees() / 2.0));
 		//cout << *_effect << endl;
+		*_effect = _issuingPlayer->playerName + "successfully bombed" +  _targetTerritory->getName();
 		return true;
 	}
+	*_effect = "REJECTED";
 	return false;
 }
 
@@ -470,11 +474,11 @@ bool DeployOrder::execute() {
 		this->_targetTerritory->addArmees(this->_numberOfArmies);
 
 		_issuingPlayer->setArmees(_issuingPlayer->getArmees() - _numberOfArmies);
+		*_effect = "successfully deployed" + std::to_string(_numberOfArmies) + " to " + this->_targetTerritory->getName();
 
-
-		cout << *_effect << endl;
 		return true;
 	}
+	*_effect = "REJECTED";
 	return false;
 }
 
@@ -528,9 +532,12 @@ bool NegotiateOrder::execute() {
 		std::get<0>(truce) = _issuingPlayer;
 		std::get<1>(truce) = _secondPlayer;
 
+		*_effect = "Player " + _issuingPlayer->playerName + "has successfully negotiated a truce with " + _secondPlayer->playerName;
+
 		truces.push_back(truce);
 		return true;
 	}
+	*_effect = "REJECTED";
 	return false;
 }
 
