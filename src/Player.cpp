@@ -89,9 +89,11 @@ Order* Player::issueOrder()
 	if (listOfOrders->empty()) {
 		_targetsThisRound = toAttack();
 		_defencesThisRound = toDefend();
+		_armees_to_deploy_this_round = armees;
 	}
-	
-	if (armees > 0) {
+
+	if (_armees_to_deploy_this_round > 0)
+	{
 		return issueDeployOrder();
 	}
 	else if (hand->size() != 0) {
@@ -125,9 +127,8 @@ Order* Player::nextOrder() {
 Order* Player::issueAdvanceOrder() {
 	srand(time(nullptr));
 
-	map::Territory* targetTerritory = *(_targetsThisRound.begin());
+	map::Territory* targetTerritory = _targetsThisRound.front();
 	_targetsThisRound.erase(_targetsThisRound.begin());
-
 	vector<map::Territory*> sourceTerritories = targetTerritory->getNeighbours();
 
 	map::Territory* sourceTerritory{nullptr};
@@ -201,7 +202,8 @@ Order* Player::issueDeployOrder()
 		randomArmies += 1;
 	}
 
-	DeployOrder* d = new DeployOrder(*this, *nextDefence, randomArmies);
+	_armees_to_deploy_this_round -= randomArmies;
+	DeployOrder *d = new DeployOrder(*this, *nextDefence, randomArmies);
 	listOfOrders->add(d);
 
 	return d;

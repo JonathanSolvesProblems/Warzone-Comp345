@@ -122,7 +122,8 @@ public:
 private:
 	// Tracks the number of reinforcements the player has available
 	int armees;
-	vector<map::Territory*> _targetsThisRound{nullptr};
+	int _armees_to_deploy_this_round;
+	vector<map::Territory *> _targetsThisRound{nullptr};
 	vector<map::Territory*> _defencesThisRound{nullptr};
 };
 
