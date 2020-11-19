@@ -880,7 +880,7 @@ void GameplayController::executeOrdersPhase() {
 #ifdef __linux__
     usleep(HIT_DA_BREAKS * 300);
 #else
-    Sleep(HIT_DA_BREAKS * 300);
+    Sleep(HIT_DA_BREAKS * 3);
 #endif
   }
   removeDeadPlayers();
