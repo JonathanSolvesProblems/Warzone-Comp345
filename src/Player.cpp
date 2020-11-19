@@ -11,7 +11,6 @@ Player::Player(string name, int pID)
 }
 
 
-
 Player::Player(const Player &playerToCopy)
 {
 	this->playerName = string(playerToCopy.playerName);
@@ -87,12 +86,18 @@ const vector<map::Territory *> Player::toAttack()
 Order* Player::issueOrder()
 {
 	if (listOfOrders->empty()) {
-
+		_targetsThisRound = list<map::Territory*>(toAttack().begin(), toAttack().end());
+		_defencesThisRound = list<map::Territory*>(toDefend().begin(), toDefend().end());
 	}
-	if (armees > 0) {
+	else if (armees > 0) {
 		return issueDeployOrder();
 	}
-	return nullptr;
+	else if (hand->size() != 0) {
+
+	}
+	else {
+		return nullptr;
+	}
 }
 
 Order* Player::nextOrder() {
@@ -103,12 +108,14 @@ Order* Player::issueAdvanceOrder() {
 
   srand(time(nullptr));
 
+  map::Territory* targetTerritory = *(_targetsThisRound.begin());
+  _targetsThisRound.pop_front();
+
   map::Territory* sourceTerritory = owned_territories.at(rand() % owned_territories.size());
   //Get source territories neighbors
 
   std::vector<map::Territory *> neighbours = sourceTerritory->getNeighbours();
 
-  map::Territory* targetTerritory = neighbours.at(rand() % neighbours.size());
 
   int numberOfArmies = 0;
   if (sourceTerritory->getArmees() != 0) {
@@ -123,8 +130,8 @@ Order* Player::issueDeployOrder()
 {
   	srand(time(nullptr));
 	
-	int randomIndex = rand() % toDefend().size();
-	map::Territory* randomTerr = toDefend().at(randomIndex);
+	map::Territory* nextDefence = *(_defencesThisRound.begin());
+	_defencesThisRound.pop_front();
 
 	int randomArmies = rand() % getArmees();
 
@@ -132,7 +139,7 @@ Order* Player::issueDeployOrder()
 		randomArmies += 1;
 	}
 
-	DeployOrder* d = new DeployOrder(*this, *randomTerr, randomArmies);
+	DeployOrder* d = new DeployOrder(*this, *nextDefence, randomArmies);
 	listOfOrders->add(d);
 
 	return d;

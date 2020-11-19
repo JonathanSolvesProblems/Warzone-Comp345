@@ -121,5 +121,7 @@ public:
 private:
 	// Tracks the number of reinforcements the player has available
 	int armees;
+	list<map::Territory*> _targetsThisRound{nullptr};
+	list<map::Territory*> _defencesThisRound{nullptr};
 };
 

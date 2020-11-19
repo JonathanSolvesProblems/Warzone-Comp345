@@ -14,6 +14,50 @@ map::Territory newJersey = map::Territory(1, "New Jersey", freedomland);
 map::Territory texas = map::Territory(2, "Texas", freedomland);
 
 
+void deployOrderTest() {
+	// Set neighbors
+	newJersey.addNeighbour(&texas);
+	newJersey.addNeighbour(&quebec);
+	
+	//Set owners
+	quebec.setOwner(&steve);
+	newJersey.setOwner(&anthony);
+	texas.setOwner(&anthony);
+
+	anthony.setArmees(30);
+	steve.setArmees(3);
+
+	// Set armies
+	newJersey.setArmees(6);
+	quebec.setArmees(10);
+	texas.setArmees(3);
+
+	DeployOrder* deployValid = new DeployOrder(anthony,texas,2);
+	cout << "----------------------------------------------------" << endl;
+	cout << "Deploy Anthony's 2 armies to Texas " << endl;
+	cout << "Texas armies BEFORE deploy: " << texas.getArmees() << endl;
+	deployValid->execute();
+	cout << "Texas armies AFTER deploy: " << texas.getArmees() << endl;
+
+	DeployOrder* deployInvalid = new DeployOrder(steve,quebec,5);
+	cout << "----------------------------------------------------" << endl;
+	cout << "Deploy Anthony's 2 armies to Quebec BUT steve only has 1 army " << endl;
+	cout << "Quebec armies BEFORE deploy: " << quebec.getArmees() << endl;
+	deployInvalid->execute();
+	cout << "Quebec armies AFTER deploy (should not change): " << quebec.getArmees() << endl;
+
+	DeployOrder* deployInvalid2 = new DeployOrder(steve,newJersey,2);
+	cout << "----------------------------------------------------" << endl;
+	cout << "Try to deploy Steve's armies to a territory he doesn't own(invalid)" << endl;
+	cout << "New Jersey armies BEFORE deploy: " << newJersey.getArmees() << endl;
+	deployInvalid2->execute();
+	cout << "New Jersey armies AFTER deploy (should not change): " << newJersey.getArmees() << endl;
+
+
+
+	//TODO DELETE
+}
+
 void advanceOrderTest() {
 	// Set neighbors
 	newJersey.addNeighbour(&texas);
@@ -29,6 +73,7 @@ void advanceOrderTest() {
 	quebec.setArmees(10);
 	texas.setArmees(3);
 
+	cout << "----------------------------------------------------" << endl;
 	cout << "Advance with two territories that are not neighbors." << endl;
 	cout << "Before: " << texas << endl << quebec << endl;
 	AdvanceOrder* advanceDiff = new AdvanceOrder(anthony, texas, quebec, 2);
@@ -182,6 +227,7 @@ void negotiateOrderTest() {
 }
 
 int main() {
+	deployOrderTest();
 	advanceOrderTest();
 	airliftOrderTest();
 	bombOrderTest();

@@ -103,7 +103,8 @@ bool AdvanceOrder::validate() {
 	if(ptr == nullptr)
 		return false;
 
-	if(_sourceTerritory->getOwner() == _issuingPlayer) {
+		
+	if(_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _issuingPlayer->getArmees()) {
 		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())){
 			return false;
 		}
@@ -211,7 +212,7 @@ AirliftOrder::~AirliftOrder() {
 bool AirliftOrder::validate() {
 	
 	//Check that the source and target belongs to the player that issued the order
-	if(_sourceTerritory->getOwner() == _issuingPlayer) {
+	if(_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _issuingPlayer->getArmees()) {
 		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())) {
 			return false;
 		}
@@ -229,6 +230,7 @@ bool AirliftOrder::execute() {
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
+			_issuingPlayer->setArmees(_issuingPlayer->getArmees() - _numberOfArmies);
 			return true;
 		}
 		else {
@@ -264,6 +266,8 @@ bool AirliftOrder::execute() {
 				//Change armies values
 				this->_sourceTerritory->removeArmees(_numberOfArmies);
 				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
+
+				_issuingPlayer->setArmees(_issuingPlayer->getArmees() - troopsLost);
 			}
 
 			//All your troops are dead, and your enemy has troops left
@@ -271,6 +275,8 @@ bool AirliftOrder::execute() {
 				//Change armies values
 				this->_sourceTerritory->setArmees( this->_sourceTerritory->getArmees() - troopsLost);
 				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
+
+				_issuingPlayer->setArmees(_issuingPlayer->getArmees() - troopsLost);
 			}
 		}
 		return true;
@@ -328,6 +334,8 @@ bool BlockadeOrder::execute() {
 
 		//Double armies
 		this->_targetTerritory->addArmees(this->_targetTerritory->getArmees());
+
+
 
 		this->_issuingPlayer->removeTerritory(_targetTerritory);
 
@@ -451,6 +459,7 @@ bool DeployOrder::execute() {
 		this->_targetTerritory->addArmees(this->_numberOfArmies);
 
 		_issuingPlayer->setArmees(_issuingPlayer->getArmees() - _numberOfArmies);
+
 
 		cout << *_effect << endl;
 		return true;
