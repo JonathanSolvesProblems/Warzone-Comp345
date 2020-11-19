@@ -826,6 +826,8 @@ void GameplayController::issueOrdersPhase() {
   
   int index_of_current_player = 0;
   while (!players_wanting_to_issue_orders.empty()) {
+    index_of_current_player %= players_wanting_to_issue_orders.size();
+
     Player *current = players_wanting_to_issue_orders[index_of_current_player];
     _game_model->current_player->set(current);
 
@@ -840,6 +842,9 @@ void GameplayController::issueOrdersPhase() {
       _game_model->log->append(current->playerName + " has finished issuing orders for this round");
       players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
     }
+
+    index_of_current_player++;
+
 #ifdef __linux__
     usleep(HIT_DA_BREAKS * 300);
 #else
