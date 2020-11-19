@@ -123,6 +123,7 @@ bool AdvanceOrder::execute() {
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
+			*_effect = "moved " + std::to_string(_numberOfArmies) + " from " + this->_sourceTerritory->getName() + " to " + this->_targetTerritory->getName();
 			return true;
 		}
 		else {
@@ -157,6 +158,7 @@ bool AdvanceOrder::execute() {
 				//Change armies values
 				this->_sourceTerritory->removeArmees(_numberOfArmies);
 				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
+				*_effect = "successfully invaded " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName() + " with " + std::to_string(this->_numberOfArmies - troopsLost) + " armees";
 			}
 
 			//All your troops are dead, and your enemy has troops left
@@ -164,10 +166,12 @@ bool AdvanceOrder::execute() {
 				//Change armies values
 				this->_sourceTerritory->setArmees( this->_sourceTerritory->getArmees() - troopsLost);
 				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
+				*_effect = "failed invasion to" + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
 			}
 		}
 	}
-	//cout << *_effect << endl;
+	
+	*_effect = "REJECTED";
 	return false;
 }
 
