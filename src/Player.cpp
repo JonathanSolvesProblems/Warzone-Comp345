@@ -85,7 +85,6 @@ const vector<map::Territory *> Player::toAttack()
 //Calls orderList's add method
 Order* Player::issueOrder()
 {
-	return nullptr;
 	if (listOfOrders->empty()) {
 		_targetsThisRound = toAttack();
 		_defencesThisRound = toDefend();
@@ -94,7 +93,20 @@ Order* Player::issueOrder()
 		return issueDeployOrder();
 	}
 	else if (hand->size() != 0) {
-		
+		Card* cardToPlay = hand->playCard();
+		string order = cardToPlay->play();
+		if (order == "airlift") {
+			return issueAirliftOrder();
+		}
+		else if (order == "bomb") {
+			return issueBombOrder();
+		}
+		else if (order == "blockage") {
+			return issueBlockadeOrder();
+		}
+		else if (order == "diplomacy") {
+			return issueNegotiateOrder();
+		}
 	}
 	return nullptr;
 }
