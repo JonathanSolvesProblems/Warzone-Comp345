@@ -92,16 +92,20 @@ template <class T>
 class ConcreteObservable : public Observable {
 public:
   void set(T new_state);
-  // ConcreteObservable<T>(const ConcreteObservable<T>&);
+  ConcreteObservable();
+  ConcreteObservable(const ConcreteObservable<T>&);
   T get();
 private:
   T state;
 };
 
-/*template <class T>
-ConcreteObservable::ConcreteObservable<T>(const ConcreteObservable<T>& copy) {
+template <class T>
+ConcreteObservable<T>::ConcreteObservable() {}
+
+template <class T>
+ConcreteObservable<T>::ConcreteObservable(const ConcreteObservable<T>& copy) {
     state = copy.state;
-}*/
+}
 
 // adds a new state to concrete observable.
 template <class T>
