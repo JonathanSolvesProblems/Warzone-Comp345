@@ -48,10 +48,13 @@ public:
 	/// </returns>
 	virtual bool execute() = 0;
 
+	// Returns a description of the order
 	string toString();
 
+	// Returns the effect of the order execution
 	string getEffect();
 
+	// Get the priority of the order
 	virtual int getPriority();
 
 	bool checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer);
@@ -68,6 +71,8 @@ protected:
 	string* _description{nullptr};
 	string* _effect{nullptr};
 	Player* _issuingPlayer{nullptr};
+
+	// Determines the priority the order should be executed in lower numbers are executed first
 	int priority{3};
 };
 
@@ -372,9 +377,14 @@ public:
 
 	// Returns the next order in priority: Deploy, airlift, blockade, others
 	Order* next();
+
+	// Removes the order at the given index
 	void remove(int index);
+
+	// Returns true if the order list is empty
 	bool empty();
 
+	// Returns a string description of the orders list
 	string toString();
 	/// <summary>
 	/// Sends a list of the orders currently in the list to the output stream.

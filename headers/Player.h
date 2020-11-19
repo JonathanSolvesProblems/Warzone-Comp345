@@ -115,9 +115,11 @@ public:
 	// Removes a territory from myTerritories (Does not unset the Territory's owner)
 	void removeTerritory(map::Territory*);
 
+	// Returns true if the player owns the given territory
 	bool isOwner(map::Territory*);
 
 private:
+	// Tracks the number of reinforcements the player has available
 	int armees;
 	list<map::Territory*> _targetsThisRound{nullptr};
 	list<map::Territory*> _defencesThisRound{nullptr};
