@@ -11,7 +11,6 @@ Player::Player(string name, int pID)
 }
 
 
-
 Player::Player(const Player &playerToCopy)
 {
 	this->playerName = string(playerToCopy.playerName);
@@ -111,8 +110,12 @@ Order* Player::issueAdvanceOrder() {
     numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
   }
 
-  player->issueOrder(new AdvanceOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
-  _game_model->log->append("New Order issued: AdvcanceOrder");
+//   player->issueOrder(new AdvanceOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
+//   _game_model->log->append("New Order issued: AdvcanceOrder");
+	
+	//TEMP
+	AdvanceOrder* o = new AdvanceOrder();
+	return o;
 }
 
 Order* Player::issueDeployOrder()
