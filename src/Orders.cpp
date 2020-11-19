@@ -607,12 +607,17 @@ Order *OrdersList::next()
 	std::vector<Order*> _orders_vector;
 	_orders_vector.assign(_orders.begin(), _orders.end());
 	std::stable_sort(_orders_vector.begin(), _orders_vector.end(), [](auto a, auto b){
-		return b->getPriority() < a->getPriority();
+		return a->getPriority() < b->getPriority();
 	});
 
-	if (!_orders_vector.empty()) {
-		return _orders_vector.back();
-	} else {
+	if (!_orders_vector.empty())
+	{
+		Order *o = _orders_vector.front();
+		remove(0);
+		return o;
+	}
+	else
+	{
 		return nullptr;
 	}
 }

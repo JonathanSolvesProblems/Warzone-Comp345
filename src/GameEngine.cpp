@@ -838,7 +838,7 @@ void GameplayController::issueOrdersPhase() {
       players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
     }
 #ifdef __linux__
-    usleep(10000);
+    usleep(30000);
 #else
     Sleep(100);
 #endif
@@ -855,9 +855,11 @@ void GameplayController::executeOrdersPhase() {
   players_with_orders_to_execute.assign(active_players.begin(), active_players.end());
 
   int index_of_current_player = 0;
-  while (players_with_orders_to_execute.size()) 
+  while (!players_with_orders_to_execute.empty()) 
   {
-    Player *current = players_with_orders_to_execute[index_of_current_player];
+    index_of_current_player %= players_with_orders_to_execute.size();
+
+    Player *current = players_with_orders_to_execute.at(index_of_current_player);
     _game_model->current_player->set(current);
 
     // Request next order to be executed
@@ -866,19 +868,21 @@ void GameplayController::executeOrdersPhase() {
     {
       order_to_execute->execute();
       _game_model->log->append(current->playerName + " executed " + order_to_execute->toString() + ": " + order_to_execute->getEffect());
-      index_of_current_player = ++index_of_current_player % players_with_orders_to_execute.size();
     }
     else
     {
       // If no order was returned, that means the Player has no more orders to execute
+      _game_model->log->append(current->playerName + " is done executing orders.");
       players_with_orders_to_execute.erase(players_with_orders_to_execute.begin() + index_of_current_player);
     }
 
+    index_of_current_player++;
+
     // Go to next player who still has orders to execute
 #ifdef __linux__
-    usleep(10000);
+        usleep(30000);
 #else
-    Sleep(100);
+        Sleep(100);
 #endif
   }
   removeDeadPlayers();
