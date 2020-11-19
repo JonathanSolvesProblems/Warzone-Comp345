@@ -191,22 +191,11 @@ bool MapLoader::loadFile(string mapName, map::Map &test)
     }
 };
 
-// method that stores the contents of the given line should it be a Border (all ints)
-bool MapLoader::isBorder(string line, map::Map &test, bool &isValid)
-{
-    // stores the parsed string into array elements
-    vector<string> bordersArrReborn;
-
-    string bordersArr[1];
-    // boolean to determine if the line is a border checks if theyre all ints
-    bool foundBorders;
-
-    int x = 0; //a variable to set our pointer to determine the number of strings
-
-    // gets the string
+void MapLoader::isBorderArray(vector<string> &bordersArrReborn , string line, bool &isValid){
+   // gets the string
     stringstream ssin(line);
     char delim = ' ';
-
+ string bordersArr[1];
     try
     {
         while (getline(ssin, line, delim))
@@ -228,8 +217,11 @@ bool MapLoader::isBorder(string line, map::Map &test, bool &isValid)
     {
         isValid = false;
     }
+}
 
-    // run a for loop ad basically have 1 variable if it is not a int then have it
+
+void MapLoader::isBorderLineValidator(vector<string> &bordersArrReborn , string line, bool &foundBorders){
+ // run a for loop ad basically have 1 variable if it is not a int then have it
     // go to an if statement where the boolean is false and then break the loop
     // because in the borders section you can only have ints on each line
     for (int q = 0; q < bordersArrReborn.size(); q++)
@@ -252,14 +244,11 @@ bool MapLoader::isBorder(string line, map::Map &test, bool &isValid)
         }
     }
 
-    // if its an invalid file just exit the this method right away by setting the y variable to 0 and all the booleands to false
-    if (isValid == false)
-    {
-        foundBorders = true;
-        return false;
-    }
-
-    //look hhere so the size of each aray correclty corresponds to the amount fo borders, soemthign may be flawed with territories,
+}
+  
+bool MapLoader::isBorderAddToMap( string line, map::Map &test, vector<string> &bordersArrReborn , bool &foundBorders, vector<string> &borders)
+{
+   //look hhere so the size of each aray correclty corresponds to the amount fo borders, soemthign may be flawed with territories,
 
     // if only ints were found then we add it to the map
     if (foundBorders == true)
@@ -285,49 +274,68 @@ bool MapLoader::isBorder(string line, map::Map &test, bool &isValid)
         // is an invalid file
         return false;
     }
+
+
+}
+
+
+// method that stores the contents of the given line should it be a Border (all ints)
+bool MapLoader::isBorder(string line, map::Map &test, bool &isValid)
+{
+    // stores the parsed string into array elements
+    vector<string> bordersArrReborn;
+
+    string bordersArr[1];
+    // boolean to determine if the line is a border checks if theyre all ints
+    bool foundBorders;
+
+    int x = 0; //a variable to set our pointer to determine the number of strings
+    
+    
+    isBorderArray(bordersArrReborn ,line, isValid);
+
+    isBorderLineValidator(bordersArrReborn ,line,foundBorders);
+
+    // if its an invalid file just exit the this method right away by setting the y variable to 0 and all the booleands to false
+    if (isValid == false)
+    {
+        foundBorders = true;
+        return false;
+    }
+
+    return isBorderAddToMap(line,test, bordersArrReborn ,foundBorders, borders);
 };
 
-// isContinent method which checks to see if the string is a continent and adds it to the map by creating a continent obj
-bool MapLoader::isContinent(string line, map::Map &test, bool &isValid, int &continentID)
-{
-    // a continent ID which follows standard syntax OF ALL FILES, which is to start at 1, and goes up to N continents
-   
-    // arrays to store the contents of the line seperated by a space delimiter
-    string continentsArr[99];
-    // booleans to determine if the line is a continent
-    bool hasFirstString;  // checks for str
-    bool hasInt;          // checks for int
-    bool hasSecondString; // checks for str
 
-    int i = 0; //a variable to set our pointer to determine the number of strings
-    int val1 = 0;
 
-    // gets the string
+// stores all the components of the line for the isCountry method into the countriesArr vector 
+void MapLoader::isContinentArray(string *continentsArr, string line, int &i){
+
+       // gets the string
     stringstream ssin(line);
     char delim = ' ';
 
     while (getline(ssin, line, delim))
     {
-
         // accepts spaces at the end of file
         if (line.length() == 0)
         {
-
             continue;
         }
-
         continentsArr[i] = line;
         i++;
     }
-
     // parses all the contents of the line
     while (ssin.good())
     {
         ssin >> continentsArr[i];
         ++i;
     }
+}
 
-    // checks to see if this array index is a string
+//validates the line used for the continent part 
+void MapLoader::isContinentLineValidator(  bool &hasFirstString, bool& hasInt, bool& hasSecondString, int &val1, string *continentsArr ){
+   // checks to see if this array index is a string
     try
     {
         int val0 = std::stoi(continentsArr[0]);
@@ -362,15 +370,10 @@ bool MapLoader::isContinent(string line, map::Map &test, bool &isValid, int &con
     {
         hasSecondString = true;
     }
+}
 
-    // if its an invalid file just exit the this method right away by setting the y variable to 0 and all the booleands to false
-    if (isValid == false)
-    {
-        i = 0;
-        hasSecondString = false;
-        return false;
-    }
-
+// adds the validated line to the map
+bool MapLoader::isContinentAddToMap( string line, map::Map &test,bool &hasFirstString, bool& hasInt, bool& hasSecondString, int &i, int &val1, string *continentsArr, vector<string> &continents, int &continentID  ){
     // if it follows the string int string comvination then we store into the map
     if (hasFirstString == true && hasInt == true && hasSecondString == true && i == 3)
     {
@@ -397,35 +400,53 @@ bool MapLoader::isContinent(string line, map::Map &test, bool &isValid, int &con
         // is an invalid file
         return false;
     }
+}
+
+// isContinent method which checks to see if the string is a continent and adds it to the map by creating a continent obj
+bool MapLoader::isContinent(string line, map::Map &test, bool &isValid, int &continentID)
+{
+    // a continent ID which follows standard syntax OF ALL FILES, which is to start at 1, and goes up to N continents
+   
+    // arrays to store the contents of the line seperated by a space delimiter
+    string continentsArr[99];
+    // booleans to determine if the line is a continent
+    bool hasFirstString;  // checks for str
+    bool hasInt;          // checks for int
+    bool hasSecondString; // checks for str
+
+    int i = 0; //a variable to set our pointer to determine the number of strings
+    int val1 = 0;
+
+    // stores the content of the continentsArr
+    isContinentArray(continentsArr, line, i);
+
+    // validate sthe continent line 
+    isContinentLineValidator(hasFirstString,hasInt,hasSecondString,val1,continentsArr);
+
+    if (isValid == false)
+        {
+            i = 0;
+            hasSecondString = false;
+            return false;
+        }
+
+    // returns true if we can add the Continent to the map
+    return isContinentAddToMap(line,test,hasFirstString,hasInt,hasSecondString,i,val1,continentsArr,continents,continentID);
 };
 
-// isCountry method whcih checks if the string is a Country to be added to the map by using the territory class
-bool MapLoader::isCountry(string line, map::Map &test, bool &isValid)
-{
-    // stores the string into the elements in the array
-    string countriesArrStore[1];
-    vector<string> countriesArr;
-    int val0 = 0;
-    int val2 = 0;
-    // booleans to determine if the line is a countries
-    bool hasFirstInt;  // check for int
-    bool hasString;    // check for str
-    bool hasSecondInt; // check for int
-    bool hasThirdInt;  // check for int
-    bool hasFourthInt; // check for int
 
-    int y = 0; //a variable to set our pointer to determine the number of strings
-
-    // gets the string
+// stores all the components of the line for the isCountry method into the countriesArr vector 
+void MapLoader::isCountryVector(vector<string> &countriesArr, string line, bool &isValid, int &y){
+    
+     // gets the string
     stringstream ssin(line);
     char delim = ' ';
+    string countriesArrStore[1];
 
     try
     {
-
         while (getline(ssin, line, delim))
         {
-
             // accepts spaces at the end of a line
             if (line.length() == 0)
             {
@@ -446,6 +467,10 @@ bool MapLoader::isCountry(string line, map::Map &test, bool &isValid)
     {
         isValid = false;
     }
+
+}
+
+void MapLoader::isCountryLineValidator(int& val0, int& val2 , bool &hasFirstInt,bool &hasString, bool &hasSecondInt, bool &hasThirdInt, bool &hasFourthInt, vector<string> &countriesArr ){
 
     // tests to see if the first entry is a int
     try
@@ -505,16 +530,11 @@ bool MapLoader::isCountry(string line, map::Map &test, bool &isValid)
 
         hasFourthInt = false;
     }
+}
 
-    // if its an invalid file just exit the this method right away by setting the y variable to 0 and all the booleands to false
-    if (isValid == false)
-    {
-        y = 0;
-        hasFirstInt = false;
-        return false;
-    }
+bool MapLoader::isCountryAddToMap( map::Map &test,bool &hasFirstInt,bool &hasString, bool &hasSecondInt, bool &hasThirdInt, bool &hasFourthInt, vector<string> &countriesArr, int &y, int &val0 ){
 
-    // if all the strings follow the proper sequence of a country add it to the map
+        // if all the strings follow the proper sequence of a country add it to the map
     if (hasFirstInt == true && hasString == true && hasSecondInt == true && hasThirdInt == true && hasFourthInt == true && y == 5)
     {
         // stores the territory into the proper class
@@ -538,6 +558,41 @@ bool MapLoader::isCountry(string line, map::Map &test, bool &isValid)
         // invalid map file
         return false;
     }
+}
+
+// isCountry method whcih checks if the string is a Country to be added to the map by using the territory class
+bool MapLoader::isCountry(string line, map::Map &test, bool &isValid)
+{
+    // stores the string into the elements in the array
+    string countriesArrStore[1];
+    vector<string> countriesArr;
+    int val0 = 0;
+    int val2 = 0;
+    // booleans to determine if the line is a countries
+    bool hasFirstInt;  // check for int
+    bool hasString;    // check for str
+    bool hasSecondInt; // check for int
+    bool hasThirdInt;  // check for int
+    bool hasFourthInt; // check for int
+
+    int y = 0; //a variable to set our pointer to determine the number of strings
+
+    // stores all the components of a line into the vector
+    isCountryVector(countriesArr, line, isValid, y);
+
+    // checks to see if the line follows correct syntax
+    isCountryLineValidator(val0, val2 , hasFirstInt,hasString,hasSecondInt,hasThirdInt,hasFourthInt,countriesArr);
+
+    // if its an invalid file just exit the this method right away by setting the y variable to 0 and all the booleands to false
+    if (isValid == false)
+    {
+        y = 0;
+        hasFirstInt = false;
+        return false;
+    }
+
+    // returns true if the line was proper and was able to be added to the map  
+    return isCountryAddToMap( test,hasFirstInt,hasString,hasSecondInt,hasThirdInt,hasFourthInt,countriesArr, y, val0);
 };
 
 
