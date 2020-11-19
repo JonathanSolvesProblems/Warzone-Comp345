@@ -1,6 +1,3 @@
-
-
-
 mkdir build\GameEngineDriver
 
 g++ -I .\headers -o build\GameEngineDriver\Map.o -c src\Map.cpp

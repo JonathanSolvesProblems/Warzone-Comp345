@@ -48,7 +48,14 @@ public:
 	/// </returns>
 	virtual bool execute() = 0;
 
+	// Returns a description of the order
 	string toString();
+
+	// Returns the effect of the order execution
+	string getEffect();
+
+	// Get the priority of the order
+	virtual int getPriority() const;
 
 	bool checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer);
 	/// <summary>
@@ -64,6 +71,9 @@ protected:
 	string* _description{nullptr};
 	string* _effect{nullptr};
 	Player* _issuingPlayer{nullptr};
+
+	// Determines the priority the order should be executed in lower numbers are executed first
+	int priority{3};
 };
 
 /// <summary>
@@ -108,6 +118,7 @@ private:
 	map::Territory* _sourceTerritory{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int _numberOfArmies{0};
+
 };
 
 /// <summary>
@@ -152,6 +163,7 @@ private:
 	map::Territory* _sourceTerritory{nullptr};
 	map::Territory* _targetTerritory{nullptr};
 	int _numberOfArmies{0};
+	int priority{1};
 };
 
 /// <summary>
@@ -194,6 +206,7 @@ public:
 private:
 	// Data members
 	map::Territory* _targetTerritory{nullptr};
+	int priority{2};
 };
 
 /// <summary>
@@ -280,6 +293,7 @@ private:
 	// Data members
 	map::Territory* _targetTerritory{nullptr};
 	int _numberOfArmies{0};
+	int priority{0};
 };
 
 /// <summary>
@@ -360,8 +374,17 @@ public:
 	/// Remove is used instead of delete because delete is a reserved keyword.
 	/// </remarks>
 	/// <param name="index">The current index of order to be removed.</param>
+
+	// Returns the next order in priority: Deploy, airlift, blockade, others
+	Order* next();
+
+	// Removes the order at the given index
 	void remove(int index);
 
+	// Returns true if the order list is empty
+	bool empty();
+
+	// Returns a string description of the orders list
 	string toString();
 	/// <summary>
 	/// Sends a list of the orders currently in the list to the output stream.

@@ -16,6 +16,7 @@ class Player;
 using std::ostream;
 using std::vector;
 using std::unordered_set;
+using std::list;
 
 class Player : public Observable {
 public:
@@ -93,10 +94,21 @@ public:
 	const vector<map::Territory*> toAttack();
 
 	/// <summary>
-	/// Adds order being passed to the player's list of orders
+	/// Adds order to the player's list of orders
 	/// </summary>
-	/// <param name="o">Order being passed</param>
-	void issueOrder(Order *o);
+	/// <returns>Order to issue, nullptr if player is done</returns>
+	Order* issueOrder();
+
+	// Returns the next order to be executed following priority:
+	// 			Deploy, Airlift, Blockade, Others
+	Order* nextOrder();
+
+    Order* issueAdvanceOrder();
+    Order* issueAirliftOrder();
+    Order* issueBombOrder();
+    Order* issueBlockadeOrder();
+	Order* issueDeployOrder();
+    Order* issueNegotiateOrder();
 
 	// Adds a territory to myTerritories (Does not set the Territory's owner)
 	void addTerritory(map::Territory*);
@@ -104,9 +116,13 @@ public:
 	// Removes a territory from myTerritories (Does not unset the Territory's owner)
 	void removeTerritory(map::Territory*);
 
+	// Returns true if the player owns the given territory
 	bool isOwner(map::Territory*);
 
 private:
+	// Tracks the number of reinforcements the player has available
 	int armees;
+	vector<map::Territory*> _targetsThisRound{nullptr};
+	vector<map::Territory*> _defencesThisRound{nullptr};
 };
 

@@ -55,4 +55,14 @@ public:
 public:
 	bool mapSelection(map::Map &test);
 	vector<string> findMapFiles();
+	bool isCountryAddToMap( map::Map &test,bool &hasFirstInt,bool &hasString, bool &hasSecondInt, bool &hasThirdInt, bool &hasFourthInt, vector<string> &countriesArr, int &y, int &val0 );
+    void isCountryLineValidator(int& val0, int& val2 , bool &hasFirstInt,bool &hasString, bool &hasSecondInt, bool &hasThirdInt, bool &hasFourthInt, vector<string> &countriesArr );
+	void isCountryVector(vector<string> &countriesArr, string line, bool &isValid, int &y);
+    void isContinentArray(string *continentsArr, string line, int &i);
+    void isContinentLineValidator(  bool &hasFirstString, bool& hasInt, bool& hasSecondString, int &val1, string *continentsArr );
+    bool isContinentAddToMap( string line, map::Map &test,bool &hasFirstString, bool& hasInt, bool& hasSecondString, int &i, int &val1, string *continentsArr, vector<string> &continents, int &continentID  );
+	bool isBorderAddToMap( string line, map::Map &test, vector<string> &bordersArrReborn , bool &foundBorders, vector<string> &borders);
+	void isBorderLineValidator(vector<string> &bordersArrReborn , string line, bool &foundBorders);
+	void isBorderArray(vector<string> &bordersArrReborn , string line, bool &isValid);
+
 };

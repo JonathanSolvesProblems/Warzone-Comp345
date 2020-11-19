@@ -2,7 +2,7 @@
 
 // --------------------------- Order Class ---------------------------
 // Default constructor
-Order::Order() : Order("This is a generic order.", "This order has no effect.") {
+Order::Order() : Order("This is a generic order.", "Not Yet Executed") {
 	// deliberately empty
 }
 
@@ -26,6 +26,14 @@ Order::~Order() {
 
 string Order::toString() {
 	return *_description;
+}
+
+string Order::getEffect() {
+	return *_effect;
+}
+
+int Order::getPriority() const {
+	return priority;
 }
 
 // Overloads the stream insertion operator.
@@ -95,7 +103,8 @@ bool AdvanceOrder::validate() {
 	if(ptr == nullptr)
 		return false;
 
-	if(_sourceTerritory->getOwner() == _issuingPlayer) {
+		
+	if(_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _issuingPlayer->getArmees()) {
 		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())){
 			return false;
 		}
@@ -114,6 +123,7 @@ bool AdvanceOrder::execute() {
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
+			*_effect = "moved " + std::to_string(_numberOfArmies) + " from " + this->_sourceTerritory->getName() + " to " + this->_targetTerritory->getName();
 			return true;
 		}
 		else {
@@ -148,6 +158,7 @@ bool AdvanceOrder::execute() {
 				//Change armies values
 				this->_sourceTerritory->removeArmees(_numberOfArmies);
 				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
+				*_effect = "successfully invaded " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName() + " with " + std::to_string(this->_numberOfArmies - troopsLost) + " armees";
 			}
 
 			//All your troops are dead, and your enemy has troops left
@@ -155,10 +166,12 @@ bool AdvanceOrder::execute() {
 				//Change armies values
 				this->_sourceTerritory->setArmees( this->_sourceTerritory->getArmees() - troopsLost);
 				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
+				*_effect = "failed invasion to" + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
 			}
 		}
 	}
-	//cout << *_effect << endl;
+	
+	*_effect = "REJECTED";
 	return false;
 }
 
@@ -177,7 +190,8 @@ AdvanceOrder& AdvanceOrder::operator=(const AdvanceOrder& advanceOrderToAssign) 
 
 // ----------------------- AirliftOrder Class ------------------------
 // Default constructor
-AirliftOrder::AirliftOrder() : Order("Airlift Order", "Advance some armies from one of the current player's territories to any other territory.") {
+AirliftOrder::AirliftOrder() : Order("Airlift Order", "Not Yet Executed")
+{
 	// deliberately empty
 }
 
@@ -203,7 +217,7 @@ AirliftOrder::~AirliftOrder() {
 bool AirliftOrder::validate() {
 	
 	//Check that the source and target belongs to the player that issued the order
-	if(_sourceTerritory->getOwner() == _issuingPlayer) {
+	if(_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _issuingPlayer->getArmees()) {
 		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())) {
 			return false;
 		}
@@ -221,6 +235,8 @@ bool AirliftOrder::execute() {
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
+			_issuingPlayer->setArmees(_issuingPlayer->getArmees() - _numberOfArmies);
+			*_effect = "moved " + std::to_string(_numberOfArmies) + " from " + this->_sourceTerritory->getName() + " to " + this->_targetTerritory->getName();
 			return true;
 		}
 		else {
@@ -256,6 +272,8 @@ bool AirliftOrder::execute() {
 				//Change armies values
 				this->_sourceTerritory->removeArmees(_numberOfArmies);
 				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
+
+				*_effect = "successfully invaded " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName() + " with " + std::to_string(this->_numberOfArmies - troopsLost) + " armees";
 			}
 
 			//All your troops are dead, and your enemy has troops left
@@ -263,10 +281,14 @@ bool AirliftOrder::execute() {
 				//Change armies values
 				this->_sourceTerritory->setArmees( this->_sourceTerritory->getArmees() - troopsLost);
 				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
+
+				*_effect = "failed invasion to" + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
 			}
 		}
 		return true;
 	}
+
+	*_effect = "REJECTED";
 	return false;
 }
 
@@ -285,7 +307,8 @@ AirliftOrder& AirliftOrder::operator=(const AirliftOrder& airliftOrderToAssign) 
 
 // ---------------------- BlockadeOrder Class ------------------------
 // Default constructor
-BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Triple the number of armies on one of the current player's territories and make it a neutral territory.") {
+BlockadeOrder::BlockadeOrder() : Order("Blockade Order", "Not Yet Executed")
+{
 	// deliberately empty
 }
 
@@ -325,9 +348,11 @@ bool BlockadeOrder::execute() {
 
 		//Set neutral player owner
 		this->_targetTerritory->setOwner(nullptr);
+		*_effect = "successfully blockaded " + this->_targetTerritory->getName() + " with " + std::to_string(this->_targetTerritory->getArmees()) + " armees";
 
 		return true;
 	}
+	*_effect = "REJECTED";
 	return false;
 }
 
@@ -346,7 +371,8 @@ BlockadeOrder& BlockadeOrder::operator=(const BlockadeOrder& blockadeOrderToAssi
 
 // ------------------------ BombOrder Class --------------------------
 // Default constructor
-BombOrder::BombOrder() : Order("Bomb Order", "Destroy half of the armies located on an opponent's territory that is adjacent to one of the current player's territories.") {
+BombOrder::BombOrder() : Order("Bomb Order", "Not Yet Executed")
+{
 	// deliberately empty
 }
 
@@ -377,6 +403,8 @@ bool BombOrder::validate() {
 	if(checkIfTruce(_issuingPlayer,_targetPlayer)) {
 		return false;
 	}
+
+
 	return true;
 }
 
@@ -386,8 +414,10 @@ bool BombOrder::execute() {
 		//Territory being bombed belongs to enemy player, half of the armies get removed
 		_targetTerritory->removeArmees(ceil(_targetTerritory->getArmees() / 2.0));
 		//cout << *_effect << endl;
+		*_effect =  "successfully bombed" +  _targetTerritory->getName();
 		return true;
 	}
+	*_effect = "REJECTED";
 	return false;
 }
 
@@ -406,7 +436,8 @@ BombOrder& BombOrder::operator=(const BombOrder& bombOrderToAssign) {
 
 // ------------------------ DeployOrder Class ------------------------
 // Default constructor
-DeployOrder::DeployOrder() : Order("Deploy Order", "Place some armies on one of the current player's territories.") {
+DeployOrder::DeployOrder() : Order("Deploy Order", "Not Yet Executed")
+{
 	// deliberately empty
 }
 
@@ -430,7 +461,7 @@ DeployOrder::~DeployOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool DeployOrder::validate() {
 	//If target targetTerritory belongs to player, return true
-	if(_targetTerritory->getOwner() == _issuingPlayer )
+	if(_targetTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _issuingPlayer->getArmees())
 		return true;
 	return false;
 }
@@ -442,9 +473,12 @@ bool DeployOrder::execute() {
 		//Add passed number of armees to target territory
 		this->_targetTerritory->addArmees(this->_numberOfArmies);
 
-		cout << *_effect << endl;
+		_issuingPlayer->setArmees(_issuingPlayer->getArmees() - _numberOfArmies);
+		*_effect = "successfully deployed" + std::to_string(_numberOfArmies) + " to " + this->_targetTerritory->getName();
+
 		return true;
 	}
+	*_effect = "REJECTED";
 	return false;
 }
 
@@ -463,7 +497,7 @@ DeployOrder& DeployOrder::operator=(const DeployOrder& deployOrderToAssign) {
 
 // --------------------- NegotiateOrder Class ------------------------
 // Default constructor
-NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Prevent attacks between the current player and another player until the end of the turn.") {
+NegotiateOrder::NegotiateOrder() : Order("Negotiate Order", "Not Yet Executed") {
 	// deliberately empty
 }
 
@@ -498,9 +532,12 @@ bool NegotiateOrder::execute() {
 		std::get<0>(truce) = _issuingPlayer;
 		std::get<1>(truce) = _secondPlayer;
 
+		*_effect = "successfully negotiated a truce with " + _secondPlayer->playerName;
+
 		truces.push_back(truce);
 		return true;
 	}
+	*_effect = "REJECTED";
 	return false;
 }
 
@@ -563,6 +600,25 @@ void OrdersList::remove(int index) {
 		}
 		position++;
 	}
+}
+
+Order *OrdersList::next()
+{
+	std::vector<Order*> _orders_vector;
+	_orders_vector.assign(_orders.begin(), _orders.end());
+	std::stable_sort(_orders_vector.begin(), _orders_vector.end(), [](auto a, auto b){
+		return b->getPriority() < a->getPriority();
+	});
+
+	if (!_orders_vector.empty()) {
+		return _orders_vector.back();
+	} else {
+		return nullptr;
+	}
+}
+
+bool OrdersList::empty() {
+	return _orders.empty();
 }
 
 // Overloads the stream insertion operator

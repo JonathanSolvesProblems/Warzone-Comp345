@@ -13,7 +13,7 @@ using std::cout;
 class Card {
 public:
 	Card(); 
-	virtual void play() = 0;
+	virtual std::string play() = 0;
 	virtual ~Card(); 
 	Card(const Card& cardCopy);
 };
@@ -22,7 +22,7 @@ public:
 class Spy : public Card { 
 public:
 	Spy();
-	virtual void play() override final;
+	virtual std::string play() override final;
 	virtual ~Spy();
 };
 
@@ -30,7 +30,7 @@ public:
 class Bomb : public Card { 
 public:
 	Bomb(); 
-	virtual void play() override final; 
+	virtual std::string play() override final; 
 	virtual ~Bomb();
 };
 
@@ -38,7 +38,7 @@ public:
 class Reinforcement : public Card {
 public:
 	Reinforcement();
-	virtual void play() override final;
+	virtual std::string play() override final;
 	virtual ~Reinforcement();
 };
 
@@ -46,7 +46,7 @@ public:
 class Blockage : public Card { 
 public:
 	Blockage(); 
-	virtual void play() override final; 
+	virtual std::string play() override final; 
 	virtual ~Blockage(); 
 
 };
@@ -55,7 +55,7 @@ public:
 class Airlift : public Card { 
 public:
 	Airlift(); 
-	virtual void play() override final; 
+	virtual std::string play() override final; 
 	virtual ~Airlift();
 };
 
@@ -63,7 +63,7 @@ public:
 class Diplomacy : public Card { 
 public:
 	Diplomacy();
-	virtual void play() override final;
+	virtual std::string play() override final;
 	virtual ~Diplomacy();
 };
 
@@ -81,7 +81,9 @@ public:
 	Hand& operator=(const Hand& hand);
 
 	// adds card to deck.
-	void add(Card* drawn); 
+	void add(Card* drawn);
+	Card* playCard();
+	int size();
 	void show(); // displays contents of hand
 
 	friend ostream& operator<<(ostream& os, const Hand& hand);
