@@ -67,28 +67,33 @@ Hand::~Hand() {
 }
 
 // Overriding play methods, depending on card type
-void Spy::play() {
-	cout << "Spy Card\n";
+std::string Spy::play() {
+	return "spy";
 }
 
-void Bomb::play() {
-	cout << "Bomb Card\n";
+std::string Bomb::play() {
+
+	return "bomb";
 }
 
-void Reinforcement::play() {
-	cout << "Reinforcement Card\n";
+std::string Reinforcement::play() {
+
+	return "reinforcement";
 }
 
-void Blockage::play() {
-	cout << "Blockage Card\n";
+std::string Blockage::play() {
+
+	return "blockage";
 }
 
-void Airlift::play() {
-	cout << "Airlift Card\n";
+std::string Airlift::play() {
+
+	return "airlift";
 }
 
-void Diplomacy::play() {
-	cout << "Diplomacy Card\n";
+std::string Diplomacy::play() {
+
+	return "diplomacy";
 }
 
 // shuffles deck of cards
@@ -118,6 +123,20 @@ Card* Deck::draw() {
 	_deck.erase(_deck.begin() + (_deck.size() - 1));
 
 	return drawn;
+}
+
+Card* Hand::playCard() {
+	srand(time(nullptr));
+	if (size() == 0) {
+		return nullptr;
+	}
+	Card* cardToReturn = *(cards.end());
+	cards.pop_back();
+	return cardToReturn;
+}
+
+int Hand::size() {
+	return cards.size();
 }
 
 void Hand::show() { // display's contents of the hand.

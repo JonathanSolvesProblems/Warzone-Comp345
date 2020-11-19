@@ -714,8 +714,6 @@ void GameplayController::viewActivated()
   mainGameLoop();
 }
 
-bool GameplayController::keyboardEventPerformed(int key) { return false; }
-
 void GameplayController::startupPhase()
 {
   _game_model->current_phase->set(STARTUP);
@@ -796,15 +794,29 @@ void GameplayController::assign_territories()
 }
 
 void GameplayController::mainGameLoop() {
+  while (_game_model->active_players->get().size() > 1) {
+    reinforcementPhase();
+    issueOrdersPhase();
+    executeOrdersPhase();
+  }
 
-  reinforcementPhase();
-  issueOrdersPhase();
-  /* Play out game */
+  _game_model->log->append("Game Over. " + _game_model->active_players->get()[0]->playerName + " has won!");
+  _game_model->log->append("Press BACKSPACE to return to Main Menu.");
+}
 
+void GameplayController::removeDeadPlayers() {
+  std::list<Player*> players_to_remove;
+  for (Player* player : _game_model->active_players->get()) {
+    if (player->owned_territories.empty()) players_to_remove.push_back(player);
+  }
+
+  for (Player* player : players_to_remove) {
+    _game_model->log->append(player->playerName + " has lost all territories and is no longer in the game.");
+    _game_model->active_players->remove(player);
+  }
 }
 
 void GameplayController::reinforcementPhase() {
-
   _game_model->current_phase->set(REINFORCEMENT);
   _game_model->log->append("Reinforcement phase started");
   
@@ -839,102 +851,109 @@ void GameplayController::reinforcementPhase() {
 }
 
 void GameplayController::issueOrdersPhase() {
-
   _game_model->current_phase->set(ISSUE_ORDERS);
-  //Deployment Stage
-  deploySubPhase();
-  for (auto player : _game_model->active_players->get()) {
-    _game_model->current_player->set(player);
-    airliftSubPhase();
-    blockadeSubPhase();
-  }
-}
 
-void GameplayController::deploySubPhase() {
+  /* Copy all active players into a pool of players waiting to issue orders */
+  std::vector<Player*> active_players = _game_model->active_players->get();
 
-  srand(time(nullptr));
-  while(reinforcementsAvailable()){
-    for (auto player : _game_model->active_players->get()) {
-      if (player->getArmees() <= 0) {
-        continue;
-      }
+  std::vector<Player*> players_wanting_to_issue_orders;
+  players_wanting_to_issue_orders.assign(active_players.begin(), active_players.end());
+  
+  int index_of_current_player = 0;
+  while (!players_wanting_to_issue_orders.empty()) {
+    Player *current = players_wanting_to_issue_orders[index_of_current_player];
+    _game_model->current_player->set(current);
 
-      vector<map::Territory*> defendingTerrs = player->toDefend();
-      
-
-      int randomIndex = rand() % defendingTerrs.size();
-      map::Territory* randomTerr = defendingTerrs.at(randomIndex);
-
-      int randomArmies = rand() % player->getArmees();
-
-      if(randomArmies == 0){
-        randomArmies += 1;
-      }
-
-      player->setArmees(player->getArmees() - randomArmies);
-
-      DeployOrder* d = new DeployOrder(*player,*randomTerr,randomArmies);
-      player->issueOrder(d);
-
-      _game_model->log->append("New Order issued: " + d->toString());
+    // Allow the current player to issue 1 order, or return nullptr indicating they are finished
+    Order* issued = current->issueOrder();
+    if (issued != nullptr) {
+      _game_model->log->append(current->playerName + " issued: " + issued->toString());
+      // Go to next player who still wants to issue an order.
+      index_of_current_player = index_of_current_player % players_wanting_to_issue_orders.size();
+    } else {
+      // If no order was issued, that means the Player is done issuing orders, and should be removed from the pool
+      _game_model->log->append(current->playerName + " has finished issuing orders for this round");
+      players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
     }
-  } 
-}
-
-bool GameplayController::reinforcementsAvailable() {
-
-  for (auto player : _game_model->active_players->get()) {
-    if(player->getArmees() > 0)
-      return true;
+#ifdef __linux__
+    usleep(10000);
+#else
+    Sleep(100);
+#endif
   }
-  return false;
-}
-
-void GameplayController::airliftSubPhase() {
-  srand(time(nullptr));
-  int numberOfTerritories = _game_model->map->getTerritories().size();
-  auto player = _game_model->current_player->get();
-  map::Territory* sourceTerritory = player->owned_territories.at(rand() % player->owned_territories.size());
-  map::Territory* targetTerritory = _game_model->map->getTerritory(rand() % numberOfTerritories);
-  int numberOfArmies = 0;
-  if (sourceTerritory->getArmees() != 0) {
-    numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
-  }
-  player->issueOrder(new AirliftOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
-  _game_model->log->append("New Order issued: AirliftOrder");
-}
-
-void GameplayController::blockadeSubPhase() {
-  srand(time(nullptr));
-  auto player = _game_model->current_player->get();
-  map::Territory* targetTerritory = player->owned_territories.at(rand() % player->owned_territories.size());
-  player->issueOrder(new BlockadeOrder(*player, *targetTerritory));
-  _game_model->log->append("New Order issued: BlockadeOrder");
 }
 
 void GameplayController::executeOrdersPhase() {
+  _game_model->current_phase->set(ORDERS_EXECUTION);
 
+  /* Copy all active players into a pool of players with orders still left to execute */
+  std::vector<Player *> active_players = _game_model->active_players->get();
+
+  std::vector<Player *> players_with_orders_to_execute;
+  players_with_orders_to_execute.assign(active_players.begin(), active_players.end());
+
+  int index_of_current_player = 0;
+  while (players_with_orders_to_execute.size()) 
+  {
+    Player *current = players_with_orders_to_execute[index_of_current_player];
+    _game_model->current_player->set(current);
+
+    // Request next order to be executed
+    Order *order_to_execute = current->nextOrder();
+    if (order_to_execute != nullptr)
+    {
+      order_to_execute->execute();
+      _game_model->log->append(current->playerName + " executed " + order_to_execute->toString() + ": " + order_to_execute->getEffect());
+      index_of_current_player = ++index_of_current_player % players_with_orders_to_execute.size();
+    }
+    else
+    {
+      // If no order was returned, that means the Player has no more orders to execute
+      players_with_orders_to_execute.erase(players_with_orders_to_execute.begin() + index_of_current_player);
+    }
+
+    // Go to next player who still has orders to execute
+#ifdef __linux__
+    usleep(10000);
+#else
+    Sleep(100);
+#endif
+  }
+  removeDeadPlayers();
 }
 
-int GameplayController::getPlayersBonus(Player* p) {
+int GameplayController::getPlayersBonus(Player * p)
+{
   int totalBonus = 0;
   bool ownsThisContinent = true;
 
-  for(auto continent : _game_model->map->getContinents()){
-    for(auto territory : _game_model->map->getTerritories()){
-      if(territory->getOwner() != p){
+  for (auto continent : _game_model->map->getContinents())
+  {
+    for (auto territory : _game_model->map->getTerritories())
+    {
+      if (territory->getOwner() != p)
+      {
         ownsThisContinent = false;
         break;
         //Check next continent
       }
     }
     //They own the continent
-    if(ownsThisContinent){
+    if (ownsThisContinent)
+    {
       totalBonus += continent->getBonus();
     }
   }
 
   return totalBonus;
+}
+
+bool GameplayController::keyboardEventPerformed(int key) {
+  if (key == KEY_BACKSPACE) {
+    Application::instance()->activateView(MAIN_MENU_VIEW);
+    return true;
+  }
+  return false;
 }
 
 void GameplayController::viewDeactivated()
@@ -945,8 +964,4 @@ void GameplayController::viewDeactivated()
   {
     delete player;
   }
-  
-  // TODO We might want to remove these two lines
-  // _game_model->active_players.clear();
-  // _game_model->current_player.set(nullptr);
 }

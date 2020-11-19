@@ -354,11 +354,9 @@ class GameplayController : public ActionListener {
     void issueOrdersPhase();
     void executeOrdersPhase();
 
-    bool reinforcementsAvailable();
+    void removeDeadPlayers();
+
     int getPlayersBonus(Player* p);
-    void deploySubPhase();
-    void airliftSubPhase();
-    void blockadeSubPhase();
 
     GameModel *_game_model;
 };
