@@ -55,7 +55,7 @@ public:
 	string getEffect();
 
 	// Get the priority of the order
-	virtual int getPriority();
+	virtual int getPriority() const;
 
 	bool checkIfTruce(Player* _issuingPlayer, Player* _targetPlayer);
 	/// <summary>
