@@ -90,10 +90,16 @@ Order* Player::issueOrder()
 		_targetsThisRound = toAttack();
 		_defencesThisRound = toDefend();
 	}
-	else if (armees > 0) {
+	
+	if (armees > 0) {
 		return issueDeployOrder();
 	}
 	else if (hand->size() != 0) {
+		srand(time(nullptr));
+		int advanceDecision = rand() % 10 + 1;
+		if (advanceDecision >= 6) {
+			return issueAdvanceOrder();
+		}
 		Card* cardToPlay = hand->playCard();
 		string order = cardToPlay->play();
 		if (order == "airlift") {
