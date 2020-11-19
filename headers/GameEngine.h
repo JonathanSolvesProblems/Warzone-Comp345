@@ -354,6 +354,8 @@ class GameplayController : public ActionListener {
     void issueOrdersPhase();
     void executeOrdersPhase();
 
+    void removeDeadPlayers();
+
     int getPlayersBonus(Player* p);
 
     GameModel *_game_model;

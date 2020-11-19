@@ -28,6 +28,14 @@ string Order::toString() {
 	return *_description;
 }
 
+string Order::getEffect() {
+	return *_effect;
+}
+
+int Order::getPriority() {
+	return priority;
+}
+
 // Overloads the stream insertion operator.
 ostream& operator<<(ostream& out, const Order& orderToStream) {
 	out << *(orderToStream._description);
@@ -565,6 +573,16 @@ void OrdersList::remove(int index) {
 		}
 		position++;
 	}
+}
+
+Order *OrdersList::next()
+{
+	std::stable_sort(_orders.begin(), _orders.end(), [](Order *a, Order *b) {
+		return a->getPriority() < b->getPriority();
+	});
+	Order* next_order = _orders.front();
+	_orders.pop_front();
+	return next_order;
 }
 
 bool OrdersList::empty() {
