@@ -85,16 +85,37 @@ const vector<map::Territory *> Player::toAttack()
 //Calls orderList's add method
 Order* Player::issueOrder()
 {
-	return nullptr;
+	// return nullptr;
 	if (listOfOrders->empty()) {
 		_targetsThisRound = toAttack();
 		_defencesThisRound = toDefend();
+		_armees_to_deploy_this_round = armees;
 	}
-	else if (armees > 0) {
+
+	if (_armees_to_deploy_this_round > 0)
+	{
 		return issueDeployOrder();
 	}
 	else if (hand->size() != 0) {
-		
+		srand(time(nullptr));
+		int advanceDecision = rand() % 10 + 1;
+		if (advanceDecision >= 6) {
+			return issueAdvanceOrder();
+		}
+		Card* cardToPlay = hand->playCard();
+		string order = cardToPlay->play();
+		if (order == "airlift") {
+			return issueAirliftOrder();
+		}
+		else if (order == "bomb") {
+			return issueBombOrder();
+		}
+		else if (order == "blockage") {
+			return issueBlockadeOrder();
+		}
+		else if (order == "diplomacy") {
+			return issueNegotiateOrder();
+		}
 	}
 	return nullptr;
 }
@@ -106,9 +127,8 @@ Order* Player::nextOrder() {
 Order* Player::issueAdvanceOrder() {
 	srand(time(nullptr));
 
-	map::Territory* targetTerritory = *(_targetsThisRound.begin());
+	map::Territory* targetTerritory = _targetsThisRound.front();
 	_targetsThisRound.erase(_targetsThisRound.begin());
-
 	vector<map::Territory*> sourceTerritories = targetTerritory->getNeighbours();
 
 	map::Territory* sourceTerritory{nullptr};
@@ -176,13 +196,14 @@ Order* Player::issueDeployOrder()
 	map::Territory* nextDefence = *(_defencesThisRound.begin());
 	_defencesThisRound.erase(_defencesThisRound.begin());
 
-	int randomArmies = rand() % getArmees();
+	int randomArmies = rand() % _armees_to_deploy_this_round;
 
 	if(randomArmies == 0){
 		randomArmies += 1;
 	}
 
-	DeployOrder* d = new DeployOrder(*this, *nextDefence, randomArmies);
+	_armees_to_deploy_this_round -= randomArmies;
+	DeployOrder *d = new DeployOrder(*this, *nextDefence, randomArmies);
 	listOfOrders->add(d);
 
 	return d;

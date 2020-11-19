@@ -711,7 +711,6 @@ GameplayController::~GameplayController()
 void GameplayController::viewActivated()
 {
   startupPhase();
-  mainGameLoop();
 }
 
 void GameplayController::startupPhase()
@@ -775,7 +774,7 @@ void GameplayController::assign_territories()
 
     map::Territory *territory = territories[territory_index];
     Player *player = _game_model->active_players->get()[index_of_next_player_to_receive_territory];
-    player->addTerritory(territory);
+    territory->setOwner(player);
     _game_model->log->append("Assigned " + territory->getName() + " to " + player->playerName);
 
     territories.erase(territories.begin() + territory_index);
@@ -791,14 +790,14 @@ void GameplayController::assign_territories()
 }
 
 void GameplayController::mainGameLoop() {
-  while (_game_model->active_players->get().size() > 1) {
+  if (_game_model->active_players->get().size() > 1) {
     reinforcementPhase();
     issueOrdersPhase();
     executeOrdersPhase();
+  } else {
+    _game_model->log->append("Game Over. " + _game_model->active_players->get()[0]->playerName + " has won!");
+    _game_model->log->append("Press BACKSPACE to return to Main Menu.");
   }
-
-  _game_model->log->append("Game Over. " + _game_model->active_players->get()[0]->playerName + " has won!");
-  _game_model->log->append("Press BACKSPACE to return to Main Menu.");
 }
 
 void GameplayController::removeDeadPlayers() {
@@ -873,7 +872,7 @@ void GameplayController::issueOrdersPhase() {
       players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
     }
 #ifdef __linux__
-    usleep(10000);
+    usleep(30000);
 #else
     Sleep(100);
 #endif
@@ -890,9 +889,11 @@ void GameplayController::executeOrdersPhase() {
   players_with_orders_to_execute.assign(active_players.begin(), active_players.end());
 
   int index_of_current_player = 0;
-  while (players_with_orders_to_execute.size()) 
+  while (!players_with_orders_to_execute.empty()) 
   {
-    Player *current = players_with_orders_to_execute[index_of_current_player];
+    index_of_current_player %= players_with_orders_to_execute.size();
+
+    Player *current = players_with_orders_to_execute.at(index_of_current_player);
     _game_model->current_player->set(current);
 
     // Request next order to be executed
@@ -901,19 +902,21 @@ void GameplayController::executeOrdersPhase() {
     {
       order_to_execute->execute();
       _game_model->log->append(current->playerName + " executed " + order_to_execute->toString() + ": " + order_to_execute->getEffect());
-      index_of_current_player = ++index_of_current_player % players_with_orders_to_execute.size();
     }
     else
     {
       // If no order was returned, that means the Player has no more orders to execute
+      _game_model->log->append(current->playerName + " is done executing orders.");
       players_with_orders_to_execute.erase(players_with_orders_to_execute.begin() + index_of_current_player);
     }
 
+    index_of_current_player++;
+
     // Go to next player who still has orders to execute
 #ifdef __linux__
-    usleep(10000);
+        usleep(30000);
 #else
-    Sleep(100);
+        Sleep(100);
 #endif
   }
   removeDeadPlayers();
@@ -950,6 +953,7 @@ bool GameplayController::keyboardEventPerformed(int key) {
     Application::instance()->activateView(MAIN_MENU_VIEW);
     return true;
   }
+  mainGameLoop();
   return false;
 }
 
