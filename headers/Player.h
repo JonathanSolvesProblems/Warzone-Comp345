@@ -10,7 +10,6 @@ class Player;
 
 #include <iostream>
 #include <vector>
-#include <list>
 #include <string>
 #include <algorithm>
 
@@ -109,7 +108,7 @@ public:
     Order* issueBombOrder();
     Order* issueBlockadeOrder();
 	Order* issueDeployOrder();
-    // Order* issueNegotiateOrder();
+    Order* issueNegotiateOrder();
 
 	// Adds a territory to myTerritories (Does not set the Territory's owner)
 	void addTerritory(map::Territory*);
@@ -123,7 +122,7 @@ public:
 private:
 	// Tracks the number of reinforcements the player has available
 	int armees;
-	list<map::Territory*> _targetsThisRound{nullptr};
-	list<map::Territory*> _defencesThisRound{nullptr};
+	vector<map::Territory*> _targetsThisRound{nullptr};
+	vector<map::Territory*> _defencesThisRound{nullptr};
 };
 
