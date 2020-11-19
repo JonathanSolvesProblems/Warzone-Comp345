@@ -610,9 +610,11 @@ Order *OrdersList::next()
 		return b->getPriority() < a->getPriority();
 	});
 
-	Order* next_order = _orders_vector.back();
-	_orders_vector.pop_back();
-	return next_order;
+	if (!_orders_vector.empty()) {
+		return _orders_vector.back();
+	} else {
+		return nullptr;
+	}
 }
 
 bool OrdersList::empty() {

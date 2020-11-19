@@ -823,7 +823,7 @@ void GameplayController::issueOrdersPhase() {
   players_wanting_to_issue_orders.assign(active_players.begin(), active_players.end());
   
   int index_of_current_player = 0;
-  while (players_wanting_to_issue_orders.size()) {
+  while (!players_wanting_to_issue_orders.empty()) {
     Player *current = players_wanting_to_issue_orders[index_of_current_player];
     _game_model->current_player->set(current);
 
@@ -831,17 +831,17 @@ void GameplayController::issueOrdersPhase() {
     Order* issued = current->issueOrder();
     if (issued != nullptr) {
       _game_model->log->append(current->playerName + " issued: " + issued->toString());
+      // Go to next player who still wants to issue an order.
+      index_of_current_player = index_of_current_player % players_wanting_to_issue_orders.size();
     } else {
       // If no order was issued, that means the Player is done issuing orders, and should be removed from the pool
+      _game_model->log->append(current->playerName + " has finished issuing orders for this round");
       players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
     }
-
-    // Go to next player who still wants to issue an order.
-    index_of_current_player = ++index_of_current_player % players_wanting_to_issue_orders.size();
 #ifdef __linux__
     usleep(10000);
 #else
-    Sleep(50);
+    Sleep(100);
 #endif
   }
 }
@@ -867,6 +867,7 @@ void GameplayController::executeOrdersPhase() {
     {
       order_to_execute->execute();
       _game_model->log->append(current->playerName + " executed " + order_to_execute->toString() + ": " + order_to_execute->getEffect());
+      index_of_current_player = ++index_of_current_player % players_with_orders_to_execute.size();
     }
     else
     {
@@ -875,11 +876,10 @@ void GameplayController::executeOrdersPhase() {
     }
 
     // Go to next player who still has orders to execute
-    index_of_current_player = ++index_of_current_player % players_with_orders_to_execute.size();
 #ifdef __linux__
     usleep(10000);
 #else
-    Sleep(50);
+    Sleep(100);
 #endif
   }
   removeDeadPlayers();
