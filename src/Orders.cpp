@@ -350,9 +350,11 @@ bool BlockadeOrder::execute() {
 
 		//Set neutral player owner
 		this->_targetTerritory->setOwner(nullptr);
+		*_effect = "successfully blockaded " + this->_targetTerritory->getName() + " with " + std::to_string(this->_targetTerritory->getArmees()) + " armees";
 
 		return true;
 	}
+	*_effect = "REJECTED";
 	return false;
 }
 
