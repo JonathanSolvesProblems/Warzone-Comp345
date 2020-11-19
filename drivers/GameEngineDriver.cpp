@@ -31,6 +31,8 @@ void initialize_ncurses_colors()
  */
 int main()
 {
+  // srand(time(NULL));
+
   /* Enter Ncurses mode */
   initscr();
   initialize_ncurses_colors();

@@ -719,8 +719,6 @@ void GameplayController::startupPhase()
 
   int num_players = _game_model->number_of_players->get();
 
-  srand(time(NULL));
-
   std::vector<Player *> newly_created_players;
 
   int armies_per_player = 50 - 5 * num_players;

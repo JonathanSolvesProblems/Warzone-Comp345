@@ -68,9 +68,10 @@ const vector<map::Territory *> Player::toAttack()
 
 	for (map::Territory *owned_territory : owned_territories)
 	{
+		float test = 1.0f / owned_territory->getNeighbours().size();
 		for (map::Territory *neighbour : owned_territory->getNeighbours())
 		{
-			if (territories_to_attack.find(neighbour) != territories_to_attack.end() && neighbour->getOwner() != this)
+			if (territories_to_attack.find(neighbour) == territories_to_attack.end() && neighbour->getOwner() != this)
 			{
 				territories_to_attack.insert(neighbour);
 			}
@@ -90,30 +91,34 @@ Order* Player::issueOrder()
 		_targetsThisRound = toAttack();
 		_defencesThisRound = toDefend();
 		_armees_to_deploy_this_round = armees;
+		hand->add(Deck::instance()->draw());
+		hand->add(Deck::instance()->draw());
 	}
 
 	if (_armees_to_deploy_this_round > 0)
 	{
 		return issueDeployOrder();
 	}
-	else if (hand->size() != 0) {
-		srand(time(nullptr));
-		int advanceDecision = rand() % 10 + 1;
-		if (advanceDecision >= 6) {
-			return issueAdvanceOrder();
-		}
+	else if (rand() % 10 > 5 && (!_targetsThisRound.empty() || !_defencesThisRound.empty()))
+	{
+		return issueAdvanceOrder();
+	}
+	else if (hand->size()) {
 		Card* cardToPlay = hand->playCard();
 		string order = cardToPlay->play();
-		if (order == "airlift") {
+		Deck::instance()->add(cardToPlay);
+		if (order == "airlift" && (!_targetsThisRound.empty() || !_defencesThisRound.empty()))
+		{
 			return issueAirliftOrder();
 		}
-		else if (order == "bomb") {
+		else if (order == "bomb" && !_targetsThisRound.empty()) {
 			return issueBombOrder();
 		}
-		else if (order == "blockage") {
+		else if (order == "blockage" && !_defencesThisRound.empty()) {
 			return issueBlockadeOrder();
 		}
-		else if (order == "diplomacy") {
+		else if (order == "diplomacy" && !_targetsThisRound.empty())
+		{
 			return issueNegotiateOrder();
 		}
 	}
@@ -125,20 +130,27 @@ Order* Player::nextOrder() {
 }
 
 Order* Player::issueAdvanceOrder() {
-	srand(time(nullptr));
+	map::Territory *targetTerritory{nullptr};
+	if (!_targetsThisRound.empty())
+	{
+		targetTerritory = _targetsThisRound.front();
+		_targetsThisRound.erase(_targetsThisRound.begin());
+	}
+	else
+	{
+		targetTerritory = _defencesThisRound.front();
+		_targetsThisRound.erase(_defencesThisRound.begin());
+	}
 
-	map::Territory* targetTerritory = _targetsThisRound.front();
-	_targetsThisRound.erase(_targetsThisRound.begin());
-	vector<map::Territory*> sourceTerritories = targetTerritory->getNeighbours();
-
+	const vector<map::Territory*> &sourceTerritories = targetTerritory->getNeighbours();
 	map::Territory* sourceTerritory{nullptr};
 
-	int offset = rand(); // Starting at a random offset, interate through neighbours to try and find a source territory which
-											 // will result in a valid order
-	for (int index = 0; index < sourceTerritories.size(); index++) {
-		map::Territory *sourceTerritory = sourceTerritories.at((index + offset) % sourceTerritories.size());
+	for (map::Territory* t : sourceTerritories) {
+		sourceTerritory = t;
 		if (isOwner(sourceTerritory)) break;
 	}
+
+	if (sourceTerritory == nullptr) throw;
 
 	int numberOfArmies = 0;
 	if (sourceTerritory->getArmees() != 0) {
@@ -152,10 +164,17 @@ Order* Player::issueAdvanceOrder() {
 }
 
 Order* Player::issueAirliftOrder() {
-	srand(time(nullptr));
-
-	map::Territory* targetTerritory = *(_targetsThisRound.begin());
-	_targetsThisRound.erase(_targetsThisRound.begin());
+	map::Territory *targetTerritory{nullptr};
+	if (!_targetsThisRound.empty())
+	{
+		targetTerritory = _targetsThisRound.front();
+		_targetsThisRound.erase(_targetsThisRound.begin());
+	}
+	else
+	{
+		targetTerritory = _defencesThisRound.front();
+		_targetsThisRound.erase(_defencesThisRound.begin());
+	}
 
 	map::Territory* sourceTerritory = owned_territories.at(rand() % owned_territories.size());
 
@@ -182,7 +201,7 @@ Order* Player::issueBlockadeOrder() {
 
 Order* Player::issueBombOrder() {
 	//Bomb random enemy territory
-	map::Territory* nextTarget = *(_targetsThisRound.begin());
+	map::Territory* nextTarget = _targetsThisRound.back();
 	_targetsThisRound.pop_back();
 
 	BombOrder* toReturn = new BombOrder(*this, *(nextTarget->getOwner()), *nextTarget);
@@ -211,7 +230,7 @@ Order* Player::issueDeployOrder()
 
 Order* Player::issueNegotiateOrder()
 {
-	map::Territory* lastTarget = *(_targetsThisRound.end());
+	map::Territory* lastTarget = _targetsThisRound.back();
 
 	NegotiateOrder* toReturn = new NegotiateOrder(*this, *(lastTarget->getOwner()));
 	listOfOrders->add(toReturn);
@@ -250,13 +269,7 @@ bool Player::isOwner(map::Territory *territory)
 {
 	if (territory)
 	{
-		for (map::Territory *owned : owned_territories)
-		{
-			if (territory == owned)
-			{
-				return true;
-			}
-		}
+		return territory->getOwner() == this;
 	}
 	return false;
 }
