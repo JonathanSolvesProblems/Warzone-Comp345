@@ -93,7 +93,7 @@ Order* Player::issueOrder()
 		return issueDeployOrder();
 	}
 	else if (hand->size() != 0) {
-
+		
 	}
 	else {
 		return nullptr;
@@ -127,6 +127,23 @@ Order* Player::issueAdvanceOrder() {
 	return toReturn;
 }
 
+Order* Player::issueAirliftOrder() {
+	srand(time(nullptr));
+
+	map::Territory* targetTerritory = *(_targetsThisRound.begin());
+	_targetsThisRound.pop_front();
+
+	map::Territory* sourceTerritory = owned_territories.at(rand() % owned_territories.size());
+
+	int numberOfArmies = 0;
+	if (sourceTerritory->getArmees() != 0) {
+		numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
+	}
+
+	AirliftOrder* toReturn = new AirliftOrder(*this, *sourceTerritory, *targetTerritory, numberOfArmies);
+	return toReturn;
+}
+
 Order* Player::issueDeployOrder()
 {
   	srand(time(nullptr));
@@ -146,20 +163,6 @@ Order* Player::issueDeployOrder()
 	return d;
 }
 
-// void GameplayController::airliftSubPhase() {
-//   srand(time(nullptr));
-//   int numberOfTerritories = _game_model->map->getTerritories().size();
-//   auto player = _game_model->current_player->get();
-
-//   map::Territory* sourceTerritory = player->owned_territories.at(rand() % player->owned_territories.size());
-//   map::Territory* targetTerritory = _game_model->map->getTerritory(rand() % numberOfTerritories);
-//   int numberOfArmies = 0;
-//   if (sourceTerritory->getArmees() != 0) {
-//     numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
-//   }
-//   player->issueOrder(new AirliftOrder(*player, *sourceTerritory, *targetTerritory, numberOfArmies));
-//   _game_model->log->append("New Order issued: AirliftOrder");
-// }
 
 // void GameplayController::blockadeSubPhase() {
 //   srand(time(nullptr));
