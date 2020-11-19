@@ -515,7 +515,7 @@ NegotiateOrder::~NegotiateOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool NegotiateOrder::validate() {
 	//target cannot be the same player issuing the order
-	if(_issuingPlayer == _secondPlayer)
+	if(_issuingPlayer == _secondPlayer || _secondPlayer == nullptr)
 		return false;
 	return true;
 }
