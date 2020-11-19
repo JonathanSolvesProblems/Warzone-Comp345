@@ -1,8 +1,10 @@
 #include "GameEngine.h"
 
 
+// checks the current phase of the game for N curses
 string convertEnum(Phase current_phase)
 {
+  // a switch statement that checks the current phase and sets it 
   switch (current_phase)
   {
   case STARTUP:
@@ -18,6 +20,7 @@ string convertEnum(Phase current_phase)
   }
 }
 
+// sets the observable message log
 GameModel::GameModel()
 {
   log = new StringLog();
@@ -30,6 +33,7 @@ GameModel::GameModel()
   active_players = new VectorObservable<Player *>();
 }
 
+// deletes the observable message log
 GameModel::~GameModel()
 {
   delete log;
@@ -42,6 +46,7 @@ GameModel::~GameModel()
   delete active_players;
 }
 
+//creates what we see in the main menu 
 MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
 {
   _settings_model = mgm;
@@ -50,6 +55,7 @@ MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COL
   _settings_model->number_of_players->attach(this);
 };
 
+//removes (detaches) all the headers, stats and the number of players in the main menu view
 MainMenuView::~MainMenuView()
 {
   _settings_model->phase_headers_enabled->detach(this);
@@ -57,6 +63,7 @@ MainMenuView::~MainMenuView()
   _settings_model->number_of_players->detach(this);
 }
 
+// displays the main banner on the menu screen
 void MainMenuView::display_banner(int &offset)
 {
   wattron(_window, COLOR_PAIR(RED_BLACK));
@@ -73,6 +80,7 @@ void MainMenuView::display_banner(int &offset)
   wattroff(_window, COLOR_PAIR(RED_BLACK));
 }
 
+// displays all the group members invovled in the project
 void MainMenuView::display_credits(int &offset)
 {
   wattron(_window, COLOR_PAIR(GREY_BLACK));
@@ -83,6 +91,8 @@ void MainMenuView::display_credits(int &offset)
   wattroff(_window, COLOR_PAIR(WHITE_BLACK));
 }
 
+// displays the contents of the menu such as the number of players and pressing space to begin the game 
+// it also displays the different observables that the players might want to use while playing the game 
 void MainMenuView::display_menu(int &offset)
 {
   wattron(_window, COLOR_PAIR(RED_BLACK));
@@ -122,6 +132,7 @@ void MainMenuView::display_menu(int &offset)
   offset = getcury(_window);
 }
 
+//displays the main menu on the screen 
 void MainMenuView::display()
 {
   if (!_window)
@@ -137,11 +148,13 @@ void MainMenuView::display()
   WindowView::display();
 }
 
+// updatest the display window 
 void MainMenuView::update()
 {
   display();
 }
 
+// sets the model settings to mgm in the Main Menu Controller
 MainMenuController::MainMenuController(GameModel *mgm)
 {
   _settings_model = mgm;
@@ -151,20 +164,24 @@ MainMenuController::~MainMenuController()
 {
 }
 
+// controls how the user interacts with the GUI through the keyboard 
 bool MainMenuController::keyboardEventPerformed(int key)
 {
+  // if p is pressed then the settings for the phase headers are enabled or disabled
   if (key == 'p')
   {
     bool current = _settings_model->phase_headers_enabled->get();
     _settings_model->phase_headers_enabled->set(!current);
     return true;
   }
+    // if o is pressed then the settings for the stats are enabled or disabled
   else if (key == 'o')
   {
     bool current = _settings_model->stats_headers_enabled->get();
     _settings_model->stats_headers_enabled->set(!current);
     return true;
   }
+    // if w or up is pressed then increment number of players 
   else if (key == KEY_UP || key == 'w')
   {
     int nNumberOfPlayers = _settings_model->number_of_players->get() + 1;
@@ -172,6 +189,7 @@ bool MainMenuController::keyboardEventPerformed(int key)
       nNumberOfPlayers = 5;
     _settings_model->number_of_players->set(nNumberOfPlayers);
   }
+    // if s or down is pressed then increment number of players 
   else if (key == KEY_DOWN || key == 's')
   {
     int nNumberOfPlayers = _settings_model->number_of_players->get() - 1;
@@ -179,6 +197,7 @@ bool MainMenuController::keyboardEventPerformed(int key)
       nNumberOfPlayers = 2;
     _settings_model->number_of_players->set(nNumberOfPlayers);
   }
+    // if space is pressed then proceed to the map selection
   else if (key == ' ')
   {
     Application::instance()->activateView(MAP_SELECTION_VIEW);
@@ -190,6 +209,7 @@ bool MainMenuController::keyboardEventPerformed(int key)
 void MainMenuController::viewActivated() {}
 void MainMenuController::viewDeactivated() {}
 
+// creates the map menu window 
 MapMenuView::MapMenuView(int w, int h, MenuModel *mm) : WindowView(w, h, (COLS - w) / 2, LINES - h)
 {
   _menu_model = mm;
@@ -198,6 +218,7 @@ MapMenuView::MapMenuView(int w, int h, MenuModel *mm) : WindowView(w, h, (COLS -
   _menu_model->error_message->attach(this);
 }
 
+// destructor for the map menu window 
 MapMenuView::~MapMenuView()
 {
   _menu_model->map_file_list->detach(this);
@@ -205,11 +226,13 @@ MapMenuView::~MapMenuView()
   _menu_model->error_message->detach(this);
 }
 
+// updates what is displayed on the map menu window 
 void MapMenuView::update()
 {
   display();
 }
 
+// displays the map menu window 
 void MapMenuView::display()
 {
   if (!_window)
@@ -217,6 +240,7 @@ void MapMenuView::display()
     activate();
   }
 
+// creates the red sqaure with the black background
   wclear(_window);
   wattron(_window, COLOR_PAIR(RED_BLACK));
   box(_window, 0, 0);
@@ -247,16 +271,19 @@ void MapMenuView::display()
   WindowView::display();
 }
 
+// sets the size of the screen for the map selection window 
 MapSelectionView::MapSelectionView(int w, int h, int header_height, MenuModel *mm) : WindowView(w, header_height, (COLS - w) / 2, 0)
 {
   _menu_view = new MapMenuView(w, h - header_height, mm);
 }
 
+// deconstructor for MapSelectionView
 MapSelectionView::~MapSelectionView()
 {
   delete _menu_view;
 }
 
+// notifies the map selection window if the space bar or back space was pressed
 void MapSelectionView::notifyKeyboardEventPerformed(int key)
 {
   // Send everything except SPACE To the sub view
@@ -270,23 +297,27 @@ void MapSelectionView::notifyKeyboardEventPerformed(int key)
   }
 }
 
+// registers all the listeners to the map selection window 
 void MapSelectionView::registerMenuListener(ActionListener *listener)
 {
   _menu_view->registerListener(listener);
 }
 
+// Notifies the MapMenuView that it has been activated
 void MapSelectionView::activate()
 {
   WindowView::activate();
   _menu_view->activate();
 }
 
+// Notifies the MapMenuView that it has been deactivated 
 void MapSelectionView::deactivate()
 {
   WindowView::deactivate();
   _menu_view->deactivate();
 }
 
+ // Draws all the content for the map selection view that the user sees as well as the instructions on how to select a map file
 void MapSelectionView::display()
 {
   if (!_window)
@@ -324,18 +355,22 @@ void MenuModel::incrementItem(int inc)
   selected_index->set((current + inc) % map_file_list->get().size());
 }
 
+// Gets the name of the currently selected file
 std::string MenuModel::getSelection()
 {
   return map_file_list->get()[selected_index->get()];
 }
 
+// Obtains a reference to menu model 
 MapMenuController::MapMenuController(MenuModel *mm)
 {
   _menu_model = mm;
 }
 
+// Destructor for the MapMenuController 
 MapMenuController::~MapMenuController() {}
 
+// Increments ot decrements a selected index when the up,w,down or s keys are pressed 
 bool MapMenuController::keyboardEventPerformed(int key)
 {
   if (key == KEY_UP || key == 'w')
@@ -358,6 +393,7 @@ bool MapMenuController::keyboardEventPerformed(int key)
 void MapMenuController::viewActivated() {}
 void MapMenuController::viewDeactivated() {}
 
+// Obtain references to the necessary Menu Model and Game Model
 MapSelectionController::MapSelectionController(MenuModel *mm, GameModel *gm)
 {
   _menu_model = mm;
@@ -366,17 +402,15 @@ MapSelectionController::MapSelectionController(MenuModel *mm, GameModel *gm)
 
 MapSelectionController::~MapSelectionController() {}
 
+// if space is pressed on the desired file, it will test to see if it is valid, if it is the file will load
+// if not, the file will be gracefully rejected 
 bool MapSelectionController::keyboardEventPerformed(int key)
 {
+  // if space is pressed 
   if (key == ' ')
   {
-    // Load map file
-    // this is the string that gets the map file
-
-    // if this works then load the file
-    // else you have to prompt an error message in a screen
+    //validate and load file
     std::string map_file = _menu_model->getSelection();
-
     MapLoader mapLoader;
 
     if (_game_model->map)
@@ -391,6 +425,7 @@ bool MapSelectionController::keyboardEventPerformed(int key)
       // load file under
       Application::instance()->activateView(GAMEPLAY_VIEW);
     }
+    // if the file is not valid output an error message
     else
     {
       _menu_model->error_message->set("This is a invalid file! Please choose another!");
@@ -403,6 +438,7 @@ bool MapSelectionController::keyboardEventPerformed(int key)
 
 void MapSelectionController::viewActivated()
 {
+  // creates objects of a map and maploader and then retrieves all the map files in a directory in a list of vectors
   map::Map map;
   MapLoader maploader;
 
@@ -411,6 +447,7 @@ void MapSelectionController::viewActivated()
 }
 void MapSelectionController::viewDeactivated() {}
 
+// Displays the current game phase and the name of the current player
 PhaseObserverView::PhaseObserverView(int w, int h, int x, int y, GameModel *gm) : WindowView(w, h, x, y)
 {
   _game_model = gm;
