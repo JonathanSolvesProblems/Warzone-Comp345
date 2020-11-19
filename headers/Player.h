@@ -10,12 +10,14 @@ class Player;
 
 #include <iostream>
 #include <vector>
+#include <list>
 #include <string>
 #include <algorithm>
 
 using std::ostream;
 using std::vector;
 using std::unordered_set;
+using std::list;
 
 class Player : public Observable {
 public:
