@@ -120,6 +120,20 @@ Card* Deck::draw() {
 	return drawn;
 }
 
+Card* Hand::playCard() {
+	srand(time(nullptr));
+	if (size() == 0) {
+		return nullptr;
+	}
+	Card* cardToReturn = *(cards.end());
+	cards.pop_back();
+	return cardToReturn;
+}
+
+int Hand::size() {
+	return cards.size();
+}
+
 void Hand::show() { // display's contents of the hand.
 #ifdef DEBUG
 	cout << "The hand contains: " << "\n\n";

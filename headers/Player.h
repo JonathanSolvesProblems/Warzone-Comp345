@@ -119,5 +119,7 @@ public:
 
 private:
 	int armees;
+	list<map::Territory*> _targetsThisRound{nullptr};
+	list<map::Territory*> _defencesThisRound{nullptr};
 };
 
