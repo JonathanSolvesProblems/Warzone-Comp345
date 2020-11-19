@@ -836,7 +836,6 @@ void GameplayController::issueOrdersPhase() {
     if (issued != nullptr) {
       _game_model->log->append(current->playerName + " issued: " + issued->toString());
       // Go to next player who still wants to issue an order.
-      index_of_current_player = index_of_current_player % players_wanting_to_issue_orders.size();
     } else {
       // If no order was issued, that means the Player is done issuing orders, and should be removed from the pool
       _game_model->log->append(current->playerName + " has finished issuing orders for this round");
