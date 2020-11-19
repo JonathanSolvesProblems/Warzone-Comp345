@@ -674,7 +674,6 @@ GameplayController::~GameplayController()
 void GameplayController::viewActivated()
 {
   startupPhase();
-  mainGameLoop();
 }
 
 void GameplayController::startupPhase()
@@ -757,14 +756,14 @@ void GameplayController::assign_territories()
 }
 
 void GameplayController::mainGameLoop() {
-  while (_game_model->active_players->get().size() > 1) {
+  if (_game_model->active_players->get().size() > 1) {
     reinforcementPhase();
     issueOrdersPhase();
     executeOrdersPhase();
+  } else {
+    _game_model->log->append("Game Over. " + _game_model->active_players->get()[0]->playerName + " has won!");
+    _game_model->log->append("Press BACKSPACE to return to Main Menu.");
   }
-
-  _game_model->log->append("Game Over. " + _game_model->active_players->get()[0]->playerName + " has won!");
-  _game_model->log->append("Press BACKSPACE to return to Main Menu.");
 }
 
 void GameplayController::removeDeadPlayers() {
@@ -916,6 +915,7 @@ bool GameplayController::keyboardEventPerformed(int key) {
     Application::instance()->activateView(MAIN_MENU_VIEW);
     return true;
   }
+  mainGameLoop();
   return false;
 }
 

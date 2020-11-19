@@ -54,6 +54,7 @@ void Application::mainloop(char esc_key) {
   curs_set(0);
   cbreak();
   noecho();
+  nodelay(stdscr, TRUE);
   keypad(stdscr, TRUE);
 
   std::stringstream escape_msg;

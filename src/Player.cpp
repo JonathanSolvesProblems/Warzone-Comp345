@@ -85,6 +85,7 @@ const vector<map::Territory *> Player::toAttack()
 //Calls orderList's add method
 Order* Player::issueOrder()
 {
+	// return nullptr;
 	if (listOfOrders->empty()) {
 		_targetsThisRound = toAttack();
 		_defencesThisRound = toDefend();
