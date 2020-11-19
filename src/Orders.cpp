@@ -344,8 +344,6 @@ bool BlockadeOrder::execute() {
 		//Double armies
 		this->_targetTerritory->addArmees(this->_targetTerritory->getArmees());
 
-
-
 		this->_issuingPlayer->removeTerritory(_targetTerritory);
 
 		//Set neutral player owner
@@ -416,7 +414,7 @@ bool BombOrder::execute() {
 		//Territory being bombed belongs to enemy player, half of the armies get removed
 		_targetTerritory->removeArmees(ceil(_targetTerritory->getArmees() / 2.0));
 		//cout << *_effect << endl;
-		*_effect = _issuingPlayer->playerName + "successfully bombed" +  _targetTerritory->getName();
+		*_effect =  "successfully bombed" +  _targetTerritory->getName();
 		return true;
 	}
 	*_effect = "REJECTED";
@@ -534,7 +532,7 @@ bool NegotiateOrder::execute() {
 		std::get<0>(truce) = _issuingPlayer;
 		std::get<1>(truce) = _secondPlayer;
 
-		*_effect = "Player " + _issuingPlayer->playerName + "has successfully negotiated a truce with " + _secondPlayer->playerName;
+		*_effect = "successfully negotiated a truce with " + _secondPlayer->playerName;
 
 		truces.push_back(truce);
 		return true;
