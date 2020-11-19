@@ -191,7 +191,7 @@ Order* Player::issueDeployOrder()
 	map::Territory* nextDefence = *(_defencesThisRound.begin());
 	_defencesThisRound.erase(_defencesThisRound.begin());
 
-	int randomArmies = rand() % getArmees();
+	int randomArmies = rand() % _armees_to_deploy_this_round;
 
 	if(randomArmies == 0){
 		randomArmies += 1;

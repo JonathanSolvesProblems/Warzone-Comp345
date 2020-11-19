@@ -740,7 +740,7 @@ void GameplayController::assign_territories()
 
     map::Territory *territory = territories[territory_index];
     Player *player = _game_model->active_players->get()[index_of_next_player_to_receive_territory];
-    player->addTerritory(territory);
+    territory->setOwner(player);
     _game_model->log->append("Assigned " + territory->getName() + " to " + player->playerName);
 
     territories.erase(territories.begin() + territory_index);
