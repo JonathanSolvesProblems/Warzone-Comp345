@@ -85,6 +85,7 @@ const vector<map::Territory *> Player::toAttack()
 //Calls orderList's add method
 Order* Player::issueOrder()
 {
+	return nullptr;
 	if (listOfOrders->empty()) {
 		_targetsThisRound = list<map::Territory*>(toAttack().begin(), toAttack().end());
 		_defencesThisRound = list<map::Territory*>(toDefend().begin(), toDefend().end());
@@ -95,9 +96,7 @@ Order* Player::issueOrder()
 	else if (hand->size() != 0) {
 		
 	}
-	else {
-		return nullptr;
-	}
+	return nullptr;
 }
 
 Order* Player::nextOrder() {
@@ -114,8 +113,11 @@ Order* Player::issueAdvanceOrder() {
 
 	map::Territory* sourceTerritory{nullptr};
 
-	while(!isOwner(sourceTerritory)) {
-		map::Territory* sourceTerritory = sourceTerritories.at(rand() % sourceTerritories.size());
+	int offset = rand(); // Starting at a random offset, interate through neighbours to try and find a source territory which
+											 // will result in a valid order
+	for (int index = 0; index < sourceTerritories.size(); index++) {
+		map::Territory *sourceTerritory = sourceTerritories.at((index + offset) % sourceTerritories.size());
+		if (isOwner(sourceTerritory)) break;
 	}
 
 	int numberOfArmies = 0;
@@ -145,9 +147,7 @@ Order* Player::issueAirliftOrder() {
 }
 
 Order* Player::issueDeployOrder()
-{
-  	srand(time(nullptr));
-	
+{	
 	map::Territory* nextDefence = *(_defencesThisRound.begin());
 	_defencesThisRound.pop_front();
 
