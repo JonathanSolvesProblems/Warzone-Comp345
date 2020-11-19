@@ -94,6 +94,7 @@ class Deck {
 private:
 	vector<Card*> _deck;
 	Deck(); 
+	void shuffle(vector<Card*>& deck);
 public:
 	static std::shared_ptr<Deck> instance();
 	Deck (const Deck  &) = delete;
@@ -102,8 +103,8 @@ public:
 	void cardPlay(); 
 	// draws a card. Meant to be passed into the deck.
 	Card* draw(); 
+	void add(Card* card);
 	// shuffles the deck
-	void shuffle(vector<Card*>& deck);
 	// overloading stream operator
 	friend ostream& operator<<(ostream& os, const Deck& deck);
 };

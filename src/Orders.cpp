@@ -98,7 +98,7 @@ AdvanceOrder::~AdvanceOrder() {
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
 
-	map::Territory* ptr = _sourceTerritory->getNeighbour(_targetTerritory->getName());
+	map::Territory* ptr = _sourceTerritory->getNeighbour(_targetTerritory->getID());
 	
 	if(ptr == nullptr)
 		return false;
@@ -127,7 +127,6 @@ bool AdvanceOrder::execute() {
 			return true;
 		}
 		else {
-			srand(time(0));
 			int troopsLost = 0; // source armies
 			int enemiesKilled = 0; // target armies
 
@@ -240,7 +239,6 @@ bool AirliftOrder::execute() {
 			return true;
 		}
 		else {
-			srand(time(0));
 			int troopsLost = 0;
 			int enemiesKilled = 0;
 

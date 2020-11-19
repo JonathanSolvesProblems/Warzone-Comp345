@@ -99,8 +99,6 @@ std::string Diplomacy::play() {
 // shuffles deck of cards
 void Deck::shuffle(vector<Card*>& deck) {
 
-	srand(time(nullptr)); // reset random seed to not get same random # of cards each shuffle.
-
 	// swap cards
 	for (int s1 = 0; s1 < deck.size() - 1; s1++) {
 
@@ -126,11 +124,7 @@ Card* Deck::draw() {
 }
 
 Card* Hand::playCard() {
-	srand(time(nullptr));
-	if (size() == 0) {
-		return nullptr;
-	}
-	Card* cardToReturn = *(cards.end());
+	Card* cardToReturn = cards.back();
 	cards.pop_back();
 	return cardToReturn;
 }
@@ -157,6 +151,9 @@ void Hand::add(Card* drawn) { // adds card to hand, based on card that was drew.
 		
 }
 
+void Deck::add(Card* card) {
+	_deck.push_back(card);
+}
 // insertion operator overloading
 
 ostream& operator<<(ostream& os, const Deck& deck) {
