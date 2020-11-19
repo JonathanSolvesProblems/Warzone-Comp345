@@ -1,11 +1,5 @@
 #include "MapLoader.h"
 
-// allows you to have multiple maps files
-
-/*NOTE BEFORE USING THIS FILE CHANGE YOUR CHARSET TO MULTYBITE. IF YOU ARE USING VISUAL STUDIO ENTERPRISE, DO THIS BY GOING INTO PROJECT->PROPERTIES->ADVANCED
-THEN CHANGE YOUR CHARSET FROM UNI TO MULTYBYTE
-*/
-
 /* ******************************* THIS IS THE OFFICIAL MAPLOADER FILE ************************************* */
 // ths map loader detects the files by headers (with correct formating or not) and reads the the file whether if it is valid or not.
 // the methods all return boolean values where if they return true, its because the file follows correct syntax and format.
@@ -54,13 +48,6 @@ ostream &operator<<(ostream &out, const MapLoader &o)
     }
     return out;
 }
-// took from continent clas to make cglobal
-
-//assignment operator
-//MapLoader& MapLoader::operator=(const MapLoader& o){}
-
-// change to take in th eselected fil an dto have the filepath already in here
-//THIS IS THE PATH TO THE FOLDER THAT WE WANT
 
 // methods that takes the string as a filepath a map, continent, and territory objects
 bool MapLoader::loadFile(string mapName, map::Map &test)
