@@ -11,31 +11,15 @@ Observable::Observable()
   _observers = new std::list<Observer *>;
 }
 
-
-Observer::Observer(const Observer &observableCopy) {
-    // shallow copy is intended for all of the views. Intentionally left blank because windows would overlap.
-}
-
-
-ostream& operator<<(ostream& out, const Observer& ObserverToStream) {
-	  return out;
-}
-
-
-Observer& Observer::operator=(const Observer& ObserverToAssign) {
-	return *this;
-}
-
-
+// copy constructor
 Observable::Observable(const Observable &observableCopy) {
-    // shallow copy is intended for all of the views. Intentionally left blank because windows would overlap.
+    _observers = new std::list<Observer *>();
+    _observers->assign(observableCopy._observers->begin(), observableCopy._observers->end());
 }
-
 
 ostream& operator<<(ostream& out, const Observable& ObservableToStream) {
 	  return out;
 }
-
 
 Observable& Observable::operator=(const Observable& observableToAssign) {
 	return *this;

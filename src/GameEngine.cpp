@@ -487,7 +487,7 @@ void StatisticsObserverView::display()
       wprintw(_window, player->playerName.c_str());
       waddch(_window, ' ');
 
-      if (percent_owned > 0.2)
+      if (percent_owned > 0.05)
       {
         cp = COLOR_PAIR(BLACK_GREEN);
       }
@@ -908,8 +908,4 @@ void GameplayController::viewDeactivated()
   {
     delete player;
   }
-  
-  // TODO We might want to remove these two lines
-  // _game_model->active_players.clear();
-  // _game_model->current_player.set(nullptr);
 }

@@ -16,14 +16,6 @@ public:
   ~Observer(); // destructor
   virtual void update() = 0; // abstract method to be implemented by observers.
 
-  Observer(const Observer& observerCopy); // copy constructor
-
-  // Overloads the stream insertion operator.
-  friend ostream& operator<<(ostream& out, const Observer& observerToStream);
-
-  // Overloads the equals operator
-  Observer& operator=(const Observer& o);
-
 protected:
   Observer(); // default constructor.
 };
@@ -100,10 +92,16 @@ template <class T>
 class ConcreteObservable : public Observable {
 public:
   void set(T new_state);
+  // ConcreteObservable<T>(const ConcreteObservable<T>&);
   T get();
 private:
   T state;
 };
+
+/*template <class T>
+ConcreteObservable::ConcreteObservable<T>(const ConcreteObservable<T>& copy) {
+    state = copy.state;
+}*/
 
 // adds a new state to concrete observable.
 template <class T>
