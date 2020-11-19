@@ -677,8 +677,6 @@ void GameplayController::viewActivated()
   mainGameLoop();
 }
 
-bool GameplayController::keyboardEventPerformed(int key) { return false; }
-
 void GameplayController::startupPhase()
 {
   _game_model->current_phase->set(STARTUP);
@@ -759,15 +757,29 @@ void GameplayController::assign_territories()
 }
 
 void GameplayController::mainGameLoop() {
+  while (_game_model->active_players->get().size() > 1) {
+    reinforcementPhase();
+    issueOrdersPhase();
+    executeOrdersPhase();
+  }
 
-  reinforcementPhase();
-  issueOrdersPhase();
-  /* Play out game */
+  _game_model->log->append("Game Over. " + _game_model->active_players->get()[0]->playerName + " has won!");
+  _game_model->log->append("Press BACKSPACE to return to Main Menu.");
+}
 
+void GameplayController::removeDeadPlayers() {
+  std::list<Player*> players_to_remove;
+  for (Player* player : _game_model->active_players->get()) {
+    if (player->owned_territories.empty()) players_to_remove.push_back(player);
+  }
+
+  for (Player* player : players_to_remove) {
+    _game_model->log->append(player->playerName + " has lost all territories and is no longer in the game.");
+    _game_model->active_players->remove(player);
+  }
 }
 
 void GameplayController::reinforcementPhase() {
-
   _game_model->current_phase->set(REINFORCEMENT);
   _game_model->log->append("Reinforcement phase started");
   
@@ -835,28 +847,76 @@ void GameplayController::issueOrdersPhase() {
 }
 
 void GameplayController::executeOrdersPhase() {
+  _game_model->current_phase->set(ORDERS_EXECUTION);
 
+  /* Copy all active players into a pool of players with orders still left to execute */
+  std::vector<Player *> active_players = _game_model->active_players->get();
+
+  std::vector<Player *> players_with_orders_to_execute;
+  players_with_orders_to_execute.assign(active_players.begin(), active_players.end());
+
+  int index_of_current_player = 0;
+  while (players_with_orders_to_execute.size()) 
+  {
+    Player *current = players_with_orders_to_execute[index_of_current_player];
+    _game_model->current_player->set(current);
+
+    // Request next order to be executed
+    Order *order_to_execute = current->nextOrder();
+    if (order_to_execute != nullptr)
+    {
+      order_to_execute->execute();
+      _game_model->log->append("Executed " + order_to_execute->toString() + ": " + order_to_execute->getEffect());
+    }
+    else
+    {
+      // If no order was returned, that means the Player has no more orders to execute
+      players_with_orders_to_execute.erase(players_with_orders_to_execute.begin() + index_of_current_player);
+    }
+
+    // Go to next player who still has orders to execute
+    index_of_current_player = ++index_of_current_player % players_with_orders_to_execute.size();
+#ifdef __linux__
+    usleep(10000);
+#else
+    Sleep(50);
+#endif
+  }
+  removeDeadPlayers();
 }
 
-int GameplayController::getPlayersBonus(Player* p) {
+int GameplayController::getPlayersBonus(Player * p)
+{
   int totalBonus = 0;
   bool ownsThisContinent = true;
 
-  for(auto continent : _game_model->map->getContinents()){
-    for(auto territory : _game_model->map->getTerritories()){
-      if(territory->getOwner() != p){
+  for (auto continent : _game_model->map->getContinents())
+  {
+    for (auto territory : _game_model->map->getTerritories())
+    {
+      if (territory->getOwner() != p)
+      {
         ownsThisContinent = false;
         break;
         //Check next continent
       }
     }
     //They own the continent
-    if(ownsThisContinent){
+    if (ownsThisContinent)
+    {
       totalBonus += continent->getBonus();
     }
   }
 
   return totalBonus;
+}
+
+bool GameplayController::keyboardEventPerformed(int key) {
+  if (key == KEY_BACKSPACE) {
+    Application::instance()->activateView(MAIN_MENU_VIEW);
+    return true;
+  }
+  return false;
 }
 
 void GameplayController::viewDeactivated()
@@ -867,8 +927,4 @@ void GameplayController::viewDeactivated()
   {
     delete player;
   }
-  
-  // TODO We might want to remove these two lines
-  // _game_model->active_players.clear();
-  // _game_model->current_player.set(nullptr);
 }

@@ -98,6 +98,10 @@ public:
 	/// <returns>Order to issue, nullptr if player is done</returns>
 	Order* issueOrder();
 
+	// Returns the next order to be executed following priority:
+	// 			Deploy, Airlift, Blockade, Others
+	Order* nextOrder();
+
     Order* issueAdvanceOrder();
     Order* issueAirliftOrder();
     Order* issueBombOrder();
