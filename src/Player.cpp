@@ -105,24 +105,26 @@ Order* Player::nextOrder() {
 }
 
 Order* Player::issueAdvanceOrder() {
-  srand(time(nullptr));
+	srand(time(nullptr));
 
-  map::Territory* targetTerritory = *(_targetsThisRound.begin());
-  _targetsThisRound.pop_front();
+	map::Territory* targetTerritory = *(_targetsThisRound.begin());
+	_targetsThisRound.pop_front();
 
-  map::Territory* sourceTerritory = owned_territories.at(rand() % owned_territories.size());
-  //Get source territories neighbors
+	vector<map::Territory*> sourceTerritories = targetTerritory->getNeighbours();
 
-  std::vector<map::Territory *> neighbours = sourceTerritory->getNeighbours();
+	map::Territory* sourceTerritory{nullptr};
 
+	while(!isOwner(sourceTerritory)) {
+		map::Territory* sourceTerritory = sourceTerritories.at(rand() % sourceTerritories.size());
+	}
 
-  int numberOfArmies = 0;
-  if (sourceTerritory->getArmees() != 0) {
-    numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
-  }
+	int numberOfArmies = 0;
+	if (sourceTerritory->getArmees() != 0) {
+		numberOfArmies = rand() % sourceTerritory->getArmees() + 1;
+	}
 
-  AdvanceOrder* o = new AdvanceOrder();
-  return o;
+	AdvanceOrder* toReturn = new AdvanceOrder(*this, *sourceTerritory, *targetTerritory, numberOfArmies);
+	return toReturn;
 }
 
 Order* Player::issueDeployOrder()
