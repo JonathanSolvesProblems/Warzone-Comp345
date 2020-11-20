@@ -860,6 +860,8 @@ void GameplayController::issueOrdersPhase() {
   
   int index_of_current_player = 0;
   while (!players_wanting_to_issue_orders.empty()) {
+    index_of_current_player %= players_wanting_to_issue_orders.size();
+
     Player *current = players_wanting_to_issue_orders[index_of_current_player];
     _game_model->current_player->set(current);
 
@@ -868,12 +870,14 @@ void GameplayController::issueOrdersPhase() {
     if (issued != nullptr) {
       _game_model->log->append(current->playerName + " issued: " + issued->toString());
       // Go to next player who still wants to issue an order.
-      index_of_current_player = index_of_current_player % players_wanting_to_issue_orders.size();
     } else {
       // If no order was issued, that means the Player is done issuing orders, and should be removed from the pool
       _game_model->log->append(current->playerName + " has finished issuing orders for this round");
       players_wanting_to_issue_orders.erase(players_wanting_to_issue_orders.begin() + index_of_current_player);
     }
+
+    index_of_current_player++;
+
 #ifdef __linux__
     usleep(HIT_DA_BREAKS * 300);
 #else
