@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <string>
 #include <iostream>
-#include <iostream>
 
 using std::ostream;
 
