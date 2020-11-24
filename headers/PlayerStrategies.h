@@ -6,7 +6,7 @@
 using std::vector;
 
 // TODO
-class Strategy {
+class PlayerStrategy {
 public:
     virtual Order* issueOrder() = 0;
     virtual const vector<map::Territory*> toAttack() = 0;
@@ -14,7 +14,7 @@ public:
 };
 
 // (1) human player that requires user interaction to make decisions
-class HumanPlayerStrategy : public Strategy {
+class HumanPlayerStrategy : public PlayerStrategy {
 public:
     Order* issueOrder();
     const vector<map::Territory*> toAttack();
@@ -25,7 +25,7 @@ public:
 on attack (deploys or advances armies on its strongest country, then always advances to enemy territories until it
 cannot do so anymore)
 */
-class AggressivePlayerStrategy : public Strategy {
+class AggressivePlayerStrategy : public PlayerStrategy {
 public:
     Order* issueOrder();
     const vector<map::Territory*> toAttack();
@@ -36,7 +36,7 @@ public:
  (3) a benevolent computer player that focuses on protecting its weak countries (deploys
 or advances armies on its weakest countries, never advances to enemy territories),
 */
-class BenevolentPlayerStrategy : public Strategy {
+class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
     Order* issueOrder();
     const vector<map::Territory*> toAttack();
@@ -45,7 +45,7 @@ public:
 };
 
 //  (4) a neutral player that never issues any order
-class NeutralPlayerStrategy : public Strategy {
+class NeutralPlayerStrategy : public PlayerStrategy {
 public:
     Order* issueOrder();
     const vector<map::Territory*> toAttack();

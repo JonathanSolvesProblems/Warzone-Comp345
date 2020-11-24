@@ -10,11 +10,11 @@ Player::Player(string name, int pID)
 	hand = new Hand();
 }
 
-Player::Player(Strategy * initStrategy) {
+Player::Player(PlayerStrategy * initStrategy) {
 	this->_strategy = initStrategy;
 }
 
-void Player::setStrategy(Strategy * newStrategy) {
+void Player::setStrategy(PlayerStrategy * newStrategy) {
 	this->_strategy = newStrategy;
 }
 

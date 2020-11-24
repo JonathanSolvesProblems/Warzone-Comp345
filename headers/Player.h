@@ -19,6 +19,8 @@ using std::vector;
 using std::unordered_set;
 using std::list;
 
+class PlayerStrategy;
+
 class Player : public Observable {
 public:
 
@@ -50,10 +52,10 @@ public:
 	Player(std::string name, int pID);
 
 	// initializes new strategy
-	Player(Strategy * initStrategy);
+	Player(PlayerStrategy * initStrategy);
 
 	// change strategy
-	void setStrategy(Strategy * newStrategy);
+	void setStrategy(PlayerStrategy * newStrategy);
 
 	/// <summary>
 	/// Copy Constructor
@@ -134,6 +136,6 @@ private:
 	int _armees_to_deploy_this_round;
 	vector<map::Territory *> _targetsThisRound{nullptr};
 	vector<map::Territory*> _defencesThisRound{nullptr};
-	Strategy * _strategy;
+	PlayerStrategy * _strategy;
 };
 
