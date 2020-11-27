@@ -5,6 +5,7 @@ class Player;
 #include "Map.h"
 #include "Card.h"
 #include "Orders.h"
+#include "PlayerStrategies.h"
 
 #include "GameObservers.h"
 
@@ -17,6 +18,8 @@ using std::ostream;
 using std::vector;
 using std::unordered_set;
 using std::list;
+
+class PlayerStrategy;
 
 class Player : public Observable {
 public:
@@ -47,6 +50,12 @@ public:
 	/// <param name="name">Name of player</param>
 	/// <param name="pID">Player's identifier</param>
 	Player(std::string name, int pID);
+
+	// initializes new strategy
+	Player(PlayerStrategy * initStrategy);
+
+	// change strategy
+	void setStrategy(PlayerStrategy * newStrategy);
 
 	/// <summary>
 	/// Copy Constructor
@@ -86,18 +95,18 @@ public:
 	/// For now, these are all the territories owned by the player.
 	/// </summary>
 	/// <param name="test"></param>
-	const vector<map::Territory*> toDefend();
+	const vector<map::Territory*> toDefend(); // TODO: Remove method here, once strategy definitions are implemented
 
 	/// <summary>
 	/// Returns the territories to attack (All neighbouring territories owned by other players).
 	/// </summary>
-	const vector<map::Territory*> toAttack();
+	const vector<map::Territory*> toAttack(); // TODO: Remove method here, once strategy definitions are implemented
 
 	/// <summary>
 	/// Adds order to the player's list of orders
 	/// </summary>
 	/// <returns>Order to issue, nullptr if player is done</returns>
-	Order* issueOrder();
+	Order* issueOrder(); // TODO: Remove method here, once strategy definitions are implemented
 
 	// Returns the next order to be executed following priority:
 	// 			Deploy, Airlift, Blockade, Others
@@ -119,11 +128,14 @@ public:
 	// Returns true if the player owns the given territory
 	bool isOwner(map::Territory*);
 
+
+
 private:
 	// Tracks the number of reinforcements the player has available
 	int armees;
 	int _armees_to_deploy_this_round;
 	vector<map::Territory *> _targetsThisRound{nullptr};
 	vector<map::Territory*> _defencesThisRound{nullptr};
+	PlayerStrategy * _strategy;
 };
 

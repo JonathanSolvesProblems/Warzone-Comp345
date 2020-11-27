@@ -10,6 +10,13 @@ Player::Player(string name, int pID)
 	hand = new Hand();
 }
 
+Player::Player(PlayerStrategy * initStrategy) {
+	this->_strategy = initStrategy;
+}
+
+void Player::setStrategy(PlayerStrategy * newStrategy) {
+	this->_strategy = newStrategy;
+}
 
 Player::Player(const Player &playerToCopy)
 {

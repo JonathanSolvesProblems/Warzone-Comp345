@@ -72,3 +72,29 @@ public:
 	// parses the line and stores it in its respective array 
 	void isBorderArray(vector<string> &bordersArrReborn, string line, bool &isValid);
 };
+
+
+
+// TODO
+// --------------------------------------
+class ConquestFileReader {
+private:
+
+public:
+	// Implements code to read Conquest map files.
+
+};
+
+class ConquestFileReaderAdapter : public MapLoader{
+private:
+	ConquestFileReader * conquestFileReader;
+public:
+	/* 
+	Needs to override methods in MapLoader class to call conquestFileReader->method
+	(will have to make methods + destructor virtual in maploader class)
+
+	Example:
+	An overidden method bool mapSelection(map::Map &test) will call conquestFileReader->mapSelection(map::Map &test);
+	*/
+};
+// --------------------------------------
