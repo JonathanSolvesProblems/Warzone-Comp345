@@ -600,9 +600,15 @@ void GameplayView::display()
 
   if (settings_model->current_phase->get() == ISSUE_ORDERS && settings_model->current_step->get() >= 0) {
     // Draw human player UI
-    wattron(_window, COLOR_PAIR(BLACK_RED));
-    print_centered(height / 2, "HUMANS ARE HERE");
-    wattroff(_window, COLOR_PAIR(BLACK_RED));
+    int step = settings_model->current_step->get();
+    if (step == 0)
+        display_human_input_order_choice_step();
+
+    if (settings_model->error_message->get() != "") {
+      wattron(_window, COLOR_PAIR(BLACK_RED));
+      print_centered(height / 2, settings_model->error_message->get());
+      wattroff(_window, COLOR_PAIR(BLACK_RED));
+    }
   } else {
     int index = 0;
     for (std::string msg : settings_model->log->get())
@@ -630,6 +636,59 @@ void GameplayView::display()
 
   box(_window, 0, 0);
   WindowView::display();
+}
+
+void GameplayView::display_human_input_order_choice_step() {
+  print_centered(2, settings_model->current_player->get()->playerName);
+
+  int row = 4;
+  wattron(_window, COLOR_PAIR(GREY_BLACK));
+  print_centered(row++, "Choose an order type to execute:");
+  wattroff(_window, COLOR_PAIR(GREY_BLACK));
+
+  int must_deploy = settings_model->current_player->get()->getArmees();
+  int blockade_cards = settings_model->current_player->get()->countCardsOfType("blockade");
+  int airlift_cards = settings_model->current_player->get()->countCardsOfType("airlift");
+  int bomb_cards = settings_model->current_player->get()->countCardsOfType("bomb");
+  int negotiate_cards = settings_model->current_player->get()->countCardsOfType("negotiate");
+
+  wmove(_window, row + 1, width / 2 - 20);
+  if (!must_deploy)
+    wattron(_window, COLOR_PAIR(GREY_BLACK));
+  wprintw(_window, "D. Deploy (%i)", must_deploy);
+  wattroff(_window, COLOR_PAIR(GREY_BLACK));
+
+  wmove(_window, row + 3, width / 2 - 20);
+  if (must_deploy)
+    wattron(_window, COLOR_PAIR(GREY_BLACK));
+  wprintw(_window, "A. Advance (inf)");
+  wattroff(_window, COLOR_PAIR(GREY_BLACK));
+
+  wmove(_window, row + 5, width / 2 - 20);
+  if (!blockade_cards || must_deploy)
+    wattron(_window, COLOR_PAIR(GREY_BLACK));
+  wprintw(_window, "S. Blockade (%i)", blockade_cards);
+  wattroff(_window, COLOR_PAIR(GREY_BLACK));
+
+  wmove(_window, row + 1, width / 2 + 5);
+  if (!airlift_cards || must_deploy)
+    wattron(_window, COLOR_PAIR(GREY_BLACK));
+  wprintw(_window, "F. Airlift (%i)", airlift_cards);
+  wattroff(_window, COLOR_PAIR(GREY_BLACK));
+
+  wmove(_window, row + 3, width / 2 + 5);
+  if (!bomb_cards || must_deploy)
+    wattron(_window, COLOR_PAIR(GREY_BLACK));
+  wprintw(_window, "B. Bomb (%i)", bomb_cards);
+  wattroff(_window, COLOR_PAIR(GREY_BLACK));
+
+  wmove(_window, row + 5, width / 2 + 5);
+  if (!negotiate_cards || must_deploy)
+    wattron(_window, COLOR_PAIR(GREY_BLACK));
+  wprintw(_window, "N. Negotiate (%i)", negotiate_cards);
+  wattroff(_window, COLOR_PAIR(GREY_BLACK));
+
+  print_centered(row + 7, "Press SPACE to pass");
 }
 
 void GameplayView::activate()

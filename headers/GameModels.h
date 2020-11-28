@@ -18,6 +18,7 @@ enum Phase
 
 enum OrderType
 {
+  PASS,
   DEPLOY,
   ADVANCE,
   AIRLIFT,
@@ -48,6 +49,7 @@ struct GameModel
 
   // Current step of the order issuing process (-1 == automonous order making)
   ConcreteObservable<int> *current_step{nullptr};
+
   // Currently selected line of the order issuing selector
   ConcreteObservable<int> *selected_index{nullptr};
   // Used to display a list of territories and army numbers during order issuing

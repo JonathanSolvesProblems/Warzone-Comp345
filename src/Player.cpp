@@ -247,6 +247,10 @@ void Player::draw(Deck &deck)
 	hand->add(drawn);
 }
 
+int Player::countCardsOfType(std::string t) {
+	return hand->countCardsOfType(t);
+}
+
 void Player::addTerritory(map::Territory *territory)
 {
 	if (territory)

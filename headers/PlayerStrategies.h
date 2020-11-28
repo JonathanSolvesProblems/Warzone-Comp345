@@ -26,6 +26,14 @@ public:
     virtual Order *issueOrder(GameModel *gm);
     virtual const vector<map::Territory *> toAttack(GameModel *gm);
     virtual const vector<map::Territory *> toDefend(GameModel *gm);
+private:
+    int choose_order_type(GameModel *gm);
+    Order *deploy_controller(GameModel *gm);
+    Order *advance_controller(GameModel *gm);
+    Order *blockade_controller(GameModel *gm);
+    Order *airlift_controller(GameModel *gm);
+    Order *bomb_controller(GameModel *gm);
+    Order *negotiate_controller(GameModel *gm);
 };
 
 /* an aggressive computer player that focuses

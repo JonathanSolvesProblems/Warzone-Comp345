@@ -90,6 +90,8 @@ public:
 	/// <param name="deck">Deck object</param>
 	void draw(Deck& deck);
 
+	int countCardsOfType(std::string t);
+
 	/// <summary>
 	/// Returns the a list of pointers to Territories that the player will defend.
 	/// For now, these are all the territories owned by the player.

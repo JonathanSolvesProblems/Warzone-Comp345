@@ -16,6 +16,7 @@ public:
 	virtual std::string play() = 0;
 	virtual ~Card(); 
 	Card(const Card& cardCopy);
+	virtual std::string getType() = 0;
 };
 
 // Card Type Spy
@@ -24,6 +25,7 @@ public:
 	Spy();
 	virtual std::string play() override final;
 	virtual ~Spy();
+	virtual std::string getType() { return "spy"; };
 };
 
 // Card Type Bomb
@@ -32,6 +34,7 @@ public:
 	Bomb(); 
 	virtual std::string play() override final; 
 	virtual ~Bomb();
+	virtual std::string getType() { return "bomb"; };
 };
 
  // Card Type Reinforcement
@@ -40,6 +43,8 @@ public:
 	Reinforcement();
 	virtual std::string play() override final;
 	virtual ~Reinforcement();
+
+	virtual std::string getType() { return "deploy"; };
 };
 
 // Card Type Blockage
@@ -47,8 +52,9 @@ class Blockage : public Card {
 public:
 	Blockage(); 
 	virtual std::string play() override final; 
-	virtual ~Blockage(); 
+	virtual ~Blockage();
 
+	virtual std::string getType() { return "blockade"; };
 };
 
 // Card Type Airlift
@@ -57,6 +63,8 @@ public:
 	Airlift(); 
 	virtual std::string play() override final; 
 	virtual ~Airlift();
+
+	virtual std::string getType() { return "airlift"; };
 };
 
 // Card Type Diplomacy
@@ -65,6 +73,8 @@ public:
 	Diplomacy();
 	virtual std::string play() override final;
 	virtual ~Diplomacy();
+
+	virtual std::string getType() { return "negotiate"; };
 };
 
 // Hand, cards that are drawn by the player will be stored here.
@@ -85,6 +95,8 @@ public:
 	Card* playCard();
 	int size();
 	void show(); // displays contents of hand
+
+	int countCardsOfType(std::string t);
 
 	friend ostream& operator<<(ostream& os, const Hand& hand);
 };
