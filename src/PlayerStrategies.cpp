@@ -1,33 +1,33 @@
 #include "PlayerStrategies.h"
 
 // TODO
-/*
-Order* HumanPlayerStrategy::issueOrder() {};
-const vector<map::Territory*> HumanPlayerStrategy::toAttack() {};
-const std::vector<map::Territory*> HumanPlayerStrategy::toDefend() {};
 
-Order* AggressivePlayerStrategy::issueOrder() {};
-const vector<map::Territory*> AggressivePlayerStrategy::toAttack() {};
-const std::vector<map::Territory*> AggressivePlayerStrategy::toDefend() {};
+Order* HumanPlayerStrategy::issueOrder(GameModel* gm) {
+  gm->current_step->set(1);
+  
+  nodelay(stdscr, FALSE);
 
-Order* NeutralPlayerStrategy::issueOrder() {};
-const vector<map::Territory*> NeutralPlayerStrategy::toAttack() {};
-const std::vector<map::Territory*> NeutralPlayerStrategy::toDefend() {};
-*/
+  while(getch() != 's');
 
+  nodelay(stdscr, TRUE);
 
-/*Order* BenevolentPlayerStrategy::issueOrder() 
-{
-    // Hand portion
+  return nullptr;
 };
-*/
+const vector<map::Territory *> HumanPlayerStrategy::toAttack(GameModel *gm){
 
-/* const vector<map::Territory*> BenevolentPlayerStrategy::toAttack() 
-{
-    
+};
+const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(GameModel *gm){
+
 };
 
-const std::vector<map::Territory*> BenevolentPlayerStrategy::toDefend() 
-{
-    // To access map.
-};*/
+Order *AggressivePlayerStrategy::issueOrder(GameModel *gm){ return nullptr; };
+const vector<map::Territory *> AggressivePlayerStrategy::toAttack(GameModel *gm){};
+const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(GameModel *gm){};
+
+Order *BenevolentPlayerStrategy::issueOrder(GameModel *gm){ return nullptr; };
+const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(GameModel *gm){};
+const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(GameModel *gm){};
+
+Order *NeutralPlayerStrategy::issueOrder(GameModel *gm){ return nullptr; };
+const vector<map::Territory *> NeutralPlayerStrategy::toAttack(GameModel *gm){};
+const std::vector<map::Territory *> NeutralPlayerStrategy::toDefend(GameModel *gm){};

@@ -119,6 +119,7 @@ public:
   void set(T new_state); 
   // default constructor 
   ConcreteObservable(); 
+  ConcreteObservable(T initial_state);
   // copy constructor
   ConcreteObservable(const ConcreteObservable<T>&); 
   T get(); // get state
@@ -128,7 +129,12 @@ private:
 
 // default constructor
 template <class T>
-ConcreteObservable<T>::ConcreteObservable() {} 
+ConcreteObservable<T>::ConcreteObservable() {}
+
+template <class T>
+ConcreteObservable<T>::ConcreteObservable(T initial_state) {
+  set(initial_state);
+}
 
 // copy constructor
 template <class T>
