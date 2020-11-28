@@ -51,8 +51,7 @@ public:
 	/// <param name="pID">Player's identifier</param>
 	Player(std::string name, int pID);
 
-	// initializes new strategy
-	Player(PlayerStrategy * initStrategy);
+	Player(std::string name, int pID, PlayerStrategy * initStrategy);
 
 	// change strategy
 	void setStrategy(PlayerStrategy * newStrategy);

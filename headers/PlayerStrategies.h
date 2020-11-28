@@ -11,6 +11,8 @@ public:
     virtual Order* issueOrder() = 0;
     virtual const vector<map::Territory*> toAttack() = 0;
     virtual const vector<map::Territory*> toDefend() = 0;
+private:
+    // TODO reference to game model object to get access to the map.
 };
 
 // (1) human player that requires user interaction to make decisions
@@ -41,7 +43,6 @@ public:
     Order* issueOrder();
     const vector<map::Territory*> toAttack();
     const std::vector<map::Territory*> toDefend();
-
 };
 
 //  (4) a neutral player that never issues any order
@@ -49,5 +50,5 @@ class NeutralPlayerStrategy : public PlayerStrategy {
 public:
     Order* issueOrder();
     const vector<map::Territory*> toAttack();
-    const vector<map::Territory*> toDefend();
+    const vector<map::Territory*> toDefend();  
 };

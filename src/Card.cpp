@@ -148,7 +148,6 @@ void Hand::add(Card* drawn) { // adds card to hand, based on card that was drew.
 	cout << "card drew successfully...\n";
 #endif
 	cards.push_back(drawn);
-		
 }
 
 void Deck::add(Card* card) {

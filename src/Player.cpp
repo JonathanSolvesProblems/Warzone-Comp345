@@ -1,7 +1,6 @@
 #include "Player.h"
 
-
-Player::Player(string name, int pID)
+Player::Player(string name, int pID) 
 {
 	playerName = name;
 	playerID = pID;
@@ -10,7 +9,14 @@ Player::Player(string name, int pID)
 	hand = new Hand();
 }
 
-Player::Player(PlayerStrategy * initStrategy) {
+Player::Player(string name, int pID, PlayerStrategy * initStrategy)
+{
+	playerName = name;
+	playerID = pID;
+	armees = 0;
+	listOfOrders = new OrdersList();
+	hand = new Hand();
+
 	this->_strategy = initStrategy;
 }
 
