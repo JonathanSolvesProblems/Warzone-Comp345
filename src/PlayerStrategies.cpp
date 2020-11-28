@@ -90,14 +90,25 @@ const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *p
 
 Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
 const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(Player *player, GameModel *gm){
-    return vector<map::Territory>;
+    return vector<map::Territory*>();
 };
 const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *player, GameModel *gm){
 
+    std::vector<map::Territory *> sortedTerritories = player->owned_territories;
     
+    std::sort(sortedTerritories.begin(), sortedTerritories.end(),
+    [](map::Territory * T1, map::Territory * T2)
+    {
+        return T1->getArmees() < T1->getArmees();
+    });
 
+    return sortedTerritories;
 };
 
 Order *NeutralPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
-const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){};
-const std::vector<map::Territory *> NeutralPlayerStrategy::toDefend(Player *player, GameModel *gm){};
+const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){
+    return vector<map::Territory*>();
+};
+const std::vector<map::Territory *> NeutralPlayerStrategy::toDefend(Player *player, GameModel *gm){
+    return vector<map::Territory*>();
+};
