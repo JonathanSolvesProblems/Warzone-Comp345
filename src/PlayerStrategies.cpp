@@ -83,12 +83,20 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
 };
 
 Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
-const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player, GameModel *gm){};
+const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player, GameModel *gm){
+    
+};
 const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *player, GameModel *gm){};
 
 Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
-const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(Player *player, GameModel *gm){};
-const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *player, GameModel *gm){};
+const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(Player *player, GameModel *gm){
+    return vector<map::Territory>;
+};
+const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *player, GameModel *gm){
+
+    
+
+};
 
 Order *NeutralPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
 const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){};
