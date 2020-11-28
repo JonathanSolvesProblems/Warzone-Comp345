@@ -539,6 +539,11 @@ GameplayView::GameplayView(int w, int h, GameModel *sm)
 {
   settings_model = sm;
   settings_model->log->attach(this);
+  settings_model->current_step->attach(this);
+  settings_model->current_order_type->attach(this);
+  settings_model->territory_list_items->attach(this);
+  settings_model->selected_index->attach(this);
+  settings_model->error_message->attach(this);
   bool headers_enabled = settings_model->phase_headers_enabled->get() || settings_model->stats_headers_enabled->get();
   this->start_x = 1;
   this->start_y = headers_enabled * LINES / 4;
@@ -548,6 +553,13 @@ GameplayView::GameplayView(int w, int h, GameModel *sm)
 
 GameplayView::~GameplayView()
 {
+  settings_model->log->detach(this);
+  settings_model->current_step->detach(this);
+  settings_model->current_order_type->detach(this);
+  settings_model->territory_list_items->detach(this);
+  settings_model->selected_index->detach(this);
+  settings_model->error_message->detach(this);
+
   if (_phase_view)
     delete _phase_view;
   if (_stats_view)
@@ -588,6 +600,9 @@ void GameplayView::display()
 
   if (settings_model->current_phase->get() == ISSUE_ORDERS && settings_model->current_step->get() >= 0) {
     // Draw human player UI
+    wattron(_window, COLOR_PAIR(BLACK_RED));
+    print_centered(height / 2, "HUMANS ARE HERE");
+    wattroff(_window, COLOR_PAIR(BLACK_RED));
   } else {
     int index = 0;
     for (std::string msg : settings_model->log->get())

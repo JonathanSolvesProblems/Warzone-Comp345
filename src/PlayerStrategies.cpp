@@ -3,7 +3,8 @@
 // TODO
 
 Order* HumanPlayerStrategy::issueOrder(GameModel* gm) {
-  gm->current_step->set(0);
+  gm->current_step->set(1);
+  
   nodelay(stdscr, FALSE);
 
   while(getch() != 's');
