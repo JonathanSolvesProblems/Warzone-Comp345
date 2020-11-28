@@ -95,18 +95,18 @@ public:
 	/// For now, these are all the territories owned by the player.
 	/// </summary>
 	/// <param name="test"></param>
-	const vector<map::Territory*> toDefend(); // TODO: Remove method here, once strategy definitions are implemented
+	const vector<map::Territory*> toDefend(GameModel* gm); // TODO: Remove method here, once strategy definitions are implemented
 
 	/// <summary>
 	/// Returns the territories to attack (All neighbouring territories owned by other players).
 	/// </summary>
-	const vector<map::Territory*> toAttack(); // TODO: Remove method here, once strategy definitions are implemented
+	const vector<map::Territory*> toAttack(GameModel* gm); // TODO: Remove method here, once strategy definitions are implemented
 
 	/// <summary>
 	/// Adds order to the player's list of orders
 	/// </summary>
 	/// <returns>Order to issue, nullptr if player is done</returns>
-	Order* issueOrder(); // TODO: Remove method here, once strategy definitions are implemented
+	Order* issueOrder(GameModel* gm); // TODO: Remove method here, once strategy definitions are implemented
 
 	// Returns the next order to be executed following priority:
 	// 			Deploy, Airlift, Blockade, Others
@@ -136,6 +136,6 @@ private:
 	int _armees_to_deploy_this_round;
 	vector<map::Territory *> _targetsThisRound{nullptr};
 	vector<map::Territory*> _defencesThisRound{nullptr};
-	PlayerStrategy * _strategy;
+	PlayerStrategy * _strategy{nullptr};
 };
 
