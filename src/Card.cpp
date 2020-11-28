@@ -143,6 +143,14 @@ void Hand::show() { // display's contents of the hand.
 	cout << "\n\n";
 }
 
+int Hand::countCardsOfType(std::string t) {
+	int count = 0;
+	for (Card* card : cards) {
+		if (card->getType() == t) count++;
+	}
+	return count;
+}
+
 void Hand::add(Card* drawn) { // adds card to hand, based on card that was drew.
 #ifdef DEBUG
 	cout << "card drew successfully...\n";

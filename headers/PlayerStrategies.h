@@ -13,9 +13,9 @@ using std::vector;
 // TODO
 class PlayerStrategy {
 public:
-    virtual Order* issueOrder(GameModel* gm) = 0;
-    virtual const vector<map::Territory *> toAttack(GameModel *gm) = 0;
-    virtual const vector<map::Territory *> toDefend(GameModel *gm) = 0;
+    virtual Order *issueOrder(Player *player, GameModel *gm) = 0;
+    virtual const vector<map::Territory *> toAttack(Player *player,GameModel *gm) = 0;
+    virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm) = 0;
 };
 
 // (1) human player that requires user interaction to make decisions
@@ -23,9 +23,18 @@ class HumanPlayerStrategy : public PlayerStrategy {
 public:
     HumanPlayerStrategy() {};
     ~HumanPlayerStrategy() {};
-    virtual Order *issueOrder(GameModel *gm);
-    virtual const vector<map::Territory *> toAttack(GameModel *gm);
-    virtual const vector<map::Territory *> toDefend(GameModel *gm);
+    virtual Order *issueOrder(Player *player, GameModel *gm);
+    virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
+    virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
+
+private:
+    int choose_order_type(GameModel *gm);
+    Order *deploy_controller(GameModel *gm);
+    Order *advance_controller(GameModel *gm);
+    Order *blockade_controller(GameModel *gm);
+    Order *airlift_controller(GameModel *gm);
+    Order *bomb_controller(GameModel *gm);
+    Order *negotiate_controller(GameModel *gm);
 };
 
 /* an aggressive computer player that focuses
@@ -36,9 +45,9 @@ class AggressivePlayerStrategy : public PlayerStrategy {
 public:
     AggressivePlayerStrategy() {};
     ~AggressivePlayerStrategy() {};
-    virtual Order *issueOrder(GameModel *gm);
-    virtual const vector<map::Territory *> toAttack(GameModel *gm);
-    virtual const vector<map::Territory *> toDefend(GameModel *gm);
+    virtual Order *issueOrder(Player *player, GameModel *gm);
+    virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
+    virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 };
 
 /*
@@ -49,9 +58,9 @@ class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
     BenevolentPlayerStrategy() {};
     ~BenevolentPlayerStrategy() {};
-    virtual Order *issueOrder(GameModel *gm);
-    virtual const vector<map::Territory *> toAttack(GameModel *gm);
-    virtual const std::vector<map::Territory *> toDefend(GameModel *gm);
+    virtual Order *issueOrder(Player *player, GameModel *gm);
+    virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
+    virtual const std::vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 };
 
 //  (4) a neutral player that never issues any order
@@ -59,7 +68,7 @@ class NeutralPlayerStrategy : public PlayerStrategy {
 public:
     NeutralPlayerStrategy() {};
     ~NeutralPlayerStrategy() {};
-    virtual Order *issueOrder(GameModel *gm);
-    virtual const vector<map::Territory *> toAttack(GameModel *gm);
-    virtual const vector<map::Territory *> toDefend(GameModel *gm);
+    virtual Order *issueOrder(Player *player, GameModel *gm);
+    virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
+    virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 };

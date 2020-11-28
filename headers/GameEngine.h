@@ -269,6 +269,8 @@ class GameplayView : public WindowView, public Observer {
     void create_phase_observer_view(int header_height);
     /* Create the stats observer view with the correct dimensions */
     void create_stats_observer_view(int header_height);
+
+    void display_human_input_order_choice_step();
     PhaseObserverView* _phase_view{nullptr};
     StatisticsObserverView* _stats_view{nullptr};
     GameModel* settings_model{nullptr};
