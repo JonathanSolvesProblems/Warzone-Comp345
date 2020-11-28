@@ -2,7 +2,8 @@
 
 // TODO
 
-Order* HumanPlayerStrategy::issueOrder(GameModel* gm) {
+Order *HumanPlayerStrategy::issueOrder(Player *player, GameModel *gm)
+{
   gm->current_step->set(0);
 
   nodelay(stdscr, FALSE);
@@ -65,17 +66,30 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
   }
 }
 
-const vector<map::Territory *> HumanPlayerStrategy::toAttack(GameModel *gm){};
-const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(GameModel *gm){};
+Order *HumanPlayerStrategy::deploy_controller(GameModel *gm){};
+Order *HumanPlayerStrategy::advance_controller(GameModel *gm){};
+Order *HumanPlayerStrategy::blockade_controller(GameModel *gm){};
+Order *HumanPlayerStrategy::airlift_controller(GameModel *gm){};
+Order *HumanPlayerStrategy::bomb_controller(GameModel *gm){};
+Order *HumanPlayerStrategy::negotiate_controller(GameModel *gm){};
 
-Order *AggressivePlayerStrategy::issueOrder(GameModel *gm){ return nullptr; };
-const vector<map::Territory *> AggressivePlayerStrategy::toAttack(GameModel *gm){};
-const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(GameModel *gm){};
+const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, GameModel *gm){};
+const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player, GameModel *gm)
+{
+  bool finished = false;
+  while (!finished) {
+    continue;
+  }
+};
 
-Order *BenevolentPlayerStrategy::issueOrder(GameModel *gm){ return nullptr; };
-const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(GameModel *gm){};
-const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(GameModel *gm){};
+Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
+const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player, GameModel *gm){};
+const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *player, GameModel *gm){};
 
-Order *NeutralPlayerStrategy::issueOrder(GameModel *gm){ return nullptr; };
-const vector<map::Territory *> NeutralPlayerStrategy::toAttack(GameModel *gm){};
-const std::vector<map::Territory *> NeutralPlayerStrategy::toDefend(GameModel *gm){};
+Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
+const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(Player *player, GameModel *gm){};
+const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *player, GameModel *gm){};
+
+Order *NeutralPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
+const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){};
+const std::vector<map::Territory *> NeutralPlayerStrategy::toDefend(Player *player, GameModel *gm){};
