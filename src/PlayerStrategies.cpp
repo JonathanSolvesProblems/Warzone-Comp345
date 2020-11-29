@@ -76,10 +76,38 @@ Order *HumanPlayerStrategy::negotiate_controller(GameModel *gm){};
 const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, GameModel *gm){};
 const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player, GameModel *gm)
 {
-  bool finished = false;
-  while (!finished) {
+  int key;
+  int remaining = gm->current_player->get()->getArmees();
+
+  std::vector<ConcreteObservable<std::pair<map::Territory*, int>>*> owned_territories_with_numbers;
+  for (map::Territory* territory : gm->current_player->get()->owned_territories) {
+    owned_territories_with_numbers.push_back(
+      new ConcreteObservable<std::pair<map::Territory*, int>>(std::make_pair(territory, 0)));
+  }
+  gm->territory_list_items->set(owned_territories_with_numbers);
+
+  while (key = getch() != ' ') {
+    int current_index = gm->selected_index->get();
+    if (key == KEY_UP) {
+      if (current_index < owned_territories_with_numbers.size() - 1)
+        gm->selected_index->set(++current_index);
+    } else if (key == KEY_DOWN) {
+      if (current_index > 0)
+        gm->selected_index->set(--current_index);
+    }
     continue;
   }
+
+  std::vector<map::Territory*> result;
+  
+  for (auto obs : owned_territories_with_numbers) {
+    std::pair<map::Territory *, int> pair = obs->get();
+    for (int i = 0; i < pair.second; i++) {
+      result.push_back(pair.first);
+    }
+  }
+
+  return result;
 };
 
 Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
