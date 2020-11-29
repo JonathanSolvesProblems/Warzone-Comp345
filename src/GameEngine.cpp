@@ -420,7 +420,7 @@ bool MapSelectionController::keyboardEventPerformed(int key)
 
     _game_model->map = new map::Map();
 
-    if (mapLoader.loadFile(map_file, *_game_model->map) && _game_model->map->validate())
+    if (mapLoader.loadFile(map_file, *_game_model->map))
     {
       // load file under
       Application::instance()->activateView(GAMEPLAY_VIEW);
