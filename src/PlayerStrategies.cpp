@@ -37,12 +37,11 @@ Order *HumanPlayerStrategy::issueOrder(Player *player, GameModel *gm)
 
 int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
   int k;
-
   int must_deploy = gm->current_player->get()->getArmees();
-  int blockade_cards = gm->current_player->get()->countCardsOfType("blockade");
-  int airlift_cards = gm->current_player->get()->countCardsOfType("airlift");
-  int bomb_cards = gm->current_player->get()->countCardsOfType("bomb");
-  int negotiate_cards = gm->current_player->get()->countCardsOfType("negotiate");
+  int blockade_cards = gm->current_player->get()->hand->countCardsOfType("blockade");
+  int airlift_cards = gm->current_player->get()->hand->countCardsOfType("airlift");
+  int bomb_cards = gm->current_player->get()->hand->countCardsOfType("bomb");
+  int negotiate_cards = gm->current_player->get()->hand->countCardsOfType("negotiate");
 
   while(k = getch()) {
     gm->error_message->set("");
@@ -88,10 +87,122 @@ const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player
 };
 const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *player, GameModel *gm){};
 
-Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
+
+Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) { 
+  
+  vector<map::Territory*> playersTerritories = toDefend(player,gm);
+
+  bool isDeploy = checkIfDeploy(player);
+  if(isDeploy) {
+    issueBenevolentDeploy(player, playersTerritories);
+  } else {
+    issueBenevolentAdvance(player,playersTerritories);
+  }
+  return nullptr;
+  
+};
+
+void BenevolentPlayerStrategy::issueBenevolentDeploy(Player *player, vector<map::Territory*> playersTerritories){
+  //Deploy order logic
+
+    //Get highest occupied territory
+    map::Territory highestOccupied = *(playersTerritories.at(playersTerritories.size() - 1));
+
+    //Get its number of troops
+    int highestOccupiedNumber = highestOccupied.getArmees();
+
+    vector<map::Territory*> ownedNeighbours = ownedNeighboursOfGivenTerritory(player,highestOccupied);
+
+    //Find smallest neighbour
+    ownedNeighbours = sortTerritoryList(ownedNeighbours);
+    map::Territory lowestOccupiedNeighbour = *(ownedNeighbours.at(0));
+    int lowestOccupiedNumber = lowestOccupiedNeighbour.getArmees();
+    int difference = highestOccupiedNumber - lowestOccupiedNumber;
+
+    DeployOrder deployOrder;
+
+    if(difference <= player->getArmees()) {
+      DeployOrder doDifference(*(player),lowestOccupiedNeighbour,highestOccupiedNumber - lowestOccupiedNumber);
+      deployOrder = doDifference;
+    } else {
+      DeployOrder doDifference(*(player),lowestOccupiedNeighbour,player->getArmees());
+      deployOrder = doDifference;
+    }
+    player->listOfOrders->add(&deployOrder);
+  //Advance Order logic
+}
+
+
+void BenevolentPlayerStrategy::issueBenevolentAdvance(Player *player, vector<map::Territory*> playersTerritories) {
+        //Get highest occupied territory
+    map::Territory highestOccupied = *(playersTerritories.at(playersTerritories.size() - 1));
+
+    //Get its number of troops
+    int highestOccupiedNumber = highestOccupied.getArmees();
+
+    vector<map::Territory*> ownedNeighbours = ownedNeighboursOfGivenTerritory(player,highestOccupied);
+
+    //Find smallest neighbour
+    ownedNeighbours = sortTerritoryList(ownedNeighbours);
+    map::Territory lowestOccupiedNeighbour = *(ownedNeighbours.at(0));
+    map::Territory secondLowestOccupiedNeighbour = *(ownedNeighbours.at(1));
+
+    int lowestOccupiedNumber = lowestOccupiedNeighbour.getArmees();
+    int secondLowestOccupiedNumber = secondLowestOccupiedNeighbour.getArmees();
+    int difference = lowestOccupiedNumber - secondLowestOccupiedNumber;
+    
+    AdvanceOrder advanceOrder(*(player),highestOccupied,lowestOccupiedNeighbour,lowestOccupiedNumber - secondLowestOccupiedNumber);
+    player->listOfOrders->add(&advanceOrder);
+}
+
+vector<map::Territory*> BenevolentPlayerStrategy::ownedNeighboursOfGivenTerritory(Player *player,map::Territory highestOccupied) {
+  vector<map::Territory*> allNeighbours = highestOccupied.getNeighbours();
+    //Get owned neighbours from allNeighbours
+  vector<map::Territory* > ownedNeighbours;
+  for(int i = 0; i < allNeighbours.size(); i++){
+    if(!(player->isOwner(allNeighbours.at(i) ) ) ){
+      continue;
+    }
+    ownedNeighbours.push_back(allNeighbours.at(i));
+  }
+  return ownedNeighbours;
+}
+
+//Returns territories from least armies to most
+std::vector<map::Territory *> BenevolentPlayerStrategy::sortTerritoryList(std::vector<map::Territory *> toSort){
+    
+    std::sort(toSort.begin(), toSort.end(),
+    [](map::Territory * T1, map::Territory * T2)
+    {
+        return T1->getArmees() < T1->getArmees();
+    });
+
+    return toSort;
+};
+
+
+bool BenevolentPlayerStrategy::checkIfDeploy(Player *player) {
+  if(player->getArmees() > 0 )
+    return true;
+  return false;
+}
+
+// deploy() {
+
+// }
+
+// equalizedTroopNumber() { 
+
+// }
+
+//Do all deploy orders, then all advance orders
+
+
 const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(Player *player, GameModel *gm){
     return vector<map::Territory*>();
 };
+
+//Returns territories from least armies to most
 const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *player, GameModel *gm){
 
     std::vector<map::Territory *> sortedTerritories = player->owned_territories;
@@ -104,7 +215,7 @@ const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *p
 
     return sortedTerritories;
 };
-
+*/
 Order *NeutralPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
 const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){
     return vector<map::Territory*>();
