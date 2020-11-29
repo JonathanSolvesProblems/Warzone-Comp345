@@ -1,6 +1,51 @@
 #include "GameEngine.h"
 
 
+// checks the current phase of the game for N curses
+string convertEnum(Phase current_phase)
+{
+  // a switch statement that checks the current phase and sets it 
+  switch (current_phase)
+  {
+  case STARTUP:
+    return "Startup Phase";
+  case REINFORCEMENT:
+    return "Reinforcement Phase";
+  case ISSUE_ORDERS:
+    return "Issue Orders Phase";
+  case ORDERS_EXECUTION:
+    return "Orders Execution Phase";
+  default:
+    return "Unknown Phase";
+  }
+}
+
+// sets the observable message log
+GameModel::GameModel()
+{
+  log = new StringLog();
+  phase_headers_enabled = new ConcreteObservable<bool>();
+  stats_headers_enabled = new ConcreteObservable<bool>();
+  number_of_players = new ConcreteObservable<int>();
+
+  current_phase = new ConcreteObservable<Phase>();
+  current_player = new ConcreteObservable<Player*>();
+  active_players = new VectorObservable<Player *>();
+}
+
+// deletes the observable message log
+GameModel::~GameModel()
+{
+  delete log;
+  delete phase_headers_enabled;
+  delete stats_headers_enabled;
+  delete number_of_players;
+
+  delete current_phase;
+  delete current_player;
+  delete active_players;
+}
+
 //creates what we see in the main menu 
 MainMenuView::MainMenuView(int w, int h, GameModel *mgm) : WindowView(w, h, (COLS - w) / 2, (LINES - h) / 2)
 {
@@ -539,11 +584,6 @@ GameplayView::GameplayView(int w, int h, GameModel *sm)
 {
   settings_model = sm;
   settings_model->log->attach(this);
-  settings_model->current_step->attach(this);
-  settings_model->current_order_type->attach(this);
-  settings_model->territory_list_items->attach(this);
-  settings_model->selected_index->attach(this);
-  settings_model->error_message->attach(this);
   bool headers_enabled = settings_model->phase_headers_enabled->get() || settings_model->stats_headers_enabled->get();
   this->start_x = 1;
   this->start_y = headers_enabled * LINES / 4;
@@ -553,13 +593,6 @@ GameplayView::GameplayView(int w, int h, GameModel *sm)
 
 GameplayView::~GameplayView()
 {
-  settings_model->log->detach(this);
-  settings_model->current_step->detach(this);
-  settings_model->current_order_type->detach(this);
-  settings_model->territory_list_items->detach(this);
-  settings_model->selected_index->detach(this);
-  settings_model->error_message->detach(this);
-
   if (_phase_view)
     delete _phase_view;
   if (_stats_view)
@@ -598,97 +631,30 @@ void GameplayView::display()
 
   wclear(_window);
 
-  if (settings_model->current_phase->get() == ISSUE_ORDERS && settings_model->current_step->get() >= 0) {
-    // Draw human player UI
-    int step = settings_model->current_step->get();
-    if (step == 0)
-        display_human_input_order_choice_step();
-
-    if (settings_model->error_message->get() != "") {
-      wattron(_window, COLOR_PAIR(BLACK_RED));
-      print_centered(height / 2, settings_model->error_message->get());
-      wattroff(_window, COLOR_PAIR(BLACK_RED));
-    }
-  } else {
-    int index = 0;
-    for (std::string msg : settings_model->log->get())
+  int index = 0;
+  for (std::string msg : settings_model->log->get())
+  {
+    if (index > height - 3)
     {
-      if (index > height - 3)
-      {
-        break;
-      }
-
-      int cp;
-      if (index == 0)
-      {
-        cp = COLOR_PAIR(WHITE_BLACK);
-      }
-      else
-      {
-        cp = COLOR_PAIR(GREY_BLACK);
-      }
-      wattron(_window, cp);
-      wmove(_window, 1 + index++, 1);
-      wprintw(_window, msg.c_str());
-      wattroff(_window, cp);
+      break;
     }
-  }
 
+    int cp;
+    if (index == 0)
+    {
+      cp = COLOR_PAIR(WHITE_BLACK);
+    }
+    else
+    {
+      cp = COLOR_PAIR(GREY_BLACK);
+    }
+    wattron(_window, cp);
+    wmove(_window, 1 + index++, 1);
+    wprintw(_window, msg.c_str());
+    wattroff(_window, cp);
+  }
   box(_window, 0, 0);
   WindowView::display();
-}
-
-void GameplayView::display_human_input_order_choice_step() {
-  print_centered(2, settings_model->current_player->get()->playerName);
-
-  int row = 4;
-  wattron(_window, COLOR_PAIR(GREY_BLACK));
-  print_centered(row++, "Choose an order type to execute:");
-  wattroff(_window, COLOR_PAIR(GREY_BLACK));
-
-  int must_deploy = settings_model->current_player->get()->getArmees();
-  int blockade_cards = settings_model->current_player->get()->countCardsOfType("blockade");
-  int airlift_cards = settings_model->current_player->get()->countCardsOfType("airlift");
-  int bomb_cards = settings_model->current_player->get()->countCardsOfType("bomb");
-  int negotiate_cards = settings_model->current_player->get()->countCardsOfType("negotiate");
-
-  wmove(_window, row + 1, width / 2 - 20);
-  if (!must_deploy)
-    wattron(_window, COLOR_PAIR(GREY_BLACK));
-  wprintw(_window, "D. Deploy (%i)", must_deploy);
-  wattroff(_window, COLOR_PAIR(GREY_BLACK));
-
-  wmove(_window, row + 3, width / 2 - 20);
-  if (must_deploy)
-    wattron(_window, COLOR_PAIR(GREY_BLACK));
-  wprintw(_window, "A. Advance (inf)");
-  wattroff(_window, COLOR_PAIR(GREY_BLACK));
-
-  wmove(_window, row + 5, width / 2 - 20);
-  if (!blockade_cards || must_deploy)
-    wattron(_window, COLOR_PAIR(GREY_BLACK));
-  wprintw(_window, "S. Blockade (%i)", blockade_cards);
-  wattroff(_window, COLOR_PAIR(GREY_BLACK));
-
-  wmove(_window, row + 1, width / 2 + 5);
-  if (!airlift_cards || must_deploy)
-    wattron(_window, COLOR_PAIR(GREY_BLACK));
-  wprintw(_window, "F. Airlift (%i)", airlift_cards);
-  wattroff(_window, COLOR_PAIR(GREY_BLACK));
-
-  wmove(_window, row + 3, width / 2 + 5);
-  if (!bomb_cards || must_deploy)
-    wattron(_window, COLOR_PAIR(GREY_BLACK));
-  wprintw(_window, "B. Bomb (%i)", bomb_cards);
-  wattroff(_window, COLOR_PAIR(GREY_BLACK));
-
-  wmove(_window, row + 5, width / 2 + 5);
-  if (!negotiate_cards || must_deploy)
-    wattron(_window, COLOR_PAIR(GREY_BLACK));
-  wprintw(_window, "N. Negotiate (%i)", negotiate_cards);
-  wattroff(_window, COLOR_PAIR(GREY_BLACK));
-
-  print_centered(row + 7, "Press SPACE to pass");
 }
 
 void GameplayView::activate()
@@ -760,11 +726,6 @@ void GameplayController::startupPhase()
   for (int i = 0; i < num_players; i++)
   {
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
-    if (i == 0) {
-      new_player->setStrategy(new HumanPlayerStrategy());
-    } else {
-      new_player->setStrategy(new NeutralPlayerStrategy());
-    }
 
     // sets the starting armies for each player accoridng to the number of players playing the game
     new_player->setArmees(armies_per_player);
@@ -866,7 +827,7 @@ void GameplayController::reinforcementPhase() {
     int armiesToAssign = (int)floor(ownedTerritories / 3);
     int bonus = getPlayersBonus(player);
     //assign continent bonus
-     _game_model->log->append("Initial armies: " + std::to_string(player->getArmees()));
+    _game_model->log->append("Initial armies: " + std::to_string(player->getArmees()));
 
 
     if(bonus != 0)
@@ -905,7 +866,7 @@ void GameplayController::issueOrdersPhase() {
     _game_model->current_player->set(current);
 
     // Allow the current player to issue 1 order, or return nullptr indicating they are finished
-    Order* issued = current->issueOrder(_game_model);
+    Order* issued = current->issueOrder();
     if (issued != nullptr) {
       _game_model->log->append(current->playerName + " issued: " + issued->toString());
       // Go to next player who still wants to issue an order.
@@ -1006,13 +967,9 @@ bool GameplayController::keyboardEventPerformed(int key) {
 void GameplayController::viewDeactivated()
 {
   delete _game_model->map;
-  _game_model->map = nullptr;
 
   for (auto player : _game_model->active_players->get())
   {
-    _game_model->active_players->remove(player);
     delete player;
   }
-
-  _game_model->current_player->set(nullptr);
 }

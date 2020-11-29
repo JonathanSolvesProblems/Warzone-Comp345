@@ -44,14 +44,17 @@ public:
 	int playerID;
 
 	
+	
 	/// <summary>
 	/// Player constructor
 	/// </summary>
 	/// <param name="name">Name of player</param>
 	/// <param name="pID">Player's identifier</param>
-	Player(std::string name, int pID);
+	Player(std::string name, int pID,PlayerStrategy * initStrategy );
 
-	Player(std::string name, int pID, PlayerStrategy * initStrategy);
+	Player(std::string name, int pID);
+	// // initializes new strategy
+	// Player(PlayerStrategy * initStrategy);
 
 	// change strategy
 	void setStrategy(PlayerStrategy * newStrategy);
@@ -89,25 +92,23 @@ public:
 	/// <param name="deck">Deck object</param>
 	void draw(Deck& deck);
 
-	int countCardsOfType(std::string t);
-
 	/// <summary>
 	/// Returns the a list of pointers to Territories that the player will defend.
 	/// For now, these are all the territories owned by the player.
 	/// </summary>
 	/// <param name="test"></param>
-	const vector<map::Territory*> toDefend(GameModel* gm); // TODO: Remove method here, once strategy definitions are implemented
+	const vector<map::Territory*> toDefend(); // TODO: Remove method here, once strategy definitions are implemented
 
 	/// <summary>
 	/// Returns the territories to attack (All neighbouring territories owned by other players).
 	/// </summary>
-	const vector<map::Territory*> toAttack(GameModel* gm); // TODO: Remove method here, once strategy definitions are implemented
+	const vector<map::Territory*> toAttack(); // TODO: Remove method here, once strategy definitions are implemented
 
 	/// <summary>
 	/// Adds order to the player's list of orders
 	/// </summary>
 	/// <returns>Order to issue, nullptr if player is done</returns>
-	Order* issueOrder(GameModel* gm); // TODO: Remove method here, once strategy definitions are implemented
+	Order* issueOrder(); // TODO: Remove method here, once strategy definitions are implemented
 
 	// Returns the next order to be executed following priority:
 	// 			Deploy, Airlift, Blockade, Others
@@ -130,13 +131,12 @@ public:
 	bool isOwner(map::Territory*);
 
 
-
 private:
 	// Tracks the number of reinforcements the player has available
 	int armees;
 	int _armees_to_deploy_this_round;
 	vector<map::Territory *> _targetsThisRound{nullptr};
 	vector<map::Territory*> _defencesThisRound{nullptr};
-	PlayerStrategy * _strategy{nullptr};
+	PlayerStrategy * _strategy;
 };
 
