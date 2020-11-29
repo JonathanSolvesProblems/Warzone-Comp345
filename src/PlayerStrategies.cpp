@@ -87,7 +87,6 @@ const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player
 };
 const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *player, GameModel *gm){};
 
-
 Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) { 
   
   vector<map::Territory*> playersTerritories = toDefend(player,gm);
@@ -187,17 +186,6 @@ bool BenevolentPlayerStrategy::checkIfDeploy(Player *player) {
   return false;
 }
 
-// deploy() {
-
-// }
-
-// equalizedTroopNumber() { 
-
-// }
-
-//Do all deploy orders, then all advance orders
-
-
 const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(Player *player, GameModel *gm){
     return vector<map::Territory*>();
 };
@@ -215,7 +203,7 @@ const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *p
 
     return sortedTerritories;
 };
-*/
+
 Order *NeutralPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
 const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){
     return vector<map::Territory*>();
