@@ -18,13 +18,9 @@ int main()
     ConquestFileReader map;
 
         if(map.loadFile("conquest.map",*test)){
-   cout << "Continents  " << map.getNumOfContinents() << " \n";
+        cout << "Continents  " << map.getNumOfContinents() << " \n";
 
             cout << "Country: " << *test->getTerritory(0 + 1) << " Has " << test->getTerritory(0 + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(test->getTerritory(0 + 1)->getContinent()) << endl;
-
-
-
-
         }
     
 

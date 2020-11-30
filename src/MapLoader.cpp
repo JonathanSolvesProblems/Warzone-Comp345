@@ -574,11 +574,8 @@ bool ConquestFileReaderAdapter::loadFile(string mapName, map::Map& test)
     // testing 
     map::Map* test2 = new map::Map();
     ConquestFileReader* conquestFileReader = new ConquestFileReader();
-   
-    
-   bool ret = conquestFileReader->loadFile(mapName, test);
-   
 
+   bool ret = conquestFileReader->loadFile(mapName, test);
    return ret;
 
 };
@@ -598,7 +595,6 @@ bool ConquestFileReaderAdapter::loadFile(string mapName, map::Map& test)
 // methods that takes the string as a filepath a map, continent, and territory objects
  bool MapLoader::loadFile(string mapName, map::Map& test)
 {
-
     int continentID = 1;
     bool continentsFound = false;
     bool countriesFound = false;

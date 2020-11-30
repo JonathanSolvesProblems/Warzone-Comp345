@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "Map.h"
 #include <iostream>
 #include <fstream>
@@ -42,7 +41,7 @@ public:
 	int getNumOfContinents();
 	int getNumOfTerritories();
 
-	bool loadFile(string filePath, map::Map& test);
+	virtual bool loadFile(string filePath, map::Map& test);
 	// loadFile method which loads/checks the mapfile for all the contents (reads line by line)
 	bool isBorder(string line, map::Map& test, bool& isValid); // isBorder method which checks if the string is a border
 	bool isCountry(string line, map::Map& test, bool& isValid); // isCountry method whih checks if the string is a country
@@ -124,12 +123,7 @@ public:
 	An overidden method bool mapSelection(map::Map &test) will call conquestFileReader->mapSelection(map::Map &test);
 	*/
 
-	// map test
-	
+
 	bool loadFile(string mapName, map::Map& test);
-	
-
-
-
 };
 // --------------------------------------
