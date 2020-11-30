@@ -61,6 +61,12 @@ public:
     virtual Order *issueOrder(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const std::vector<map::Territory *> toDefend(Player *player, GameModel *gm);
+private:
+    bool checkIfDeploy(Player *player);
+    void issueBenevolentDeploy(Player *player, vector<map::Territory*> playersTerritories);
+    void issueBenevolentAdvance(Player *player, vector<map::Territory*> playersTerritories);
+    std::vector<map::Territory *> sortTerritoryList(std::vector<map::Territory *> toSort);
+    vector<map::Territory*> ownedNeighboursOfGivenTerritory(Player *player,map::Territory highestOccupied);
 };
 
 //  (4) a neutral player that never issues any order

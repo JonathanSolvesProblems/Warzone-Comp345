@@ -761,7 +761,7 @@ void GameplayController::startupPhase()
   {
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
     if (i == 0) {
-      new_player->setStrategy(new HumanPlayerStrategy());
+      new_player->setStrategy(new BenevolentPlayerStrategy());
     } else {
       new_player->setStrategy(new NeutralPlayerStrategy());
     }
@@ -884,7 +884,7 @@ void GameplayController::reinforcementPhase() {
     // Add assignArmies to player
     player->setArmees(player->getArmees() + armiesToAssign);
 
-    _game_model->log->append("Total armies for player: " + std::to_string(player->getArmees()));
+    _game_model->log->append("Total armies for player: " + player->playerName + " " + std::to_string(player->getArmees()));
   }
 }
 
