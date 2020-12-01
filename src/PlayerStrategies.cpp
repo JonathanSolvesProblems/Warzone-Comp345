@@ -186,11 +186,12 @@ const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *p
         return T1->getArmees() < T2->getArmees();
     });
 
-    for(int i = 0 ; i < sortedTerritories.size(); i++){
-      if(i == sortedTerritories.size() - 1)
+  // potentially goes out of bounce.
+      for(int i = 0 ; i < sortedTerritories.size(); i++){
+      if(i == sortedTerritories.size())
         break;
       int initialArmies = sortedTerritories.at(i)->getArmees();
-      int nextArmies = sortedTerritories.at(i + 1)->getArmees();
+      int nextArmies = sortedTerritories.at(i + i)->getArmees();
       int totalToDistribute = nextArmies - initialArmies;
       for(int j = 0; j < i; j++){
         numberArmiesToDeploy.push_back(totalToDistribute);
@@ -207,5 +208,9 @@ const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *p
 };
 
 Order *NeutralPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
-const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){};
-const std::vector<map::Territory *> NeutralPlayerStrategy::toDefend(Player *player, GameModel *gm){};
+const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){
+  return std::vector<map::Territory *>();
+};
+const std::vector<map::Territory *> NeutralPlayerStrategy::toDefend(Player *player, GameModel *gm){
+  return std::vector<map::Territory *>();
+};
