@@ -763,7 +763,7 @@ void GameplayController::startupPhase()
     if (i == 0) {
       new_player->setStrategy(new BenevolentPlayerStrategy());
     } else {
-      new_player->setStrategy(new NeutralPlayerStrategy());
+      new_player->setStrategy(new BenevolentPlayerStrategy());
     }
 
     // sets the starting armies for each player accoridng to the number of players playing the game
@@ -906,6 +906,7 @@ void GameplayController::issueOrdersPhase() {
 
     // Allow the current player to issue 1 order, or return nullptr indicating they are finished
     Order* issued = current->issueOrder(_game_model);
+
     if (issued != nullptr) {
       _game_model->log->append(current->playerName + " issued: " + issued->toString());
       // Go to next player who still wants to issue an order.

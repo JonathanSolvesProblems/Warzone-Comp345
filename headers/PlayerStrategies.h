@@ -13,6 +13,7 @@ using std::vector;
 // TODO
 class PlayerStrategy {
 public:
+    virtual void beginRound(Player *player, GameModel *gm) = 0;
     virtual Order *issueOrder(Player *player, GameModel *gm) = 0;
     virtual const vector<map::Territory *> toAttack(Player *player,GameModel *gm) = 0;
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm) = 0;
@@ -59,12 +60,16 @@ public:
     BenevolentPlayerStrategy() {};
     ~BenevolentPlayerStrategy() {};
     virtual Order *issueOrder(Player *player, GameModel *gm);
+    virtual void beginRound(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const std::vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 private:
-    bool checkIfDeploy(Player *player);
-    void issueBenevolentDeploy(Player *player, vector<map::Territory*> playersTerritories);
-    void issueBenevolentAdvance(Player *player, vector<map::Territory*> playersTerritories);
+    vector<int> numberArmiesToDeploy;
+    vector<int> indicesToDeployAt;
+    vector<map::Territory*> playersTerritoriesSorted;
+    int current_player_armies = 0;
+    Order* issueBenevolentDeploy(Player *player);
+    Order* issueBenevolentAdvance(Player *player);
     std::vector<map::Territory *> sortTerritoryList(std::vector<map::Territory *> toSort);
     vector<map::Territory*> ownedNeighboursOfGivenTerritory(Player *player,map::Territory highestOccupied);
 };

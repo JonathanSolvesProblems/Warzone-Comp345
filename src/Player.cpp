@@ -97,7 +97,10 @@ const vector<map::Territory *> Player::toAttack(GameModel *gm)
 //Calls orderList's add method
 Order* Player::issueOrder(GameModel* gm)
 {
-	
+	if((this->listOfOrders)->empty()) {
+		_strategy->beginRound(this,gm);
+	}
+
 	Order* order = _strategy->issueOrder(this, gm);
 	
 	if (order != nullptr){
