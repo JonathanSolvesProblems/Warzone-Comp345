@@ -111,7 +111,7 @@ Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) {
     if(current_player_armies > 0) {
       return issueBenevolentDeploy(player);
     } else {
-      //return issueBenevolentAdvance(player);
+      return issueBenevolentAdvance(player);
     }
     return nullptr;
 };
@@ -140,34 +140,36 @@ Order* BenevolentPlayerStrategy::issueBenevolentDeploy(Player *player){
 
 
 Order* BenevolentPlayerStrategy::issueBenevolentAdvance(Player *player) {
-  cout << "BenevolentAdvance" << endl;
+  // cout << "BenevolentAdvance" << endl;
   // Return if no more territories need armies from neighbors
   if (indicesToAdvanceTo.size() == 0) {
     return nullptr;
   }
+
   int totalTerritories = playersTerritoriesSorted.size() >= 3 ? 3 : playersTerritoriesSorted.size();
   int advanceIndex = indicesToAdvanceTo.front();
-  indicesToAdvanceTo.erase(indicesToDeployAt.begin());
+  indicesToAdvanceTo.erase(indicesToAdvanceTo.begin());
   // balances the number armies with a friendly neighbor
-  cout << "BenevolentAdvance::Friendlies" << endl;
+  // cout << "BenevolentAdvance::Friendlies" << endl;
   vector<map::Territory *> neighbors;
   neighbors = playersTerritoriesSorted.at(advanceIndex)->getNeighbours();
   map::Territory *neighbor{nullptr};
-  cout << "Neighbors size" << endl;
-  cout << neighbors.size() << endl;
+
+  // cout << "Neighbors size" << endl;
+  // cout << neighbors.size() << endl;
   for (int i = 0; i < neighbors.size(); ++i) {
-    cout << "Neighbors index" << endl;
+    // cout << "Neighbors index" << endl;
     neighbor = neighbors.at(i);
-    cout << *neighbor << endl;
+    // cout << *neighbor << endl;
     if (neighbor->getOwner() == player) {
-      cout << "BenevolentAdvance::Balancing" << endl;
+      // cout << "BenevolentAdvance::Balancing" << endl;
       int averageArmies = (playersTerritoriesSorted.at(advanceIndex)->getArmees() + neighbor->getArmees()) / 2;
       if (neighbor->getArmees() > averageArmies) {
-        cout << "BenevolentAdvance::BalancingOneWay" << endl;
+        // cout << "BenevolentAdvance::BalancingOneWay" << endl;
         return new AdvanceOrder(*(player), *(neighbor), *(playersTerritoriesSorted.at(advanceIndex)), (neighbor->getArmees() - averageArmies) / 2);
       }
       else if (neighbor->getArmees() < averageArmies) {
-        cout << "BenevolentAdvance::BalancingOtherWay" << endl;
+        // cout << "BenevolentAdvance::BalancingOtherWay" << endl;
         return new AdvanceOrder(*(player), *(playersTerritoriesSorted.at(advanceIndex)), *(neighbor), (playersTerritoriesSorted.at(advanceIndex)->getArmees() - averageArmies) / 2);
       }
       else {
@@ -176,7 +178,7 @@ Order* BenevolentPlayerStrategy::issueBenevolentAdvance(Player *player) {
     }
   }
   return nullptr;
-    //     //Get highest occupied territory
+    // Get highest occupied territory
     // map::Territory highestOccupied = *(playersTerritoriesSorted.at(playersTerritoriesSorted.size() - 1));
 
     // //Get its number of troops
@@ -192,7 +194,7 @@ Order* BenevolentPlayerStrategy::issueBenevolentAdvance(Player *player) {
     // int lowestOccupiedNumber = lowestOccupiedNeighbour.getArmees();
     // int secondLowestOccupiedNumber = secondLowestOccupiedNeighbour.getArmees();
     
-    // //Advance troops from highest occupied territory to lowest occupied one
+    // Advance troops from highest occupied territory to lowest occupied one
     // return new AdvanceOrder(*(player),highestOccupied,lowestOccupiedNeighbour,lowestOccupiedNumber - secondLowestOccupiedNumber);
 }
 
