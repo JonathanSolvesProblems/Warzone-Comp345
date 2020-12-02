@@ -674,10 +674,22 @@ void GameplayView::display_human_deploy_interface() {
 
   int index = 0;
   int current_index = settings_model->selected_index->get();
-  int num_visible_rows = height - 8;
+  int num_visible_rows = height - 9;
   int offset = (1 + current_index) - num_visible_rows;
   if (offset <= 0) offset = 0;
 
+  if (offset > 0) {
+    wmove(_window, 4, width / 2 + 1);
+    wattron(_window, COLOR_PAIR(GREY_BLACK));
+    wprintw(_window, (std::to_string(offset) + " more...").c_str());
+    wattroff(_window, COLOR_PAIR(GREY_BLACK));
+  }
+  if (territory_list_items.size() - offset > num_visible_rows) {
+    wmove(_window, height - 4, width / 2 + 1);
+    wattron(_window, COLOR_PAIR(GREY_BLACK));
+    wprintw(_window, (std::to_string(territory_list_items.size() - offset - num_visible_rows) + " more...").c_str());
+    wattroff(_window, COLOR_PAIR(GREY_BLACK));
+  }
   for (auto obs : territory_list_items) {
     auto pair = obs->get();
     map::Territory* territory = pair.first;
@@ -702,7 +714,7 @@ void GameplayView::display_human_deploy_interface() {
   }
 
   if (armies_remaining == 0) {
-    print_centered_at_col(height - 2, 3 * width / 4, "Press SPACE to Continue");
+    print_centered_at_col(height - 3, 3 * width / 4, "Press SPACE to Continue");
   }
   print_centered_at_col(2, 3 * width / 4, std::to_string(armies_remaining) + " Armies Remaining");
 }

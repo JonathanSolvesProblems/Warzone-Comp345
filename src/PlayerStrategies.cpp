@@ -58,7 +58,8 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
 
   gm->current_step->set(0);
 
-  while(k = Application::instance()->get_key(true)) {
+  do {
+    k = Application::instance()->get_key(true);
     gm->error_message->set("");
     if (k == ' ') {
       return PASS;
@@ -75,7 +76,7 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
     }
     
     gm->error_message->set("Invalid selection");
-  }
+  } while (true);
 }
 
 Order *HumanPlayerStrategy::deploy_controller(Player *player, GameModel *gm){
