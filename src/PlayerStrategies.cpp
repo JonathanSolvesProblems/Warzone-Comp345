@@ -82,9 +82,39 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
   }
 };
 
-Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
-const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player, GameModel *gm){};
-const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *player, GameModel *gm){};
+Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm) 
+{ 
+  
+  if(current_player_armies > 0)
+  {
+      return issueAggressiveDeploy(player);
+  }
+  
+  return nullptr;
+};
+
+const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player, GameModel *gm){
+  
+
+};
+
+const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *player, GameModel *gm)
+{
+    return sortTerritoryList(player->owned_territories);
+};
+
+void AggressivePlayerStrategy::beginRound(Player *player, GameModel *gm) 
+{
+    playersTerritoriesSorted = toDefend(player, gm);
+    int current_player_armies = player->getArmees();
+}
+
+Order* AggressivePlayerStrategy::issueAggressiveDeploy(Player *player)
+{
+    map::Territory* max = playersTerritoriesSorted.at(0);
+    current_player_armies = 0;
+    return new DeployOrder(*player, *max, 10);
+}
 
 void BenevolentPlayerStrategy::beginRound(Player *player, GameModel *gm){
     playersTerritoriesSorted = toDefend(player, gm);

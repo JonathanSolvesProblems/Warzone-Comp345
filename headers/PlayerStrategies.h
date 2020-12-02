@@ -46,11 +46,15 @@ class AggressivePlayerStrategy : public PlayerStrategy {
 public:
     AggressivePlayerStrategy() {};
     ~AggressivePlayerStrategy() {};
+    virtual void beginRound(Player *player, GameModel *gm);
     virtual Order *issueOrder(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 private:
     std::vector<map::Territory *> sortTerritoryList(std::vector<map::Territory *> toSort);
+    vector<map::Territory*> playersTerritoriesSorted;
+    Order* issueAggressiveDeploy(Player *player);
+    int current_player_armies = 0;
 };
 
 /*
