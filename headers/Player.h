@@ -43,6 +43,8 @@ public:
 	//stores a player's ID
 	int playerID;
 
+	//bool hasCardInHand(std::string)
+
 	
 	/// <summary>
 	/// Player constructor

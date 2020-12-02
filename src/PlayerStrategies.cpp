@@ -113,6 +113,7 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
 Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
 {
 
+  
   if (current_player_armies > 0)
   {
     return issueAggressiveDeploy(player);
@@ -121,14 +122,19 @@ Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
   {
 
     return issueAggressiveAdvance(player);
+  } 
+  else if(player->hand->removeCard("airlift") != nullptr)
+  {
+      return issueAggressiveAirlift(player);
   }
+
   return nullptr;
 };
 
 Order *AggressivePlayerStrategy::issueAggressiveAirlift(Player *player)
 {
-
-  return nullptr;
+  return new AirliftOrder(*player, *(playersTerritoriesSorted.at(0)), *(toAttack(player, nullptr).at(0)), 1);
+  // return nullptr;
 }
 
 Order *AggressivePlayerStrategy::issueAggressiveAdvance(Player *player)
@@ -158,23 +164,23 @@ Order *AggressivePlayerStrategy::issueAggressiveAdvance(Player *player)
 
 const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player, GameModel *gm)
 {
- /* unordered_set<map::Territory *> territories_to_attack = unordered_set<map::Territory *>();
-
-  for (map::Territory *owned_territory : owned_territories)
+ unordered_set<map::Territory *> territories_to_attack = unordered_set<map::Territory *>();
+  
+  for (map::Territory *owned_territory : player->owned_territories)
   {
-    float test = 1.0f / owned_territory->getNeighbours().size();
+    // float test = 1.0f / owned_territory->getNeighbours().size();
     for (map::Territory *neighbour : owned_territory->getNeighbours())
     {
-      if (territories_to_attack.find(neighbour) == territories_to_attack.end() && neighbour->getOwner() != this)
+      if (territories_to_attack.find(neighbour) == territories_to_attack.end() && neighbour->getOwner() != player)
       {
         territories_to_attack.insert(neighbour);
       }
     }
   }
-  return result;*/
-}
+  
   vector<map::Territory *> result = vector<map::Territory *>();
   result.assign(territories_to_attack.begin(), territories_to_attack.end());
+
   return result;
 };
 

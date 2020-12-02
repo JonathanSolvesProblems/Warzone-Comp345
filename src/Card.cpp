@@ -143,6 +143,20 @@ void Hand::show() { // display's contents of the hand.
 	cout << "\n\n";
 }
 
+Card* Hand::removeCard(std::string findCard){
+
+	for(auto i = 0; i < cards.size(); i++)
+	{
+		if(findCard == cards.at(i)->getType()) 
+		{
+			Card * found = cards.at(i);
+			cards.erase(cards.begin() + i);
+			return found;
+		}
+	}
+	return nullptr;
+}
+
 int Hand::countCardsOfType(std::string t) {
 	int count = 0;
 	for (Card* card : cards) {

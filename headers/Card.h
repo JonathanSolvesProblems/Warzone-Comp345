@@ -90,6 +90,8 @@ public:
 	// equals operator.
 	Hand& operator=(const Hand& hand);
 
+	Card* removeCard(std::string findCard);
+
 	// adds card to deck.
 	void add(Card* drawn);
 	Card* playCard();
