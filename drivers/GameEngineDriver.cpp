@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <stdio.h>
 #endif
+
 static GameModel *game_model{nullptr};
 static MenuModel *menu_model{nullptr};
 
@@ -127,25 +128,10 @@ int main()
   /* Activate the Main Menu View */
   application->activateView(MAIN_MENU_VIEW);
 
-  std::exception* caught_exception {nullptr};
-
   /* Begin the keyboard-event loop. Pressing <q> will terminate the program */
-  try {
-    application->mainloop('q');
-  } catch (std::exception& e) { // Catch and store exception to be propagated after cleaning up.
-    caught_exception = new std::exception(e);
-  } catch (int code) {
-    caught_exception = new std::runtime_error(std::to_string(code));
-  } catch (...) {
-    caught_exception = new std::runtime_error("unknown error");
-  }
+  application->mainloop('q');
 
   cleanup();
-
-  if (caught_exception != nullptr) {
-    std::cerr << caught_exception->what() << std::endl; // Propagate exception
-    delete caught_exception;
-  }
 
   return 0;
 }
