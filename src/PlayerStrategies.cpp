@@ -106,14 +106,14 @@ const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *p
 void AggressivePlayerStrategy::beginRound(Player *player, GameModel *gm) 
 {
     playersTerritoriesSorted = toDefend(player, gm);
-    int current_player_armies = player->getArmees();
+    current_player_armies = player->getArmees();
 }
 
 Order* AggressivePlayerStrategy::issueAggressiveDeploy(Player *player)
 {
     map::Territory* max = playersTerritoriesSorted.at(0);
     current_player_armies = 0;
-    return new DeployOrder(*player, *max, 10);
+    return new DeployOrder(*player, *max, player->getArmees());
 }
 
 void BenevolentPlayerStrategy::beginRound(Player *player, GameModel *gm){
