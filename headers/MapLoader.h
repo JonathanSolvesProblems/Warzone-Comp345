@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include "Map.h"
 #include <iostream>
 #include <fstream>
@@ -33,13 +34,11 @@ public:
 	//destructor
 	~MapLoader();
 
-	//getters and setters 
-	int getNumOfContinents();
-	int getNumOfTerritories();
+	
+	vector<string> findMapFiles();
 
 	// loadFile method which loads/checks the mapfile for all the contents (reads line by line)
 	virtual bool loadFile(string filePath, map::Map& test);
-	vector<string> findMapFiles();
 
 private:
 
@@ -50,7 +49,6 @@ private:
 	bool isBorder(string line, map::Map& test, bool& isValid); // isBorder method which checks if the string is a border
 	bool isCountry(string line, map::Map& test, bool& isValid); // isCountry method whih checks if the string is a country
 	bool isContinent(string line, map::Map& test, bool& isValid, int& continentID); // isContinent method whcih checks if the strings is a continent
-
 
 	// adds the parsed line to the map as a country
 	bool isCountryAddToMap(map::Map& test, bool& hasFirstInt, bool& hasString, bool& hasSecondInt, bool& hasThirdInt, bool& hasFourthInt, vector<string>& countriesArr, int& y, int& val0);
@@ -71,6 +69,8 @@ private:
 	// parses the line and stores it in its respective array 
 	void isBorderArray(vector<string>& bordersArrReborn, string line, bool& isValid);
 };
+
+
 
 // TODO
 // --------------------------------------
@@ -99,11 +99,10 @@ private:
 public:
 	// Implements code to read Conquest map files.
 	bool loadFile(string mapName, map::Map& test);
-	//getters and setters
-	int getNumOfContinents();
-	int getNumOfTerritories();
 
 };
+
+
 
 class ConquestFileReaderAdapter : public MapLoader {
 private:

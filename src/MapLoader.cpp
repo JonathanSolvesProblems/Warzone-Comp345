@@ -51,11 +51,6 @@ ostream& operator<<(ostream& out, const MapLoader& o)
 
 
 // Conquest File Reader Class
-
-int ConquestFileReader::getNumOfContinents() {
-    return continents.size();
-}
-
 bool ConquestFileReader::loadFile(string mapName, map::Map& test)
 {
     int continentID = 1;
@@ -282,27 +277,12 @@ void ConquestFileReader::isCountryLineValidator(int& val0, int& val2, bool& hasF
 
 
 // territories part Territory,int1,int2,Continent,neighbours.....
-// delimiter is the , done 
+// delimiter is the ,
 // use a vector, test the first case, is a string, second is int,
 // third is int, fourth continent, the fifth and the rest are string 
 //and ar ethe neighbours
-
-int ConquestFileReader::getNumOfTerritories() {
-    return countries.size();
-}
-
 bool ConquestFileReader::isCountryAddToMap(map::Map& test, bool& hasFirstInt, bool& hasString, bool& hasSecondInt, vector<string>& countriesArr, int& val0, int& val2, int& territoryID)
 {
-
- 
-
-    //*** isntead of trying to get an int and set correct territory IDs, were going to just give Ids as they come and give a dummy continent value. Then once we check to see
-    // if this territory already exists (by string name), then what we need to do is just reset the Continnet, by using th eset continent fucntion then increment th eterritory ID.
-    // Either way after this is done we go through all the neighbours, increment the territory ids each time, and then we create the territory for it by doing 
-    // map::Territory* territory = new map::Territory(territoryID, countriesArr[0], *test.getContinent((countriesArr[3]))); and then we assign it a dummy continent.
-    // SO if we comeround to this territry down the line ( so if it exists) what we do is we dont create a new one, we just update/set the continent to its axtual continenrt from the array 
-    // then create territories for their neighbours, and then connect them all. 
-
     // if all the strings follow the proper sequence of a country add it to the map
     if (hasFirstInt == true && hasString == true && hasSecondInt == true)
     {
@@ -341,8 +321,6 @@ bool ConquestFileReader::isCountryAddToMap(map::Map& test, bool& hasFirstInt, bo
                 territory = NULL;
                 delete territory;
             }
-
-          
         }
 
         // the territory doesnt exist 
@@ -729,15 +707,6 @@ bool ConquestFileReaderAdapter::loadFile(string mapName, map::Map& test)
         return true;
     }
 };
-
-
-int  MapLoader::getNumOfContinents() {
-    return continents.size();
-}
-int  MapLoader::getNumOfTerritories() {
-    return countries.size();
-}
-
 
 void MapLoader::isBorderArray(vector<string>& bordersArrReborn, string line, bool& isValid)
 {
