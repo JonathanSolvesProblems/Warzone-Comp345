@@ -761,7 +761,7 @@ void GameplayController::startupPhase()
   {
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
     if (i == 0) {
-      new_player->setStrategy(new BenevolentPlayerStrategy());
+      new_player->setStrategy(new NeutralPlayerStrategy());
     } else {
       new_player->setStrategy(new BenevolentPlayerStrategy());
     }

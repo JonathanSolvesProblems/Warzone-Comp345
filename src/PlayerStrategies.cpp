@@ -87,8 +87,22 @@ const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player
 const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *player, GameModel *gm){};
 
 void BenevolentPlayerStrategy::beginRound(Player *player, GameModel *gm){
-    playersTerritoriesSorted = toDefend(player,gm);
-    current_player_armies = 0;
+    playersTerritoriesSorted = toDefend(player, gm);
+    current_player_armies = player->getArmees();
+    int averageArmies = 0;
+    int totalTerritories = playersTerritoriesSorted.size() >= 3 ? 3 : playersTerritoriesSorted.size();
+    // takes the first 3 territories with the lowest number of armies and sums up their armies
+    for (int i = 0; i < totalTerritories; ++i) {
+      averageArmies += playersTerritoriesSorted.at(i)->getArmees();
+    }
+    // Calculates average number of armies for those 3 territories
+    averageArmies += player->getArmees();
+    averageArmies /= totalTerritories;
+    // Calculates number of armies to deploy for each of those 3 territories
+    for (int i = 0; i < totalTerritories; ++i) {
+      numberArmiesToDeploy.push_back(averageArmies - playersTerritoriesSorted.at(i)->getArmees());
+      indicesToDeployAt.push_back(i);
+    }
 }
 
 Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) { 
@@ -96,31 +110,37 @@ Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm) {
     if(current_player_armies > 0) {
       return issueBenevolentDeploy(player);
     } else {
-      return issueBenevolentAdvance(player);
+      //return issueBenevolentAdvance(player);
     }
     return nullptr;
 };
 
 Order* BenevolentPlayerStrategy::issueBenevolentDeploy(Player *player){
 
-    int armies_to_deploy = numberArmiesToDeploy.at(0);
-    int indexToDeploy = indicesToDeployAt.at(0);
-
+  int armies_to_deploy = 0;
+  int indexToDeploy = 0;
+  // If armies are left to deploy after the lists are exhausted, deploy to the territory with the smallest number of countries
+  if (numberArmiesToDeploy.size() == 0 || indicesToDeployAt.size() == 0) {
+    armies_to_deploy = current_player_armies;
+    indexToDeploy = 0;
+  }
+  // Else continue like normal
+  else {
+    armies_to_deploy = numberArmiesToDeploy.at(0);
+    indexToDeploy = indicesToDeployAt.at(0);
     numberArmiesToDeploy.erase(numberArmiesToDeploy.begin());
     indicesToDeployAt.erase(indicesToDeployAt.begin());
+  }
 
-    current_player_armies += armies_to_deploy;
+  current_player_armies -= armies_to_deploy;
 
-    if(current_player_armies < player->getArmees()) {
-       return new DeployOrder(*(player),*(playersTerritoriesSorted.at(indexToDeploy)),armies_to_deploy - 0);
-    }
-    //Else, deploy rest of armies
-    current_player_armies = 0;
-    return new DeployOrder(*(player),*(playersTerritoriesSorted.at(indexToDeploy)),current_player_armies - player->getArmees());
+  return new DeployOrder(*(player),*(playersTerritoriesSorted.at(indexToDeploy)), armies_to_deploy);
 }
 
 
 Order* BenevolentPlayerStrategy::issueBenevolentAdvance(Player *player) {
+
+  
         //Get highest occupied territory
     map::Territory highestOccupied = *(playersTerritoriesSorted.at(playersTerritoriesSorted.size() - 1));
 
@@ -175,39 +195,15 @@ const vector<map::Territory *> BenevolentPlayerStrategy::toAttack(Player *player
     return vector<map::Territory*>();
 };
 
-//Returns territories from least armies to most
+// Then check neighbors and if there is a friendly, balance out the armies between the two with Advance.
 const std::vector<map::Territory *> BenevolentPlayerStrategy::toDefend(Player *player, GameModel *gm){
 
-    std::vector<map::Territory *> sortedTerritories = player->owned_territories;
-    
-    std::sort(sortedTerritories.begin(), sortedTerritories.end(),
-    [](map::Territory * T1, map::Territory * T2)
-    {
-        return T1->getArmees() < T2->getArmees();
-    });
-
-  // potentially goes out of bounce.
-      for(int i = 0 ; i < sortedTerritories.size(); i++){
-      if(i == sortedTerritories.size())
-        break;
-      int initialArmies = sortedTerritories.at(i)->getArmees();
-      int nextArmies = sortedTerritories.at(i + i)->getArmees();
-      int totalToDistribute = nextArmies - initialArmies;
-      for(int j = 0; j < i; j++){
-        numberArmiesToDeploy.push_back(totalToDistribute);
-      }
-    }
-
-    for(int i = 0; i < sortedTerritories.size(); i++) {
-      for(int j = 0; j < i; j++){
-        indicesToDeployAt.push_back(j);
-      }
-    }
-
-    return sortedTerritories;
+    // Returns territories sorted from least armies to most
+    return sortTerritoryList(player->owned_territories);
 };
 
 Order *NeutralPlayerStrategy::issueOrder(Player *player, GameModel *gm) { return nullptr; };
+void NeutralPlayerStrategy::beginRound(Player *player, GameModel *gm){};
 const vector<map::Territory *> NeutralPlayerStrategy::toAttack(Player *player, GameModel *gm){
   return std::vector<map::Territory *>();
 };

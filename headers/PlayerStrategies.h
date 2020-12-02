@@ -80,6 +80,7 @@ public:
     NeutralPlayerStrategy() {};
     ~NeutralPlayerStrategy() {};
     virtual Order *issueOrder(Player *player, GameModel *gm);
+    virtual void beginRound(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 };
