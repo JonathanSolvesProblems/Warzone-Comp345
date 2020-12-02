@@ -49,6 +49,8 @@ public:
     virtual Order *issueOrder(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
+private:
+    std::vector<map::Territory *> sortTerritoryList(std::vector<map::Territory *> toSort);
 };
 
 /*

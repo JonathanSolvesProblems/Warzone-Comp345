@@ -178,24 +178,6 @@ Order* BenevolentPlayerStrategy::issueBenevolentAdvance(Player *player) {
     }
   }
   return nullptr;
-    // Get highest occupied territory
-    // map::Territory highestOccupied = *(playersTerritoriesSorted.at(playersTerritoriesSorted.size() - 1));
-
-    // //Get its number of troops
-    // int highestOccupiedNumber = highestOccupied.getArmees();
-
-    // vector<map::Territory*> ownedNeighbours = ownedNeighboursOfGivenTerritory(player,highestOccupied);
-
-    // //Find smallest and second smallest neighbour
-    // ownedNeighbours = sortTerritoryList(ownedNeighbours);
-    // map::Territory lowestOccupiedNeighbour = *(ownedNeighbours.at(0));
-    // map::Territory secondLowestOccupiedNeighbour = *(ownedNeighbours.at(1));
-
-    // int lowestOccupiedNumber = lowestOccupiedNeighbour.getArmees();
-    // int secondLowestOccupiedNumber = secondLowestOccupiedNeighbour.getArmees();
-    
-    // Advance troops from highest occupied territory to lowest occupied one
-    // return new AdvanceOrder(*(player),highestOccupied,lowestOccupiedNeighbour,lowestOccupiedNumber - secondLowestOccupiedNumber);
 }
 
 //Finds all neighbours of a territory that are also owned by the player
@@ -223,6 +205,17 @@ std::vector<map::Territory *> BenevolentPlayerStrategy::sortTerritoryList(std::v
     [](map::Territory * T1, map::Territory * T2)
     {
         return T1->getArmees() < T2->getArmees();
+    });
+
+    return toSort;
+};
+
+std::vector<map::Territory *> AggressivePlayerStrategy::sortTerritoryList(std::vector<map::Territory *> toSort){
+    
+    std::sort(toSort.begin(), toSort.end(),
+    [](map::Territory * T1, map::Territory * T2)
+    {
+        return T1->getArmees() > T2->getArmees();
     });
 
     return toSort;
