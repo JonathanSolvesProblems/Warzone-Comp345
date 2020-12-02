@@ -91,7 +91,7 @@ void BenevolentPlayerStrategy::beginRound(Player *player, GameModel *gm){
     current_player_armies = player->getArmees();
     int averageArmies = 0;
     int totalTerritories = playersTerritoriesSorted.size() >= 3 ? 3 : playersTerritoriesSorted.size();
-    // takes the first 3 territories with the lowest number of armies and sums up their armies
+    // takes at most the first 3 territories with the lowest number of armies and sums up their armies
     for (int i = 0; i < totalTerritories; ++i) {
       averageArmies += playersTerritoriesSorted.at(i)->getArmees();
     }
@@ -102,6 +102,7 @@ void BenevolentPlayerStrategy::beginRound(Player *player, GameModel *gm){
     for (int i = 0; i < totalTerritories; ++i) {
       numberArmiesToDeploy.push_back(averageArmies - playersTerritoriesSorted.at(i)->getArmees());
       indicesToDeployAt.push_back(i);
+      indicesToAdvanceTo.push_back(i);
     }
 }
 
@@ -139,26 +140,60 @@ Order* BenevolentPlayerStrategy::issueBenevolentDeploy(Player *player){
 
 
 Order* BenevolentPlayerStrategy::issueBenevolentAdvance(Player *player) {
+  cout << "BenevolentAdvance" << endl;
+  // Return if no more territories need armies from neighbors
+  if (indicesToAdvanceTo.size() == 0) {
+    return nullptr;
+  }
+  int totalTerritories = playersTerritoriesSorted.size() >= 3 ? 3 : playersTerritoriesSorted.size();
+  int advanceIndex = indicesToAdvanceTo.front();
+  indicesToAdvanceTo.erase(indicesToDeployAt.begin());
+  // balances the number armies with a friendly neighbor
+  cout << "BenevolentAdvance::Friendlies" << endl;
+  vector<map::Territory *> neighbors;
+  neighbors = playersTerritoriesSorted.at(advanceIndex)->getNeighbours();
+  map::Territory *neighbor{nullptr};
+  cout << "Neighbors size" << endl;
+  cout << neighbors.size() << endl;
+  for (int i = 0; i < neighbors.size(); ++i) {
+    cout << "Neighbors index" << endl;
+    neighbor = neighbors.at(i);
+    cout << *neighbor << endl;
+    if (neighbor->getOwner() == player) {
+      cout << "BenevolentAdvance::Balancing" << endl;
+      int averageArmies = (playersTerritoriesSorted.at(advanceIndex)->getArmees() + neighbor->getArmees()) / 2;
+      if (neighbor->getArmees() > averageArmies) {
+        cout << "BenevolentAdvance::BalancingOneWay" << endl;
+        return new AdvanceOrder(*(player), *(neighbor), *(playersTerritoriesSorted.at(advanceIndex)), (neighbor->getArmees() - averageArmies) / 2);
+      }
+      else if (neighbor->getArmees() < averageArmies) {
+        cout << "BenevolentAdvance::BalancingOtherWay" << endl;
+        return new AdvanceOrder(*(player), *(playersTerritoriesSorted.at(advanceIndex)), *(neighbor), (playersTerritoriesSorted.at(advanceIndex)->getArmees() - averageArmies) / 2);
+      }
+      else {
+        return nullptr;
+      }
+    }
+  }
+  return nullptr;
+    //     //Get highest occupied territory
+    // map::Territory highestOccupied = *(playersTerritoriesSorted.at(playersTerritoriesSorted.size() - 1));
 
-  
-        //Get highest occupied territory
-    map::Territory highestOccupied = *(playersTerritoriesSorted.at(playersTerritoriesSorted.size() - 1));
+    // //Get its number of troops
+    // int highestOccupiedNumber = highestOccupied.getArmees();
 
-    //Get its number of troops
-    int highestOccupiedNumber = highestOccupied.getArmees();
+    // vector<map::Territory*> ownedNeighbours = ownedNeighboursOfGivenTerritory(player,highestOccupied);
 
-    vector<map::Territory*> ownedNeighbours = ownedNeighboursOfGivenTerritory(player,highestOccupied);
+    // //Find smallest and second smallest neighbour
+    // ownedNeighbours = sortTerritoryList(ownedNeighbours);
+    // map::Territory lowestOccupiedNeighbour = *(ownedNeighbours.at(0));
+    // map::Territory secondLowestOccupiedNeighbour = *(ownedNeighbours.at(1));
 
-    //Find smallest and second smallest neighbour
-    ownedNeighbours = sortTerritoryList(ownedNeighbours);
-    map::Territory lowestOccupiedNeighbour = *(ownedNeighbours.at(0));
-    map::Territory secondLowestOccupiedNeighbour = *(ownedNeighbours.at(1));
-
-    int lowestOccupiedNumber = lowestOccupiedNeighbour.getArmees();
-    int secondLowestOccupiedNumber = secondLowestOccupiedNeighbour.getArmees();
+    // int lowestOccupiedNumber = lowestOccupiedNeighbour.getArmees();
+    // int secondLowestOccupiedNumber = secondLowestOccupiedNeighbour.getArmees();
     
-    //Advance troops from highest occupied territory to lowest occupied one
-    return new AdvanceOrder(*(player),highestOccupied,lowestOccupiedNeighbour,lowestOccupiedNumber - secondLowestOccupiedNumber);
+    // //Advance troops from highest occupied territory to lowest occupied one
+    // return new AdvanceOrder(*(player),highestOccupied,lowestOccupiedNeighbour,lowestOccupiedNumber - secondLowestOccupiedNumber);
 }
 
 //Finds all neighbours of a territory that are also owned by the player

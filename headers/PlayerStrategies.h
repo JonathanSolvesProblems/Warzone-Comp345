@@ -66,6 +66,7 @@ public:
 private:
     vector<int> numberArmiesToDeploy;
     vector<int> indicesToDeployAt;
+    vector<int> indicesToAdvanceTo;
     vector<map::Territory*> playersTerritoriesSorted;
     int current_player_armies = 0;
     Order* issueBenevolentDeploy(Player *player);
