@@ -5,8 +5,7 @@ class PlayerStrategy;
 #include <vector>
 #include "GameModels.h"
 #include "Orders.h"
-
-#include "curses.h"
+#include "Application.h"
 
 using std::vector;
 
@@ -28,8 +27,10 @@ public:
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 
 private:
+    vector<map::Territory*> territories_to_defend;
+    int index_of_next_territory_to_defend = 0;
     int choose_order_type(GameModel *gm);
-    Order *deploy_controller(GameModel *gm);
+    Order *deploy_controller(Player *player, GameModel *gm);
     Order *advance_controller(GameModel *gm);
     Order *blockade_controller(GameModel *gm);
     Order *airlift_controller(GameModel *gm);

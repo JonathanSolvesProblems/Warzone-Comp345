@@ -271,7 +271,11 @@ class GameplayView : public WindowView, public Observer {
     void create_stats_observer_view(int header_height);
 
     void display_human_input_order_choice_step();
-    PhaseObserverView* _phase_view{nullptr};
+    void display_human_source_input_step();
+
+    void display_human_deploy_interface();
+
+    PhaseObserverView *_phase_view{nullptr};
     StatisticsObserverView* _stats_view{nullptr};
     GameModel* settings_model{nullptr};
 };

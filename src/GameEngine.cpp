@@ -603,6 +603,8 @@ void GameplayView::display()
     int step = settings_model->current_step->get();
     if (step == 0)
         display_human_input_order_choice_step();
+    else if (step == 1)
+        display_human_source_input_step();
 
     if (settings_model->error_message->get() != "") {
       wattron(_window, COLOR_PAIR(BLACK_RED));
@@ -636,6 +638,70 @@ void GameplayView::display()
 
   box(_window, 0, 0);
   WindowView::display();
+}
+
+void GameplayView::display_human_source_input_step() {
+  if (settings_model->current_order_type->get() == DEPLOY) {
+    display_human_deploy_interface();
+  }
+}
+
+void GameplayView::display_human_deploy_interface() {
+  /* DISPLAY INSTRUCTIONS */
+  Player *current_player = settings_model->current_player->get();
+  std::string header = current_player->playerName + ": Deploy";
+  std::stringstream instructions_stream;
+  instructions_stream << "Choose how many armies to deploy to each of your territories" << std::endl
+                      << std::endl
+                      << "Use UP/DOWN arrows to select a territory" << std::endl
+                      << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl;
+
+  print_centered_at_col(6, width / 4, header);
+  int off_y = 0;
+  int max_row_width = width / 3 - 4;
+  char next_line[max_row_width];
+
+  while (!instructions_stream.eof()) {
+    instructions_stream.getline(next_line, max_row_width);
+
+    print_centered_at_col(8 + off_y++, width / 4, next_line);
+  }
+
+  /* DISPLAY UI */
+  int armies_remaining = current_player->getArmees();
+
+  const std::vector<ConcreteObservable<std::pair<map::Territory*, int>>*>& territory_list_items = settings_model->territory_list_items->get();
+
+  int index = 0;
+  int current_index = settings_model->selected_index->get();
+  int num_visible_rows = height - 8;
+  int offset = (1 + current_index) - num_visible_rows;
+  if (offset <= 0) offset = 0;
+
+  for (auto obs : territory_list_items) {
+    auto pair = obs->get();
+    map::Territory* territory = pair.first;
+    armies_remaining -= pair.second;
+
+    if (index >= offset && index - offset < num_visible_rows) {
+      int line = 5 + index - offset;
+      if (index == current_index)
+        wattron(_window, A_STANDOUT);
+      wmove(_window, line, width / 2 + 1);
+      wprintw(_window, territory->getName().c_str());
+      while (getcurx(_window) < width - 2) waddch(_window, ' ');
+
+      print_right_aligned_at_col(
+        line,
+        width - 2,
+        "+" + std::to_string(pair.second) + " (" + std::to_string(territory->getArmees()) + ")");
+      wattroff(_window, A_STANDOUT);
+    }
+
+    index++;
+  }
+
+  print_centered_at_col(2, 3 * width / 4, std::to_string(armies_remaining) + " Armies Remaining");
 }
 
 void GameplayView::display_human_input_order_choice_step() {
