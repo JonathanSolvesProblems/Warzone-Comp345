@@ -114,7 +114,6 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
 
 Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
 {
-
   
   if (current_player_armies > 0)
   {
@@ -126,7 +125,6 @@ Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
   }
   else if (neighborsToAttack.size() > 0)
   {
-    
     return issueAggressiveAdvance(player);
   }
   // Final case is take an enemy territory, and attack it with all the neighbor/airlift/bomb friendlies that you have.
@@ -333,41 +331,32 @@ Order *BenevolentPlayerStrategy::issueBenevolentDeploy(Player *player)
 
 Order *BenevolentPlayerStrategy::issueBenevolentAdvance(Player *player)
 {
-  // cout << "BenevolentAdvance" << endl;
   // Return if no more territories need armies from neighbors
   if (indicesToAdvanceTo.size() == 0)
   {
     return nullptr;
   }
 
-  int totalTerritories = playersTerritoriesSorted.size() >= 3 ? 3 : playersTerritoriesSorted.size();
+  int totalTerritories = playersTerritoriesSorted.size() >= 3 ? 3 : playersTerritoriesSorted.size(); 
   int advanceIndex = indicesToAdvanceTo.front();
   indicesToAdvanceTo.erase(indicesToAdvanceTo.begin());
   // balances the number armies with a friendly neighbor
-  // cout << "BenevolentAdvance::Friendlies" << endl;
   vector<map::Territory *> neighbors;
   neighbors = playersTerritoriesSorted.at(advanceIndex)->getNeighbours();
   map::Territory *neighbor{nullptr};
 
-  // cout << "Neighbors size" << endl;
-  // cout << neighbors.size() << endl;
   for (int i = 0; i < neighbors.size(); ++i)
   {
-    // cout << "Neighbors index" << endl;
     neighbor = neighbors.at(i);
-    // cout << *neighbor << endl;
     if (neighbor->getOwner() == player)
     {
-      // cout << "BenevolentAdvance::Balancing" << endl;
       int averageArmies = (playersTerritoriesSorted.at(advanceIndex)->getArmees() + neighbor->getArmees()) / 2;
       if (neighbor->getArmees() > averageArmies)
       {
-        // cout << "BenevolentAdvance::BalancingOneWay" << endl;
         return new AdvanceOrder(*(player), *(neighbor), *(playersTerritoriesSorted.at(advanceIndex)), (neighbor->getArmees() - averageArmies) / 2);
       }
       else if (neighbor->getArmees() < averageArmies)
       {
-        // cout << "BenevolentAdvance::BalancingOtherWay" << endl;
         return new AdvanceOrder(*(player), *(playersTerritoriesSorted.at(advanceIndex)), *(neighbor), (playersTerritoriesSorted.at(advanceIndex)->getArmees() - averageArmies) / 2);
       }
       else
