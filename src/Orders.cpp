@@ -213,7 +213,7 @@ AirliftOrder::~AirliftOrder() {
 bool AirliftOrder::validate() {
 	
 	//Check that the source and target belongs to the player that issued the order
-	if(_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _issuingPlayer->getArmees()) {
+	if(_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _sourceTerritory->getArmees()) {
 		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())) {
 			return false;
 		}
