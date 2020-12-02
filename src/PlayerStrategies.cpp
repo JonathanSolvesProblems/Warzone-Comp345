@@ -104,7 +104,7 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
   int key;
   int remaining = gm->current_player->get()->getArmees();
 
-
+  gm->territory_list_items->clear();
   for (map::Territory *territory : player->owned_territories)
   {
     gm->territory_list_items->push_back(
@@ -155,6 +155,8 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
       result.push_back(pair.first);
     }
   }
+
+  // Possible memory leak here: who cleans up the concrete observables that were created?
 
   return result;
 };
