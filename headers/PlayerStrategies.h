@@ -55,7 +55,8 @@ private:
     vector<map::Territory*> playersTerritoriesSorted;
     Order* issueAggressiveDeploy(Player *player);
     Order* issueAggressiveAdvance(Player *player);
-    vector<map::Territory*> visited;
+    Order* issueAggressiveAirlift(Player *player);
+    vector<map::Territory*> neighborsToAttack;
     int current_player_armies = 0;
     int armiesToAdvance = 0;
 };

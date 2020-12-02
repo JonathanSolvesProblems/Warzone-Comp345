@@ -117,48 +117,65 @@ Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
   {
     return issueAggressiveDeploy(player);
   }
-  else if(armiesToAdvance > 0)
+  else if (neighborsToAttack.size() > 0)
   {
+
     return issueAggressiveAdvance(player);
   }
   return nullptr;
 };
 
-Order *AggressivePlayerStrategy::issueAggressiveAdvance(Player *player)
+Order *AggressivePlayerStrategy::issueAggressiveAirlift(Player *player)
 {
-  map::Territory *max = playersTerritoriesSorted.at(0);
-  vector<map::Territory *> neighbors = max->getNeighbours();
 
-  map::Territory* neighbor;
-
-  for (int i = 0; i < neighbors.size(); ++i)
-  {
-    
-    neighbor = neighbors.at(i);
-    if (neighbor->getOwner() != player)
-    {
-      int enemyArmies = neighbor->getArmees();
-      if ((enemyArmies * 2) < max->getArmees())
-      {
-        if(neighbor->getArmees() == 0)
-        {
-          return new AdvanceOrder(*(player), *max, *neighbor, 1);
-        }
-
-        armiesToAdvance -= neighbor->getArmees() * 2;
-        return new AdvanceOrder(*(player), *max, *neighbor, neighbor->getArmees() * 2);
-      }
-      else
-      {
-        continue;
-      }
-    }
-  }
   return nullptr;
 }
 
-const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player, GameModel *gm){
+Order *AggressivePlayerStrategy::issueAggressiveAdvance(Player *player)
+{
+  map::Territory *max = playersTerritoriesSorted.at(0);
+  map::Territory *neighbor = neighborsToAttack.at(0);
+  neighborsToAttack.erase(neighborsToAttack.begin());
 
+  int enemyArmies = neighbor->getArmees();
+
+  if (neighbor->getArmees() == 0)
+  {
+    armiesToAdvance -= 1;
+    return new AdvanceOrder(*(player), *max, *neighbor, 1);
+  }
+
+  if ((enemyArmies * 2) < max->getArmees())
+  {
+
+    armiesToAdvance -= neighbor->getArmees() * 2;
+
+    return new AdvanceOrder(*(player), *max, *neighbor, neighbor->getArmees() * 2);
+  }
+
+  return nullptr;
+}
+
+const vector<map::Territory *> AggressivePlayerStrategy::toAttack(Player *player, GameModel *gm)
+{
+ /* unordered_set<map::Territory *> territories_to_attack = unordered_set<map::Territory *>();
+
+  for (map::Territory *owned_territory : owned_territories)
+  {
+    float test = 1.0f / owned_territory->getNeighbours().size();
+    for (map::Territory *neighbour : owned_territory->getNeighbours())
+    {
+      if (territories_to_attack.find(neighbour) == territories_to_attack.end() && neighbour->getOwner() != this)
+      {
+        territories_to_attack.insert(neighbour);
+      }
+    }
+  }
+  return result;*/
+}
+  vector<map::Territory *> result = vector<map::Territory *>();
+  result.assign(territories_to_attack.begin(), territories_to_attack.end());
+  return result;
 };
 
 const std::vector<map::Territory *> AggressivePlayerStrategy::toDefend(Player *player, GameModel *gm)
@@ -170,6 +187,14 @@ void AggressivePlayerStrategy::beginRound(Player *player, GameModel *gm)
 {
   playersTerritoriesSorted = toDefend(player, gm);
   current_player_armies = player->getArmees();
+  vector<map::Territory *> neighbors = playersTerritoriesSorted.at(0)->getNeighbours();
+  for (auto neighbor : neighbors)
+  {
+    if (neighbor->getOwner() != player)
+    {
+      neighborsToAttack.push_back(neighbor);
+    }
+  }
 }
 
 Order *AggressivePlayerStrategy::issueAggressiveDeploy(Player *player)
