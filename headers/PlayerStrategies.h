@@ -54,7 +54,10 @@ private:
     std::vector<map::Territory *> sortTerritoryList(std::vector<map::Territory *> toSort);
     vector<map::Territory*> playersTerritoriesSorted;
     Order* issueAggressiveDeploy(Player *player);
+    Order* issueAggressiveAdvance(Player *player);
+    vector<map::Territory*> visited;
     int current_player_armies = 0;
+    int armiesToAdvance = 0;
 };
 
 /*
