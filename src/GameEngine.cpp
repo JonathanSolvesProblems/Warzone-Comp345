@@ -838,9 +838,9 @@ void GameplayController::removeDeadPlayers() {
   std::list<Player*> players_to_remove;
   for (Player* player : _game_model->active_players->get()) {
     if (player->owned_territories.empty()) players_to_remove.push_back(player);
-    else if (rand() % 10 == 0) { // Purposefully commented. Uncomment to unsure game will eventually complete
-       players_to_remove.push_back(player);
-    }
+    // else if (rand() % 10 == 0) { // Purposefully commented. Uncomment to unsure game will eventually complete
+    //    players_to_remove.push_back(player);
+    // }
   }
 
   for (Player* player : players_to_remove) {
