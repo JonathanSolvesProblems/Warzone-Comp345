@@ -33,21 +33,24 @@ public:
 	//destructor
 	~MapLoader();
 
-	vector<string> continents;
-	vector<string> borders;
-	vector<string> countries;
-
-	// map test
+	//getters and setters 
 	int getNumOfContinents();
 	int getNumOfTerritories();
 
+	// loadFile method which loads/checks the mapfile for all the contents (reads line by line)
 	virtual bool loadFile(string filePath, map::Map& test);
+	vector<string> findMapFiles();
+
+private:
+
+	vector<string> continents;
+	vector<string> borders;
+	vector<string> countries;
 	// loadFile method which loads/checks the mapfile for all the contents (reads line by line)
 	bool isBorder(string line, map::Map& test, bool& isValid); // isBorder method which checks if the string is a border
 	bool isCountry(string line, map::Map& test, bool& isValid); // isCountry method whih checks if the string is a country
 	bool isContinent(string line, map::Map& test, bool& isValid, int& continentID); // isContinent method whcih checks if the strings is a continent
-	bool mapSelection(map::Map& test);
-	vector<string> findMapFiles();
+
 
 	// adds the parsed line to the map as a country
 	bool isCountryAddToMap(map::Map& test, bool& hasFirstInt, bool& hasString, bool& hasSecondInt, bool& hasThirdInt, bool& hasFourthInt, vector<string>& countriesArr, int& y, int& val0);
@@ -69,8 +72,6 @@ public:
 	void isBorderArray(vector<string>& bordersArrReborn, string line, bool& isValid);
 };
 
-
-
 // TODO
 // --------------------------------------
 class ConquestFileReader {
@@ -78,20 +79,12 @@ private:
 	vector<string> continents;
 	vector<string> borders;
 	vector<string> countries;
-
-public:
-	// Implements code to read Conquest map files.
-	bool loadFile(string mapName, map::Map& test);
-
 	// stores all the components of the line for the isCountry method into the countriesArr vector
 	void isContinentArray(string* continentsArr, string line, int& i);
 	//validates the line used for the continent part
 	void isContinentLineValidator(bool& hasFirstString, bool& hasInt, int& val1, string* continentsArr);
 	bool isContinentAddToMap(string line, map::Map& test, bool& hasFirstString, bool& hasInt, int& i, int& val1, string* continentsArr, vector<string>& continents, int& continentID);
 	bool isContinent(string line, map::Map& test, bool& isValid, int& continentID);
-	int getNumOfContinents();
-	int getNumOfTerritories();
-
 
 	//Get the territory 
 	bool isCountry(string line, map::Map& test, bool& isValid, int& territoryID);
@@ -103,9 +96,14 @@ public:
 	void isCountryVector(vector<string>& countriesArr, string line, bool& isValid);
 	// parses the line and stores it in its repective array
 
+public:
+	// Implements code to read Conquest map files.
+	bool loadFile(string mapName, map::Map& test);
+	//getters and setters
+	int getNumOfContinents();
+	int getNumOfTerritories();
+
 };
-
-
 
 class ConquestFileReaderAdapter : public MapLoader {
 private:
@@ -115,15 +113,6 @@ private:
 	vector<string> countries;
 
 public:
-	/*
-	Needs to override methods in MapLoader class to call conquestFileReader->method
-	(will have to make methods + destructor virtual in maploader class)
-
-	Example:
-	An overidden method bool mapSelection(map::Map &test) will call conquestFileReader->mapSelection(map::Map &test);
-	*/
-
-
-	bool loadFile(string mapName, map::Map& test);
+	 // override method in MapLoader class to call conquestFileReader->method
+	virtual bool loadFile(string mapName, map::Map& test);
 };
-// --------------------------------------
