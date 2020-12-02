@@ -12,6 +12,7 @@ using std::vector;
 // TODO
 class PlayerStrategy {
 public:
+    virtual void beginRound(Player *player, GameModel *gm) = 0;
     virtual Order *issueOrder(Player *player, GameModel *gm) = 0;
     virtual const vector<map::Territory *> toAttack(Player *player,GameModel *gm) = 0;
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm) = 0;
@@ -49,6 +50,8 @@ public:
     virtual Order *issueOrder(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
+private:
+    std::vector<map::Territory *> sortTerritoryList(std::vector<map::Territory *> toSort);
 };
 
 /*
@@ -60,8 +63,19 @@ public:
     BenevolentPlayerStrategy() {};
     ~BenevolentPlayerStrategy() {};
     virtual Order *issueOrder(Player *player, GameModel *gm);
+    virtual void beginRound(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const std::vector<map::Territory *> toDefend(Player *player, GameModel *gm);
+private:
+    vector<int> numberArmiesToDeploy;
+    vector<int> indicesToDeployAt;
+    vector<int> indicesToAdvanceTo;
+    vector<map::Territory*> playersTerritoriesSorted;
+    int current_player_armies = 0;
+    Order* issueBenevolentDeploy(Player *player);
+    Order* issueBenevolentAdvance(Player *player);
+    std::vector<map::Territory *> sortTerritoryList(std::vector<map::Territory *> toSort);
+    vector<map::Territory*> ownedNeighboursOfGivenTerritory(Player *player,map::Territory highestOccupied);
 };
 
 //  (4) a neutral player that never issues any order
@@ -70,6 +84,7 @@ public:
     NeutralPlayerStrategy() {};
     ~NeutralPlayerStrategy() {};
     virtual Order *issueOrder(Player *player, GameModel *gm);
+    virtual void beginRound(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 };

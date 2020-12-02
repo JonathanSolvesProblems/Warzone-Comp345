@@ -827,9 +827,9 @@ void GameplayController::startupPhase()
   {
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
     if (i == 0) {
-      new_player->setStrategy(new HumanPlayerStrategy());
-    } else {
       new_player->setStrategy(new NeutralPlayerStrategy());
+    } else {
+      new_player->setStrategy(new BenevolentPlayerStrategy());
     }
 
     // sets the starting armies for each player accoridng to the number of players playing the game
@@ -904,9 +904,9 @@ void GameplayController::removeDeadPlayers() {
   std::list<Player*> players_to_remove;
   for (Player* player : _game_model->active_players->get()) {
     if (player->owned_territories.empty()) players_to_remove.push_back(player);
-    else if (rand() % 10 == 0) { // Purposefully commented. Uncomment to unsure game will eventually complete
-       players_to_remove.push_back(player);
-    }
+    // else if (rand() % 10 == 0) { // Purposefully commented. Uncomment to unsure game will eventually complete
+    //    players_to_remove.push_back(player);
+    // }
   }
 
   for (Player* player : players_to_remove) {
@@ -950,7 +950,7 @@ void GameplayController::reinforcementPhase() {
     // Add assignArmies to player
     player->setArmees(player->getArmees() + armiesToAssign);
 
-    _game_model->log->append("Total armies for player: " + std::to_string(player->getArmees()));
+    _game_model->log->append("Total armies for player: " + player->playerName + " " + std::to_string(player->getArmees()));
   }
 }
 
@@ -972,6 +972,7 @@ void GameplayController::issueOrdersPhase() {
 
     // Allow the current player to issue 1 order, or return nullptr indicating they are finished
     Order* issued = current->issueOrder(_game_model);
+
     if (issued != nullptr) {
       _game_model->log->append(current->playerName + " issued: " + issued->toString());
       // Go to next player who still wants to issue an order.

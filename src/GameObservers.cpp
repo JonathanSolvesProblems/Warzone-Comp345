@@ -63,6 +63,6 @@ void StringLog::clear() {
   notify();
 }
 
-const std::list<std::string>& StringLog::get() { 
+const std::list<std::string>& StringLog::get() {
   return log;
 }
