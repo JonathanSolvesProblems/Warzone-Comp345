@@ -110,6 +110,8 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
   }
 };
 
+
+
 Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
 {
 
@@ -124,14 +126,15 @@ Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
   }
   else if (neighborsToAttack.size() > 0)
   {
+    
     return issueAggressiveAdvance(player);
   }
   // Final case is take an enemy territory, and attack it with all the neighbor/airlift/bomb friendlies that you have.
-  else if (backupTargetFriendlies.size() > 0)
+  else if (!advancedToFriendly)
   {
-    map::Territory *next = backupTargetFriendlies.at(0);
-    backupTargetFriendlies.erase(backupTargetFriendlies.begin());
-    return new AdvanceOrder(*player, *next, *backupTarget, next->getArmees());
+    advancedToFriendly = true;
+    map::Territory* m = playersTerritoriesSorted.at(0)->getNeighbours().at(rand() % playersTerritoriesSorted.at(0)->getNeighbours().size());
+    return new AdvanceOrder(*player, *(playersTerritoriesSorted.at(0)), *m, playersTerritoriesSorted.at(0)->getArmees());
   }
 
   // else if (pathToEnemy.size() > 0 && !advancedToFriendly)
@@ -267,7 +270,7 @@ vector<map::Territory*> AggressivePlayerStrategy::findEnemies(Player *player, ma
     }
     if (neighbor->getOwner() != player)
     {
-      path.push_back(neighbor);
+      // path.push_back(neighbor);
       return path;
     }
   }
