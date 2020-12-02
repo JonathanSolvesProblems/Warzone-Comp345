@@ -23,6 +23,9 @@ class HumanPlayerStrategy : public PlayerStrategy {
 public:
     HumanPlayerStrategy() {};
     ~HumanPlayerStrategy() {};
+
+    virtual void beginRound(Player *player, GameModel *gm);
+    virtual void endRound(Player *player, GameModel *gm);
     virtual Order *issueOrder(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);

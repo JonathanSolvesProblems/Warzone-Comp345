@@ -2,13 +2,21 @@
 
 // TODO
 
+void HumanPlayerStrategy::beginRound(Player *player, GameModel *gm) {
+  territories_to_defend = toDefend(player, gm);
+  index_of_next_territory_to_defend = 0;
+}
+
+void HumanPlayerStrategy::endRound(Player *player, GameModel *gm){
+    territories_to_defend.clear();
+    index_of_next_territory_to_defend = -1;
+}
+
 Order *HumanPlayerStrategy::issueOrder(Player *player, GameModel *gm)
 {
   Order* order = nullptr;
 
   OrderType order_type = (OrderType) choose_order_type(gm);
-  if (order_type != PASS && order_type != DEPLOY)
-    gm->current_step->set(0);
 
   if (order_type != PASS) {
     gm->current_order_type->set(order_type);
@@ -29,8 +37,7 @@ Order *HumanPlayerStrategy::issueOrder(Player *player, GameModel *gm)
   }
 
   if (order == nullptr) {
-    territories_to_defend.clear();
-    index_of_next_territory_to_defend = -1;
+    endRound(player, gm);
   }
 
   gm->current_step->set(-1);
@@ -40,7 +47,8 @@ Order *HumanPlayerStrategy::issueOrder(Player *player, GameModel *gm)
 int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
   int k;
 
-  int must_deploy = gm->current_player->get()->getArmees() - territories_to_defend.size();
+  int must_deploy = index_of_next_territory_to_defend < territories_to_defend.size();
+
   int blockade_cards = gm->current_player->get()->countCardsOfType("blockade");
   int airlift_cards = gm->current_player->get()->countCardsOfType("airlift");
   int bomb_cards = gm->current_player->get()->countCardsOfType("bomb");
@@ -48,12 +56,12 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
 
   if (must_deploy) return DEPLOY;
 
+  gm->current_step->set(0);
+
   while(k = Application::instance()->get_key(true)) {
     gm->error_message->set("");
     if (k == ' ') {
       return PASS;
-    } else if (k == 'd' && must_deploy) {
-      return DEPLOY;
     } else if (k == 'a' && !must_deploy) {
       return ADVANCE;
     } else if (k == 's' && !must_deploy && blockade_cards > 0) {
@@ -72,8 +80,7 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
 
 Order *HumanPlayerStrategy::deploy_controller(Player *player, GameModel *gm){
   if (index_of_next_territory_to_defend == -1) {
-    territories_to_defend = toDefend(player, gm);
-    index_of_next_territory_to_defend = 0;
+
     gm->current_step->set(-1);
   }
 
@@ -96,6 +103,7 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
   int key;
   int remaining = gm->current_player->get()->getArmees();
 
+
   for (map::Territory *territory : player->owned_territories)
   {
     gm->territory_list_items->push_back(
@@ -103,9 +111,15 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
   }
   const std::vector<ConcreteObservable<std::pair<map::Territory *, int>>*> owned_territories_with_numbers = gm->territory_list_items->get();
   gm->current_step->set(1);
+  gm->current_order_type->set(DEPLOY);
 
-  while ((key = Application::instance()->get_key(true)) != ' ')
+  while ((key = Application::instance()->get_key(true)) != ' ' || remaining > 0)
   {
+    gm->error_message->set("");
+    if (key == ' ') {
+      gm->error_message->set("You must deploy all of your armies!");
+      continue;
+    }
     int current_index = gm->selected_index->get();
     if (key == KEY_DOWN) {
       if (current_index < owned_territories_with_numbers.size() - 1)

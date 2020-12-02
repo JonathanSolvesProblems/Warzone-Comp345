@@ -688,7 +688,7 @@ void GameplayView::display_human_deploy_interface() {
       if (index == current_index)
         wattron(_window, A_STANDOUT);
       wmove(_window, line, width / 2 + 1);
-      wprintw(_window, territory->getName().c_str());
+      wprintw(_window, (territory->getName() + " (" + territory->getContinent()->getName() + ")").c_str());
       while (getcurx(_window) < width - 2) waddch(_window, ' ');
 
       print_right_aligned_at_col(
@@ -701,6 +701,9 @@ void GameplayView::display_human_deploy_interface() {
     index++;
   }
 
+  if (armies_remaining == 0) {
+    print_centered_at_col(height - 2, 3 * width / 4, "Press SPACE to Continue");
+  }
   print_centered_at_col(2, 3 * width / 4, std::to_string(armies_remaining) + " Armies Remaining");
 }
 
@@ -712,7 +715,7 @@ void GameplayView::display_human_input_order_choice_step() {
   print_centered(row++, "Choose an order type to execute:");
   wattroff(_window, COLOR_PAIR(GREY_BLACK));
 
-  int must_deploy = settings_model->current_player->get()->getArmees();
+  int must_deploy = 0;
   int blockade_cards = settings_model->current_player->get()->countCardsOfType("blockade");
   int airlift_cards = settings_model->current_player->get()->countCardsOfType("airlift");
   int bomb_cards = settings_model->current_player->get()->countCardsOfType("bomb");
@@ -827,7 +830,7 @@ void GameplayController::startupPhase()
   {
     Player *new_player = new Player("Player " + std::to_string(i + 1), i);
     if (i == 0) {
-      new_player->setStrategy(new NeutralPlayerStrategy());
+      new_player->setStrategy(new HumanPlayerStrategy());
     } else {
       new_player->setStrategy(new BenevolentPlayerStrategy());
     }
