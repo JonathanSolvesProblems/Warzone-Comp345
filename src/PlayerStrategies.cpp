@@ -118,23 +118,39 @@ Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
   {
     return issueAggressiveDeploy(player);
   }
-  else if (neighborsToAttack.size() > 0)
-  {
-
-    return issueAggressiveAdvance(player);
-  } 
   else if(player->hand->removeCard("airlift") != nullptr)
   {
-      return issueAggressiveAirlift(player);
+    return issueAggressiveAirlift(player);
+  }
+  else if (neighborsToAttack.size() > 0)
+  {
+    return issueAggressiveAdvance(player);
+  }
+  // Final case is take an enemy territory, and attack it with all the neighbor/airlift/bomb friendlies that you have.
+  else if (backupTargetFriendlies.size() > 0)
+  {
+    map::Territory *next = backupTargetFriendlies.at(0);
+    backupTargetFriendlies.erase(backupTargetFriendlies.begin());
+    return new AdvanceOrder(*player, *next, *backupTarget, next->getArmees());
   }
 
+  // else if (pathToEnemy.size() > 0 && !advancedToFriendly)
+  // {
+  //   map::Territory *next = pathToEnemy.at(0);
+  //   pathToEnemy.erase(pathToEnemy.begin());
+  //   advancedToFriendly = true;
+  //   return new AdvanceOrder(*player, *(playersTerritoriesSorted.at(0)), *next, playersTerritoriesSorted.at(0)->getArmees());
+  // }
+  // else if (pathToEnemy.size() == 0)
+  // {
+  //   pathToEnemy = findEnemies(player, playersTerritoriesSorted.at(0), vector<map::Territory*>(), vector<map::Territory*>());
+  // }
   return nullptr;
 };
 
 Order *AggressivePlayerStrategy::issueAggressiveAirlift(Player *player)
 {
-  return new AirliftOrder(*player, *(playersTerritoriesSorted.at(0)), *(toAttack(player, nullptr).at(0)), 1);
-  // return nullptr;
+  return new AirliftOrder(*player, *(playersTerritoriesSorted.at(0)), *backupTarget, playersTerritoriesSorted.at(0)->getArmees());
 }
 
 Order *AggressivePlayerStrategy::issueAggressiveAdvance(Player *player)
@@ -151,11 +167,9 @@ Order *AggressivePlayerStrategy::issueAggressiveAdvance(Player *player)
     return new AdvanceOrder(*(player), *max, *neighbor, 1);
   }
 
-  if ((enemyArmies * 2) < max->getArmees())
+  else if ((enemyArmies * 2) < max->getArmees())
   {
-
     armiesToAdvance -= neighbor->getArmees() * 2;
-
     return new AdvanceOrder(*(player), *max, *neighbor, neighbor->getArmees() * 2);
   }
 
@@ -193,6 +207,15 @@ void AggressivePlayerStrategy::beginRound(Player *player, GameModel *gm)
 {
   playersTerritoriesSorted = toDefend(player, gm);
   current_player_armies = player->getArmees();
+  advancedToFriendly = false;
+  backupTarget = toAttack(player, gm).at(rand() % toAttack(player, gm).size());
+  for (auto neighbor : backupTarget->getNeighbours())
+  {
+    if (neighbor->getOwner() == player)
+    {
+      backupTargetFriendlies.push_back(neighbor);
+    }
+  }
   vector<map::Territory *> neighbors = playersTerritoriesSorted.at(0)->getNeighbours();
   for (auto neighbor : neighbors)
   {
@@ -232,6 +255,38 @@ void BenevolentPlayerStrategy::beginRound(Player *player, GameModel *gm)
     indicesToDeployAt.push_back(i);
     indicesToAdvanceTo.push_back(i);
   }
+}
+
+vector<map::Territory*> AggressivePlayerStrategy::findEnemies(Player *player, map::Territory *origin, vector<map::Territory*> known, vector<map::Territory*> path)
+{
+  for (map::Territory *neighbor : origin->getNeighbours())
+  {
+    if (!contains(known, neighbor))
+    {
+      known.push_back(neighbor);
+    }
+    if (neighbor->getOwner() != player)
+    {
+      path.push_back(neighbor);
+      return path;
+    }
+  }
+  for (map::Territory *neighbor : origin->getNeighbours())
+  {
+    path.push_back(neighbor);
+    return findEnemies(player, neighbor, known, path);
+  }
+}
+bool AggressivePlayerStrategy::contains(vector<map::Territory*> &list, map::Territory *subject)
+{
+  for (map::Territory *territory : list)
+  {
+    if (territory == subject)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 Order *BenevolentPlayerStrategy::issueOrder(Player *player, GameModel *gm)

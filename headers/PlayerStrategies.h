@@ -51,14 +51,20 @@ public:
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 private:
+    vector<map::Territory*> findEnemies(Player *player, map::Territory *origin, vector<map::Territory*> known, vector<map::Territory*> path);
+    bool contains(vector<map::Territory*> &list, map::Territory *subject);
     std::vector<map::Territory *> sortTerritoryList(std::vector<map::Territory *> toSort);
     vector<map::Territory*> playersTerritoriesSorted;
     Order* issueAggressiveDeploy(Player *player);
     Order* issueAggressiveAdvance(Player *player);
     Order* issueAggressiveAirlift(Player *player);
     vector<map::Territory*> neighborsToAttack;
+    vector<map::Territory*> pathToEnemy;
+    map::Territory *backupTarget{nullptr};
+    vector<map::Territory *> backupTargetFriendlies;
     int current_player_armies = 0;
     int armiesToAdvance = 0;
+    bool advancedToFriendly = false;
 };
 
 /*
