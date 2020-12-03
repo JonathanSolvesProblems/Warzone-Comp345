@@ -684,21 +684,10 @@ bool ConquestFileReaderAdapter::loadFile(string mapName, map::Map& test)
     }
     if (continentsFound == false || countriesFound == false || bordersFound == false || isValid == false)
     {
-
-            ConquestFileReaderAdapter conquestFileReader;  
-           bool adap =  conquestFileReader.loadFile(mapName, test);
-
-           if (adap == true) {
-               return true;
-           }
-
-           else {
                continents.clear();
                countries.clear();
                borders.clear();
                return false;
-           }
-
         
     }
     else
