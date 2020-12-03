@@ -1049,24 +1049,25 @@ void GameplayController::assign_territories()
 
 void GameplayController::mainGameLoop() {
   if (_game_model->active_players->get().size() > 1) {
-    reinforcementPhase();
-    issueOrdersPhase();
-    executeOrdersPhase();
-
     _game_model->log->append("Do you wish to change strategies? (y/n)");
-    if (Application::instance()->get_key(true) == 'y') {
-      std::vector<Player*> players = _game_model->active_players->get();
-      for (Player* player : players) {
+    if (Application::instance()->get_key(true) == 'y')
+    {
+      std::vector<Player *> players = _game_model->active_players->get();
+      for (Player *player : players)
+      {
         _game_model->log->append(player->playerName + " strategy: (h, b, a, n)");
         int key = Application::instance()->get_key(true);
-        if (key == 'h') {
+        if (key == 'h')
+        {
           player->setStrategy(new HumanPlayerStrategy());
-        } else if (key == 'b') {
+        }
+        else if (key == 'b')
+        {
           player->setStrategy(new BenevolentPlayerStrategy());
         }
         else if (key == 'a')
         {
-          player->setStrategy(new AggressivePlayerStrategy());
+          // player->setStrategy(new AggressivePlayerStrategy());
         }
         else if (key == 'n')
         {
@@ -1074,6 +1075,10 @@ void GameplayController::mainGameLoop() {
         }
       }
     }
+
+    reinforcementPhase();
+    issueOrdersPhase();
+    executeOrdersPhase();
   }
 }
 
