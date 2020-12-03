@@ -33,13 +33,13 @@ public:
 private:
     vector<map::Territory*> territories_to_defend;
     int index_of_next_territory_to_defend = 0;
-    int choose_order_type(GameModel *gm);
+    int choose_order_type(GameModel *gm );
     Order *deploy_controller(Player *player, GameModel *gm);
-    Order *advance_controller(GameModel *gm);
-    Order *blockade_controller(GameModel *gm);
-    Order *airlift_controller(GameModel *gm);
-    Order *bomb_controller(GameModel *gm);
-    Order *negotiate_controller(GameModel *gm);
+    Order *advance_controller(Player *player, GameModel *gm);
+    Order *blockade_controller(Player *player, GameModel *gm);
+    Order *airlift_controller(Player *player, GameModel *gm);
+    Order *bomb_controller(Player *player, GameModel *gm);
+    Order *negotiate_controller(Player *player, GameModel *gm);
 };
 
 /* an aggressive computer player that focuses

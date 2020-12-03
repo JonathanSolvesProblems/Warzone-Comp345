@@ -84,6 +84,14 @@ AdvanceOrder::AdvanceOrder(Player& issuingPlayer, map::Territory& sourceTerritor
 	this->_numberOfArmies = numberOfArmies;
 }
 
+AdvanceOrder::AdvanceOrder(Player *issuingPlayer, map::Territory *sourceTerritory, map::Territory *targetTerritory, int numberOfArmies) : AdvanceOrder()
+{
+	this->_issuingPlayer = issuingPlayer;
+	this->_sourceTerritory = sourceTerritory;
+	this->_targetTerritory = targetTerritory;
+	this->_numberOfArmies = numberOfArmies;
+}
+
 // Copy constructor
 AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advanceOrderToCopy) {
 	// deliberately empty
@@ -97,18 +105,21 @@ AdvanceOrder::~AdvanceOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
-	if (!_sourceTerritory->hasNeighbour(_targetTerritory->getID()))
+	if (!(_sourceTerritory->hasNeighbour(_targetTerritory)))
+		*_effect = "rejected (not a neighbour)";
 		return false;
 
 	if (_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _sourceTerritory->getArmees())
 	{
 		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())){
+			*_effect = "rejected (truce)";
 			return false;
 		}
 		return true;
+	} else {
+		*_effect = "rejected (not a neighbour)";
+		return false;
 	}
-
-	return false;
 }
 
 // Outputs the effect of the advance order and executes it
@@ -165,10 +176,11 @@ bool AdvanceOrder::execute() {
 				*_effect = "failed invasion to" + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
 			}
 		}
+
+		return true;
+	} else {
+		return false;
 	}
-	
-	*_effect = "REJECTED";
-	return false;
 }
 
 // Overloads the stream insertion operator.

@@ -32,7 +32,7 @@
 #define MAP_SELECTION_VIEW 1
 #define GAMEPLAY_VIEW 2
 
-#define HIT_DA_BREAKS 90
+#define HIT_DA_BREAKS 200
 
 // forward declarations
 class MainMenuView;
@@ -272,8 +272,9 @@ class GameplayView : public WindowView, public Observer {
 
     void display_human_input_order_choice_step();
     void display_human_source_input_step();
+    void display_human_target_input_step();
 
-    void display_human_deploy_interface();
+    void display_territory_select_menu(std::string &left_header, std::stringstream &instructions_stream, bool deployments = false, bool set_num_armies_to_move = false);
 
     PhaseObserverView *_phase_view{nullptr};
     StatisticsObserverView* _stats_view{nullptr};

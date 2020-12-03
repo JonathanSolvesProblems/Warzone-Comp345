@@ -605,6 +605,8 @@ void GameplayView::display()
         display_human_input_order_choice_step();
     else if (step == 1)
         display_human_source_input_step();
+    else if (step == 2)
+      display_human_target_input_step();
 
     if (settings_model->error_message->get() != "") {
       wattron(_window, COLOR_PAIR(BLACK_RED));
@@ -641,27 +643,95 @@ void GameplayView::display()
 }
 
 void GameplayView::display_human_source_input_step() {
-  if (settings_model->current_order_type->get() == DEPLOY) {
-    display_human_deploy_interface();
+  OrderType current_order_type = settings_model->current_order_type->get();
+  std::stringstream instructions_stream;
+  std::string header;
+
+  if (current_order_type == DEPLOY)
+  {
+    header = "Deploy";
+    instructions_stream << "Choose how many armies to deploy to each of your territories" << std::endl
+                        << std::endl
+                        << "Use UP/DOWN arrows to select a territory" << std::endl
+                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl
+                        << "Use 'd' to deploy all remaining armies to the selected territory" << std::endl;
+
+    display_territory_select_menu(header, instructions_stream, /* deployments */ true);
+  }
+  else if (current_order_type == ADVANCE) {
+    header = "Advance (Source)";
+    instructions_stream << "Choose a source territory to advance from." << std::endl
+                        << std::endl
+                        << "Use UP/DOWN arrows to select a territory" << std::endl
+                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl
+                        << "Press BACKSPACE to return to previous menu" << std::endl;
+
+    display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ true);
+  }
+  else if (current_order_type == AIRLIFT) {
+    header = "Airlift (Source)";
+    instructions_stream << "Choose a source territory to airlift from" << std::endl
+                        << std::endl
+                        << "Use UP/DOWN arrows to select a territory" << std::endl
+                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl
+                        << "Press BACKSPACE to return to previous menu" << std::endl;
+
+    display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ true);
+  }
+  else if (current_order_type == BOMB)
+  {
+    instructions_stream << "Choose an enemy territory to bomb." << std::endl
+                        << std::endl
+                        << "Use UP/DOWN arrows to select a territory" << std::endl
+                        << "Press BACKSPACE to return to previous menu" << std::endl;
+
+    display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ false);
   }
 }
 
-void GameplayView::display_human_deploy_interface() {
+void GameplayView::display_human_target_input_step()
+{
+  OrderType current_order_type = settings_model->current_order_type->get();
+  std::stringstream instructions_stream;
+  std::string header;
+
+  if (current_order_type == ADVANCE)
+  {
+    header = "Advance (Target)";
+    instructions_stream << "Choose a advance territory to advance to." << std::endl
+                        << std::endl
+                        << "Use UP/DOWN arrows to select a territory" << std::endl
+                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl
+                        << "Press BACKSPACE to return to previous menu" << std::endl;
+
+    display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ false);
+  }
+  else if (current_order_type == AIRLIFT)
+  {
+    header = "Airlift (Target)";
+    instructions_stream << "Choose a target territory to airlift to" << std::endl
+                        << std::endl
+                        << "Use UP/DOWN arrows to select a territory" << std::endl
+                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl
+                        << "Press BACKSPACE to return to previous menu" << std::endl;
+
+    display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ false);
+  }
+}
+
+void GameplayView::display_territory_select_menu(std::string &left_header, std::stringstream &instructions_stream, bool deployments, bool set_num_armies_to_move)
+{
   /* DISPLAY INSTRUCTIONS */
   Player *current_player = settings_model->current_player->get();
-  std::string header = current_player->playerName + ": Deploy";
-  std::stringstream instructions_stream;
-  instructions_stream << "Choose how many armies to deploy to each of your territories" << std::endl
-                      << std::endl
-                      << "Use UP/DOWN arrows to select a territory" << std::endl
-                      << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl;
+  std::string header = current_player->playerName + ": " + left_header;
 
   print_centered_at_col(6, width / 4, header);
   int off_y = 0;
   int max_row_width = width / 3 - 4;
   char next_line[max_row_width];
 
-  while (!instructions_stream.eof()) {
+  while (!instructions_stream.eof())
+  {
     instructions_stream.getline(next_line, max_row_width);
 
     print_centered_at_col(8 + off_y++, width / 4, next_line);
@@ -670,53 +740,82 @@ void GameplayView::display_human_deploy_interface() {
   /* DISPLAY UI */
   int armies_remaining = current_player->getArmees();
 
-  const std::vector<ConcreteObservable<std::pair<map::Territory*, int>>*>& territory_list_items = settings_model->territory_list_items->get();
+  const std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> &territory_list_items = settings_model->territory_list_items->get();
 
   int index = 0;
   int current_index = settings_model->selected_index->get();
   int num_visible_rows = height - 9;
   int offset = (1 + current_index) - num_visible_rows;
-  if (offset <= 0) offset = 0;
+  if (offset <= 0)
+    offset = 0;
 
-  if (offset > 0) {
+  if (offset > 0)
+  {
     wmove(_window, 4, width / 2 + 1);
     wattron(_window, COLOR_PAIR(GREY_BLACK));
     wprintw(_window, (std::to_string(offset) + " more...").c_str());
     wattroff(_window, COLOR_PAIR(GREY_BLACK));
   }
-  if (territory_list_items.size() - offset > num_visible_rows) {
+  if (territory_list_items.size() - offset > num_visible_rows)
+  {
     wmove(_window, height - 4, width / 2 + 1);
     wattron(_window, COLOR_PAIR(GREY_BLACK));
     wprintw(_window, (std::to_string(territory_list_items.size() - offset - num_visible_rows) + " more...").c_str());
     wattroff(_window, COLOR_PAIR(GREY_BLACK));
   }
-  for (auto obs : territory_list_items) {
+  for (auto obs : territory_list_items)
+  {
     auto pair = obs->get();
-    map::Territory* territory = pair.first;
-    armies_remaining -= pair.second;
+    map::Territory *territory = pair.first;
 
-    if (index >= offset && index - offset < num_visible_rows) {
+    if (deployments) {
+      armies_remaining -= pair.second;
+    } else if (index == current_index) {
+      armies_remaining = pair.second;
+    }
+
+    if (index >= offset && index - offset < num_visible_rows)
+    {
       int line = 5 + index - offset;
       if (index == current_index)
         wattron(_window, A_STANDOUT);
+      else if (territory->getOwner() != current_player) {
+        wattron(_window, COLOR_PAIR(RED_BLACK));
+      }
       wmove(_window, line, width / 2 + 1);
       wprintw(_window, (territory->getName() + " (" + territory->getContinent()->getName() + ")").c_str());
-      while (getcurx(_window) < width - 2) waddch(_window, ' ');
+      while (getcurx(_window) < width - 2)
+        waddch(_window, ' ');
 
-      print_right_aligned_at_col(
-        line,
-        width - 2,
-        "+" + std::to_string(pair.second) + " (" + std::to_string(territory->getArmees()) + ")");
+      if (deployments || set_num_armies_to_move) { 
+        print_right_aligned_at_col(
+            line,
+            width - 2,
+            "+" + std::to_string(pair.second) + " (" + std::to_string(territory->getArmees()) + ")");
+      } else {
+        print_right_aligned_at_col(
+            line,
+            width - 2,
+            "(" + std::to_string(territory->getArmees()) + ")");
+      }
       wattroff(_window, A_STANDOUT);
+      wattroff(_window, COLOR_PAIR(RED_BLACK));
     }
 
     index++;
   }
 
-  if (armies_remaining == 0) {
+  if (armies_remaining == 0 || !deployments)
+  {
     print_centered_at_col(height - 3, 3 * width / 4, "Press SPACE to Continue");
   }
-  print_centered_at_col(2, 3 * width / 4, std::to_string(armies_remaining) + " Armies Remaining");
+  if (deployments) {
+    print_centered_at_col(2, 3 * width / 4, std::to_string(armies_remaining) + " Armies Remaining");
+  }
+  else if (set_num_armies_to_move)
+  {
+    print_centered_at_col(2, 3 * width / 4, "Move " + std::to_string(armies_remaining) + " Armies");
+  }
 }
 
 void GameplayView::display_human_input_order_choice_step() {
@@ -844,7 +943,7 @@ void GameplayController::startupPhase()
     if (i == 0) {
       new_player->setStrategy(new HumanPlayerStrategy());
     } else {
-      new_player->setStrategy(new BenevolentPlayerStrategy());
+      new_player->setStrategy(new NeutralPlayerStrategy());
     }
 
     // sets the starting armies for each player accoridng to the number of players playing the game
@@ -1048,6 +1147,8 @@ void GameplayController::executeOrdersPhase() {
 #endif
   }
   removeDeadPlayers();
+#ifdef __linux__
+  usleep(15e6);
 }
 
 int GameplayController::getPlayersBonus(Player * p)

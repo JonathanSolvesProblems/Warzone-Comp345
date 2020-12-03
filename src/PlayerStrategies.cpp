@@ -24,15 +24,15 @@ Order *HumanPlayerStrategy::issueOrder(Player *player, GameModel *gm)
     if (order_type == DEPLOY) {
       order = deploy_controller(player, gm);
     } else if (order_type == ADVANCE) {
-      order = advance_controller(gm);
+      order = advance_controller(player, gm);
     } else if (order_type == BLOCKADE) {
-      order = blockade_controller(gm);
+      order = blockade_controller(player, gm);
     } else if (order_type == AIRLIFT) {
-      order = airlift_controller(gm);
+      order = airlift_controller(player, gm);
     } else if (order_type == BOMB) {
-      order = bomb_controller(gm);
+      order = bomb_controller(player, gm);
     } else if (order_type == NEGOTIATE) {
-      order = negotiate_controller(gm);
+      order = negotiate_controller(player, gm);
     }
   }
 
@@ -63,15 +63,15 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
     gm->error_message->set("");
     if (k == ' ') {
       return PASS;
-    } else if (k == 'a' && !must_deploy) {
+    } else if ((k == 'a' && !must_deploy)) {
       return ADVANCE;
-    } else if (k == 's' && !must_deploy && blockade_cards > 0) {
+    } else if ((k == 's' && !must_deploy && blockade_cards > 0)) {
       return BLOCKADE;
-    } else if (k == 'f' && !must_deploy && airlift_cards > 0) {
+    } else if ((k == 'f' && !must_deploy && airlift_cards > 0)) {
       return AIRLIFT;
-    } else if (k == 'b' && !must_deploy && bomb_cards > 0) {
+    } else if ((k == 'b' && !must_deploy && bomb_cards > 0)) {
       return BOMB;
-    } else if (k == 'n' && !must_deploy && negotiate_cards > 0) {
+    } else if ((k == 'n' && !must_deploy && negotiate_cards > 0)) {
       return NEGOTIATE;
     }
     
@@ -92,11 +92,149 @@ Order *HumanPlayerStrategy::deploy_controller(Player *player, GameModel *gm){
   }
 };
 
-Order *HumanPlayerStrategy::advance_controller(GameModel *gm){};
-Order *HumanPlayerStrategy::blockade_controller(GameModel *gm){};
-Order *HumanPlayerStrategy::airlift_controller(GameModel *gm){};
-Order *HumanPlayerStrategy::bomb_controller(GameModel *gm){};
-Order *HumanPlayerStrategy::negotiate_controller(GameModel *gm){};
+Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
+  int key;
+
+  // Prepare possible source territories (All territories owned by the player)
+  gm->territory_list_items->clear();
+  for (map::Territory *territory : player->owned_territories)
+  {
+    gm->territory_list_items->push_back(
+        new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
+  }
+
+  const std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> territories_list = gm->territory_list_items->get();
+
+  gm->current_step->set(1);
+  int current_index = 0;
+  int number_of_armies = 0;
+  while ((key = Application::instance()->get_key(true)) != ' ' || number_of_armies == 0)
+  {
+    if (key == KEY_BACKSPACE) return issueOrder(player, gm);
+    gm->error_message->set("");
+    if (key == ' ') {
+      gm->error_message->set("You must advance at least one armies!");
+      continue;
+    }
+
+    current_index = gm->selected_index->get();
+    if (key == KEY_DOWN)
+    {
+      if (current_index < territories_list.size() - 1) {
+        auto obs = territories_list.at(current_index);
+        auto pair = obs->get();
+        obs->set(std::make_pair(pair.first, 0));
+
+        gm->selected_index->set(++current_index);
+
+        if (number_of_armies > pair.first->getArmees())
+        {
+          number_of_armies = pair.first->getArmees();
+        }
+
+        obs = territories_list.at(current_index);
+        pair = obs->get();
+        obs->set(std::make_pair(pair.first, number_of_armies));
+      }
+    }
+    else if (key == KEY_UP)
+    {
+      if (current_index > 0) {
+        auto obs = territories_list.at(current_index);
+        auto pair = obs->get();
+        obs->set(std::make_pair(pair.first, 0));
+
+        gm->selected_index->set(--current_index);
+
+        obs = territories_list.at(current_index);
+        pair = obs->get();
+
+        if (number_of_armies > pair.first->getArmees()) {
+          number_of_armies = pair.first->getArmees();
+        }
+
+        obs->set(std::make_pair(pair.first, number_of_armies));
+      }
+    }
+    else if (key == KEY_LEFT)
+    {
+      auto obs = territories_list.at(current_index);
+      auto pair = obs->get();
+
+      if (number_of_armies > 1) {
+        number_of_armies--;
+      }
+      obs->set(std::make_pair(pair.first, number_of_armies));
+    }
+    else if (key == KEY_RIGHT)
+    {
+      auto obs = territories_list.at(current_index);
+      auto pair = obs->get();
+      if (number_of_armies < pair.first->getArmees()) {
+        number_of_armies++;
+      }
+      obs->set(std::make_pair(pair.first, number_of_armies));
+    }
+  }
+  current_index = gm->selected_index->get();
+
+  map::Territory* source_territory = territories_list.at(current_index)->get().first;
+
+  // Prepare possible target territories (All neighbouring territories of the source territory)
+  gm->territory_list_items->clear();
+  for (map::Territory *territory : source_territory->getNeighbours())
+  {
+    gm->territory_list_items->push_back(
+        new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
+  }
+
+  gm->current_step->set(2);
+  while ((key = Application::instance()->get_key(true)) != ' ')
+  {
+    gm->error_message->set("");
+
+    current_index = gm->selected_index->get();
+    if (key == KEY_DOWN)
+    {
+      if (current_index < territories_list.size() - 1)
+        gm->selected_index->set(++current_index);
+    }
+    else if (key == KEY_UP)
+    {
+      if (current_index > 0)
+        gm->selected_index->set(--current_index);
+    }
+  }
+  current_index = gm->selected_index->get();
+
+  map::Territory *target_territory = territories_list.at(current_index)->get().first;
+
+  return new AdvanceOrder(player, source_territory, target_territory, number_of_armies);
+};
+
+Order *HumanPlayerStrategy::blockade_controller(Player *player, GameModel *gm){
+  while (Application::instance()->get_key(true) != ' ')
+    ;
+  return nullptr;
+};
+
+Order *HumanPlayerStrategy::airlift_controller(Player *player, GameModel *gm){
+  while (Application::instance()->get_key(true) != ' ')
+    ;
+  return nullptr;
+};
+
+Order *HumanPlayerStrategy::bomb_controller(Player *player, GameModel *gm){
+  while (Application::instance()->get_key(true) != ' ')
+    ;
+  return nullptr;
+};
+
+Order *HumanPlayerStrategy::negotiate_controller(Player *player, GameModel *gm){
+  while (Application::instance()->get_key(true) != ' ')
+    ;
+  return nullptr;
+};
 
 const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, GameModel *gm){};
 const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player, GameModel *gm)
