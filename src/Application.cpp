@@ -50,10 +50,12 @@ Application::Application() {
 Application::~Application() {
 }
 
-int Application::get_key(bool block = true) {
-  nodelay(stdscr, block);
+int Application::get_key(bool block) {
+  nodelay(stdscr, !block);
 
   int key = getch();
+
+  nodelay(stdscr, false);
 
   return key;
 }
