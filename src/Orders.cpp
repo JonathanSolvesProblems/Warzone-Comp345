@@ -97,6 +97,7 @@ AdvanceOrder::~AdvanceOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
+
 	if (!_sourceTerritory->hasNeighbour(_targetTerritory->getID()))
 		return false;
 
@@ -113,7 +114,10 @@ bool AdvanceOrder::validate() {
 
 // Outputs the effect of the advance order and executes it
 bool AdvanceOrder::execute() {
+
+
 	if (validate()) {
+		
 		if (_sourceTerritory->getArmees() < _numberOfArmies)
 			_numberOfArmies = _sourceTerritory->getArmees();
 		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
@@ -123,6 +127,7 @@ bool AdvanceOrder::execute() {
 			*_effect = "moved " + std::to_string(_numberOfArmies) + " from " + this->_sourceTerritory->getName() + " to " + this->_targetTerritory->getName();
 			return true;
 		}
+		
 		else {
 			int troopsLost = 0; // source armies
 			int enemiesKilled = 0; // target armies
@@ -165,6 +170,7 @@ bool AdvanceOrder::execute() {
 				*_effect = "failed invasion to" + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
 			}
 		}
+		
 	}
 	
 	*_effect = "REJECTED";

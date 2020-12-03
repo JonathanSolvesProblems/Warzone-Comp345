@@ -763,7 +763,7 @@ void GameplayController::startupPhase()
     if (i == 0) {
       new_player->setStrategy(new AggressivePlayerStrategy());
     } else {
-      new_player->setStrategy(new BenevolentPlayerStrategy());
+      new_player->setStrategy(new NeutralPlayerStrategy());
     }
 
     // sets the starting armies for each player accoridng to the number of players playing the game
