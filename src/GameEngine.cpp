@@ -1054,7 +1054,7 @@ void GameplayController::mainGameLoop() {
         }
         else if (key == 'a')
         {
-          // player->setStrategy(new AggressivePlayerStrategy());
+          player->setStrategy(new AggressivePlayerStrategy());
         }
         else if (key == 'n')
         {
