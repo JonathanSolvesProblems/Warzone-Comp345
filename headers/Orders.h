@@ -220,7 +220,7 @@ class BombOrder : public Order {
 public:
 	// Constructors
 	BombOrder();
-	BombOrder(Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory);
+	BombOrder(Player& issuingPlayer, map::Territory& targetTerritory);
 	BombOrder(const BombOrder& orderToCopy);
 	// Destructor
 	~BombOrder();
