@@ -1149,6 +1149,7 @@ void GameplayController::executeOrdersPhase() {
   removeDeadPlayers();
 #ifdef __linux__
   usleep(15e6);
+#endif
 }
 
 int GameplayController::getPlayersBonus(Player * p)
