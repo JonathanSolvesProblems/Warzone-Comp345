@@ -749,9 +749,12 @@ void GameplayView::display_territory_select_menu(std::string &left_header, std::
   int max_row_width = width / 3 - 4;
   char next_line[max_row_width];
 
+  int lines_read = 0;
   while (!instructions_stream.eof())
   {
     instructions_stream.getline(next_line, max_row_width);
+    lines_read++;
+    if (lines_read > 5) break;
 
     print_centered_at_col(8 + off_y++, width / 4, next_line);
   }

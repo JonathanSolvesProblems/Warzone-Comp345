@@ -538,29 +538,18 @@ const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, Gam
 
 const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player, GameModel *gm)
 {
-  clear();
-  refresh();
-  endwin();
-  std::cout << "MADE IT HERE";
   int key;
   int remaining = gm->current_player->get()->getArmees();
 
   gm->territory_list_items->deleteAll();
   for (map::Territory *territory : player->owned_territories)
   {
-    clear();
-    refresh();
-    endwin();
-
-    std::cout << "MADE IT HERE";
     gm->territory_list_items->push_back(
       new ConcreteObservable<std::pair<map::Territory*, int>>(std::make_pair(territory, 0)));
   }
   const std::vector<ConcreteObservable<std::pair<map::Territory *, int>>*> owned_territories_with_numbers = gm->territory_list_items->get();
   gm->current_step->set(1);
   gm->current_order_type->set(DEPLOY);
-
-  exit(1);
 
   while ((key = Application::instance()->get_key(true)) != ' ' || remaining > 0)
   {
