@@ -51,14 +51,9 @@ Application::~Application() {
 }
 
 int Application::get_key(bool block = true) {
-  if (block)
-    nodelay(stdscr, FALSE);
-  else
-    nodelay(stdscr, TRUE);
+  nodelay(stdscr, block);
 
   int key = getch();
-
-  nodelay(stdscr, FALSE);
 
   return key;
 }
