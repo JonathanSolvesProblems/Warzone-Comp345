@@ -14,8 +14,11 @@ class PlayerStrategy {
 public:
     // begins the round
     virtual void beginRound(Player *player, GameModel *gm) = 0;
+    // issueOrder depending on one called.
     virtual Order *issueOrder(Player *player, GameModel *gm) = 0;
+    // sets up sorted by max.
     virtual const vector<map::Territory *> toAttack(Player *player,GameModel *gm) = 0;
+    // sets up sorted by lowest.
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm) = 0;
 };
 
@@ -25,10 +28,15 @@ public:
     HumanPlayerStrategy();
     ~HumanPlayerStrategy();
 
+    // begins the round
     virtual void beginRound(Player *player, GameModel *gm);
+    // issueOrder depending on one called.
     virtual void endRound(Player *player, GameModel *gm);
+    // sets up sorted by max.
     virtual Order *issueOrder(Player *player, GameModel *gm);
+    // sets up sorted by max.
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
+    // sets up sorted by lowest.
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 
 private:
