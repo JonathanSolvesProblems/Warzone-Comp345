@@ -680,7 +680,28 @@ void GameplayView::display_human_source_input_step() {
   }
   else if (current_order_type == BOMB)
   {
+    header = "Bomb";
     instructions_stream << "Choose an enemy territory to bomb." << std::endl
+                        << std::endl
+                        << "Use UP/DOWN arrows to select a territory" << std::endl
+                        << "Press BACKSPACE to return to previous menu" << std::endl;
+
+    display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ false);
+  }
+  else if (current_order_type == BLOCKADE)
+  {
+    header = "Blockade";
+    instructions_stream << "Choose an enemy territory to blockade." << std::endl
+                        << std::endl
+                        << "Use UP/DOWN arrows to select a territory" << std::endl
+                        << "Press BACKSPACE to return to previous menu" << std::endl;
+
+    display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ false);
+  }
+  else if (current_order_type == NEGOTIATE)
+  {
+    header = "Negotiate";
+    instructions_stream << "Choose an enemy to negotiate with." << std::endl
                         << std::endl
                         << "Use UP/DOWN arrows to select a territory" << std::endl
                         << "Press BACKSPACE to return to previous menu" << std::endl;
@@ -787,16 +808,23 @@ void GameplayView::display_territory_select_menu(std::string &left_header, std::
       while (getcurx(_window) < width - 2)
         waddch(_window, ' ');
 
-      if (deployments || set_num_armies_to_move) { 
+      std::string owner_name = "Neutral";
+      if (territory->getOwner() != nullptr)
+        owner_name = territory->getOwner()->playerName;
+
+      if (deployments || set_num_armies_to_move)
+        {
+          print_right_aligned_at_col(
+              line,
+              width - 2,
+              "+" + std::to_string(pair.second) + " (" + std::to_string(territory->getArmees()) + ")" + " - " + owner_name);
+        }
+      else
+      {
         print_right_aligned_at_col(
             line,
             width - 2,
-            "+" + std::to_string(pair.second) + " (" + std::to_string(territory->getArmees()) + ")");
-      } else {
-        print_right_aligned_at_col(
-            line,
-            width - 2,
-            "(" + std::to_string(territory->getArmees()) + ")");
+            "(" + std::to_string(territory->getArmees()) + ")" + " - " + owner_name);
       }
       wattroff(_window, A_STANDOUT);
       wattroff(_window, COLOR_PAIR(RED_BLACK));

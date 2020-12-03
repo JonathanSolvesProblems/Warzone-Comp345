@@ -384,9 +384,9 @@ BombOrder::BombOrder() : Order("Bomb Order", "Not Yet Executed")
 }
 
 // Parameterized constructor
-BombOrder::BombOrder(Player& issuingPlayer, Player& targetPlayer, map::Territory& targetTerritory) : BombOrder() {
+BombOrder::BombOrder(Player& issuingPlayer, map::Territory& targetTerritory) : BombOrder() {
 	this->_issuingPlayer = &issuingPlayer;
-	this->_targetPlayer = &targetPlayer;
+	this->_targetPlayer = targetTerritory.getOwner();
 	this->_targetTerritory = &targetTerritory;
 }
 

@@ -49,10 +49,10 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
 
   int must_deploy = index_of_next_territory_to_defend < territories_to_defend.size();
 
-  int blockade_cards = gm->current_player->get()->countCardsOfType("blockade");
-  int airlift_cards = gm->current_player->get()->countCardsOfType("airlift");
-  int bomb_cards = gm->current_player->get()->countCardsOfType("bomb");
-  int negotiate_cards = gm->current_player->get()->countCardsOfType("negotiate");
+  int blockade_cards = gm->current_player->get()->countCardsOfType("blockade") + 1;
+  int airlift_cards = gm->current_player->get()->countCardsOfType("airlift") + 1;
+  int bomb_cards = gm->current_player->get()->countCardsOfType("bomb") + 1;
+  int negotiate_cards = gm->current_player->get()->countCardsOfType("negotiate") + 1;
 
   if (must_deploy) return DEPLOY;
 
@@ -101,6 +101,7 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
     gm->territory_list_items->push_back(
         new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
   }
+  gm->selected_index->set(0);
 
   std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> territories_list = gm->territory_list_items->get();
 
@@ -192,6 +193,7 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
     gm->territory_list_items->push_back(
         new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
   }
+  gm->selected_index->set(0);
 
   territories_list = gm->territory_list_items->get();
 
@@ -216,31 +218,304 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
 
   map::Territory *target_territory = territories_list.at(current_index)->get().first;
 
+  gm->selected_index->set(0);
+  gm->territory_list_items->clear();
+
   return new AdvanceOrder(player, source_territory, target_territory, number_of_armies);
 };
 
 Order *HumanPlayerStrategy::blockade_controller(Player *player, GameModel *gm){
-  while (Application::instance()->get_key(true) != ' ')
-    ;
-  return nullptr;
+  int key;
+
+  // Prepare possible source territories (All territories owned by the player)
+  gm->territory_list_items->clear();
+  for (map::Territory *territory : gm->map->getTerritories())
+  {
+    if (territory->getOwner() != player) {
+      gm->territory_list_items->push_back(
+          new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
+    }
+  }
+  gm->selected_index->set(0);
+
+  std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> territories_list = gm->territory_list_items->get();
+
+  gm->current_step->set(1);
+  int current_index = 0;
+  while ((key = Application::instance()->get_key(true)) != ' ')
+  {
+    if (key == KEY_BACKSPACE)
+      return issueOrder(player, gm);
+    gm->error_message->set("");
+
+    current_index = gm->selected_index->get();
+    if (key == KEY_DOWN)
+    {
+      if (current_index < territories_list.size() - 1)
+      {
+        gm->selected_index->set(++current_index);
+      }
+    }
+    else if (key == KEY_UP)
+    {
+      if (current_index > 0)
+      {
+        gm->selected_index->set(--current_index);
+      }
+    }
+  }
+  current_index = gm->selected_index->get();
+
+  map::Territory *source_territory = territories_list.at(current_index)->get().first;
+  gm->selected_index->set(0);
+  gm->territory_list_items->clear();
+
+  return new BlockadeOrder(*player, *source_territory);
 };
 
-Order *HumanPlayerStrategy::airlift_controller(Player *player, GameModel *gm){
-  while (Application::instance()->get_key(true) != ' ')
-    ;
-  return nullptr;
+Order *HumanPlayerStrategy::airlift_controller(Player *player, GameModel *gm) {
+  int key;
+
+  // Prepare possible source territories (All territories owned by the player)
+  gm->territory_list_items->clear();
+  for (map::Territory *territory : player->owned_territories)
+  {
+    gm->territory_list_items->push_back(
+        new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
+  }
+  gm->selected_index->set(0);
+
+  std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> territories_list = gm->territory_list_items->get();
+
+  gm->current_step->set(1);
+  int current_index = 0;
+  int number_of_armies = 0;
+  while ((key = Application::instance()->get_key(true)) != ' ' || number_of_armies == 0)
+  {
+    if (key == KEY_BACKSPACE)
+      return issueOrder(player, gm);
+    gm->error_message->set("");
+    if (key == ' ')
+    {
+      gm->error_message->set("You must advance at least one armies!");
+      continue;
+    }
+
+    current_index = gm->selected_index->get();
+    if (key == KEY_DOWN)
+    {
+      if (current_index < territories_list.size() - 1)
+      {
+        auto obs = territories_list.at(current_index);
+        auto pair = obs->get();
+        obs->set(std::make_pair(pair.first, 0));
+
+        gm->selected_index->set(++current_index);
+
+        if (number_of_armies > pair.first->getArmees())
+        {
+          number_of_armies = pair.first->getArmees();
+        }
+
+        obs = territories_list.at(current_index);
+        pair = obs->get();
+        obs->set(std::make_pair(pair.first, number_of_armies));
+      }
+    }
+    else if (key == KEY_UP)
+    {
+      if (current_index > 0)
+      {
+        auto obs = territories_list.at(current_index);
+        auto pair = obs->get();
+        obs->set(std::make_pair(pair.first, 0));
+
+        gm->selected_index->set(--current_index);
+
+        obs = territories_list.at(current_index);
+        pair = obs->get();
+
+        if (number_of_armies > pair.first->getArmees())
+        {
+          number_of_armies = pair.first->getArmees();
+        }
+
+        obs->set(std::make_pair(pair.first, number_of_armies));
+      }
+    }
+    else if (key == KEY_LEFT)
+    {
+      auto obs = territories_list.at(current_index);
+      auto pair = obs->get();
+
+      if (number_of_armies > 1)
+      {
+        number_of_armies--;
+      }
+      obs->set(std::make_pair(pair.first, number_of_armies));
+    }
+    else if (key == KEY_RIGHT)
+    {
+      auto obs = territories_list.at(current_index);
+      auto pair = obs->get();
+      if (number_of_armies < pair.first->getArmees())
+      {
+        number_of_armies++;
+      }
+      obs->set(std::make_pair(pair.first, number_of_armies));
+    }
+    else if (key == 'd')
+    {
+      auto obs = territories_list.at(current_index);
+      auto pair = obs->get();
+      number_of_armies = pair.first->getArmees();
+
+      obs->set(std::make_pair(pair.first, number_of_armies));
+    }
+  }
+  current_index = gm->selected_index->get();
+
+  map::Territory *source_territory = territories_list.at(current_index)->get().first;
+
+  // Prepare possible target territories (All neighbouring territories of the source territory)
+  gm->territory_list_items->clear();
+  for (map::Territory *territory : gm->map->getTerritories())
+  {
+    if (territory != source_territory)
+    {
+      gm->territory_list_items->push_back(
+          new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
+    }
+  }
+  
+  gm->selected_index->set(0);
+  territories_list = gm->territory_list_items->get();
+
+  gm->current_step->set(2);
+  while ((key = Application::instance()->get_key(true)) != ' ')
+  {
+    gm->error_message->set("");
+
+    current_index = gm->selected_index->get();
+    if (key == KEY_DOWN)
+    {
+      if (current_index < territories_list.size() - 1)
+        gm->selected_index->set(++current_index);
+    }
+    else if (key == KEY_UP)
+    {
+      if (current_index > 0)
+        gm->selected_index->set(--current_index);
+    }
+  }
+  current_index = gm->selected_index->get();
+
+  map::Territory *target_territory = territories_list.at(current_index)->get().first;
+  
+  gm->selected_index->set(0);
+  gm->territory_list_items->clear();
+
+  return new AirliftOrder(*player, *source_territory, *target_territory, number_of_armies);
 };
 
 Order *HumanPlayerStrategy::bomb_controller(Player *player, GameModel *gm){
-  while (Application::instance()->get_key(true) != ' ')
-    ;
-  return nullptr;
-};
+  int key;
+
+  // Prepare possible source territories (All territories owned by the player)
+  gm->territory_list_items->clear();
+  for (map::Territory *territory : gm->map->getTerritories())
+  {
+    if (territory->getOwner() != player)
+    {
+      gm->territory_list_items->push_back(
+          new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
+    }
+  }
+  gm->selected_index->set(0);
+
+  std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> territories_list = gm->territory_list_items->get();
+
+  gm->current_step->set(1);
+  int current_index = 0;
+  while ((key = Application::instance()->get_key(true)) != ' ')
+  {
+    if (key == KEY_BACKSPACE)
+      return issueOrder(player, gm);
+    gm->error_message->set("");
+
+    current_index = gm->selected_index->get();
+    if (key == KEY_DOWN)
+    {
+      if (current_index < territories_list.size() - 1)
+      {
+        gm->selected_index->set(++current_index);
+      }
+    }
+    else if (key == KEY_UP)
+    {
+      if (current_index > 0)
+      {
+        gm->selected_index->set(--current_index);
+      }
+    }
+  }
+  current_index = gm->selected_index->get();
+
+  map::Territory *source_territory = territories_list.at(current_index)->get().first;
+  gm->selected_index->set(0);
+  gm->territory_list_items->clear();
+
+  return new BombOrder(*player, *source_territory);
+}
 
 Order *HumanPlayerStrategy::negotiate_controller(Player *player, GameModel *gm){
-  while (Application::instance()->get_key(true) != ' ')
-    ;
-  return nullptr;
+  int key;
+
+  // Prepare possible source territories (All territories owned by the player)
+  gm->territory_list_items->clear();
+  for (map::Territory *territory : gm->map->getTerritories())
+  {
+    if (territory->getOwner() != player)
+    {
+      gm->territory_list_items->push_back(
+          new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
+    }
+  }
+  gm->selected_index->set(0);
+
+  std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> territories_list = gm->territory_list_items->get();
+
+  gm->current_step->set(1);
+  int current_index = 0;
+  while ((key = Application::instance()->get_key(true)) != ' ')
+  {
+    if (key == KEY_BACKSPACE)
+      return issueOrder(player, gm);
+    gm->error_message->set("");
+
+    current_index = gm->selected_index->get();
+    if (key == KEY_DOWN)
+    {
+      if (current_index < territories_list.size() - 1)
+      {
+        gm->selected_index->set(++current_index);
+      }
+    }
+    else if (key == KEY_UP)
+    {
+      if (current_index > 0)
+      {
+        gm->selected_index->set(--current_index);
+      }
+    }
+  }
+  current_index = gm->selected_index->get();
+
+  map::Territory *source_territory = territories_list.at(current_index)->get().first;
+  gm->selected_index->set(0);
+  gm->territory_list_items->clear();
+
+  return new NegotiateOrder(*player, *(source_territory->getOwner()));
 };
 
 const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, GameModel *gm){};
