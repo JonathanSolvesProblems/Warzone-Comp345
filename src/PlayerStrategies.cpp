@@ -96,7 +96,7 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
   int key;
 
   // Prepare possible source territories (All territories owned by the player)
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
   for (map::Territory *territory : player->owned_territories)
   {
     gm->territory_list_items->push_back(
@@ -111,11 +111,15 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
   int number_of_armies = 0;
   while ((key = Application::instance()->get_key(true)) != ' ' || number_of_armies == 0)
   {
-    if (key == KEY_BACKSPACE) return issueOrder(player, gm);
+    if (key == KEY_BACKSPACE) {
+      gm->territory_list_items->deleteAll();
+      return issueOrder(player, gm);
+    }
     gm->error_message->set("");
-    if (key == ' ') {
-      gm->error_message->set("You must advance at least one armies!");
-      continue;
+    if (key == ' ')
+    {
+        gm->error_message->set("You must advance at least one armies!");
+        continue;
     }
 
     current_index = gm->selected_index->get();
@@ -188,7 +192,7 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
   map::Territory* source_territory = territories_list.at(current_index)->get().first;
 
   // Prepare possible target territories (All neighbouring territories of the source territory)
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
   for (map::Territory *territory : source_territory->getNeighbours())
   {
     gm->territory_list_items->push_back(
@@ -220,7 +224,7 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
   map::Territory *target_territory = territories_list.at(current_index)->get().first;
 
   gm->selected_index->set(0);
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
 
   return new AdvanceOrder(player, source_territory, target_territory, number_of_armies);
 };
@@ -229,7 +233,7 @@ Order *HumanPlayerStrategy::blockade_controller(Player *player, GameModel *gm){
   int key;
 
   // Prepare possible source territories (All territories owned by the player)
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
   for (map::Territory *territory : player->owned_territories)
   {
     gm->territory_list_items->push_back(
@@ -244,7 +248,10 @@ Order *HumanPlayerStrategy::blockade_controller(Player *player, GameModel *gm){
   while ((key = Application::instance()->get_key(true)) != ' ')
   {
     if (key == KEY_BACKSPACE)
+    {
+      gm->territory_list_items->deleteAll();
       return issueOrder(player, gm);
+    }
     gm->error_message->set("");
 
     current_index = gm->selected_index->get();
@@ -267,7 +274,7 @@ Order *HumanPlayerStrategy::blockade_controller(Player *player, GameModel *gm){
 
   map::Territory *source_territory = territories_list.at(current_index)->get().first;
   gm->selected_index->set(0);
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
 
   return new BlockadeOrder(*player, *source_territory);
 };
@@ -276,7 +283,7 @@ Order *HumanPlayerStrategy::airlift_controller(Player *player, GameModel *gm) {
   int key;
 
   // Prepare possible source territories (All territories owned by the player)
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
   for (map::Territory *territory : player->owned_territories)
   {
     gm->territory_list_items->push_back(
@@ -292,7 +299,10 @@ Order *HumanPlayerStrategy::airlift_controller(Player *player, GameModel *gm) {
   while ((key = Application::instance()->get_key(true)) != ' ' || number_of_armies == 0)
   {
     if (key == KEY_BACKSPACE)
+    {
+      gm->territory_list_items->deleteAll();
       return issueOrder(player, gm);
+    }
     gm->error_message->set("");
     if (key == ' ')
     {
@@ -377,7 +387,7 @@ Order *HumanPlayerStrategy::airlift_controller(Player *player, GameModel *gm) {
   map::Territory *source_territory = territories_list.at(current_index)->get().first;
 
   // Prepare possible target territories (All neighbouring territories of the source territory)
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
   for (map::Territory *territory : gm->map->getTerritories())
   {
     if (territory != source_territory)
@@ -412,7 +422,7 @@ Order *HumanPlayerStrategy::airlift_controller(Player *player, GameModel *gm) {
   map::Territory *target_territory = territories_list.at(current_index)->get().first;
   
   gm->selected_index->set(0);
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
 
   return new AirliftOrder(*player, *source_territory, *target_territory, number_of_armies);
 };
@@ -421,7 +431,7 @@ Order *HumanPlayerStrategy::bomb_controller(Player *player, GameModel *gm){
   int key;
 
   // Prepare possible source territories (All territories owned by the player)
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
   for (map::Territory *territory : gm->map->getTerritories())
   {
     if (territory->getOwner() != player)
@@ -439,7 +449,10 @@ Order *HumanPlayerStrategy::bomb_controller(Player *player, GameModel *gm){
   while ((key = Application::instance()->get_key(true)) != ' ')
   {
     if (key == KEY_BACKSPACE)
+    {
+      gm->territory_list_items->deleteAll();
       return issueOrder(player, gm);
+    }
     gm->error_message->set("");
 
     current_index = gm->selected_index->get();
@@ -462,7 +475,7 @@ Order *HumanPlayerStrategy::bomb_controller(Player *player, GameModel *gm){
 
   map::Territory *source_territory = territories_list.at(current_index)->get().first;
   gm->selected_index->set(0);
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
 
   return new BombOrder(*player, *source_territory);
 }
@@ -471,7 +484,7 @@ Order *HumanPlayerStrategy::negotiate_controller(Player *player, GameModel *gm){
   int key;
 
   // Prepare possible source territories (All territories owned by the player)
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
   for (map::Territory *territory : gm->map->getTerritories())
   {
     if (territory->getOwner() != player)
@@ -489,7 +502,10 @@ Order *HumanPlayerStrategy::negotiate_controller(Player *player, GameModel *gm){
   while ((key = Application::instance()->get_key(true)) != ' ')
   {
     if (key == KEY_BACKSPACE)
+    {
+      gm->territory_list_items->deleteAll();
       return issueOrder(player, gm);
+    }
     gm->error_message->set("");
 
     current_index = gm->selected_index->get();
@@ -512,18 +528,21 @@ Order *HumanPlayerStrategy::negotiate_controller(Player *player, GameModel *gm){
 
   map::Territory *source_territory = territories_list.at(current_index)->get().first;
   gm->selected_index->set(0);
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
 
   return new NegotiateOrder(*player, *(source_territory->getOwner()));
 };
 
-const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, GameModel *gm){};
+const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, GameModel *gm) {
+  return std::vector<map::Territory *>(); // Not used, UI used instead.
+};
+
 const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player, GameModel *gm)
 {
   int key;
   int remaining = gm->current_player->get()->getArmees();
 
-  gm->territory_list_items->clear();
+  gm->territory_list_items->deleteAll();
   for (map::Territory *territory : player->owned_territories)
   {
     gm->territory_list_items->push_back(

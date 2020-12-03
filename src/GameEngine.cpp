@@ -734,8 +734,7 @@ void GameplayView::display_human_target_input_step()
     instructions_stream << "Choose a advance territory to advance to." << std::endl
                         << std::endl
                         << "Use UP/DOWN arrows to select a territory" << std::endl
-                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl
-                        << "Press BACKSPACE to return to previous menu" << std::endl;
+                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl;
 
     display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ false);
   }
@@ -745,8 +744,7 @@ void GameplayView::display_human_target_input_step()
     instructions_stream << "Choose a target territory to airlift to" << std::endl
                         << std::endl
                         << "Use UP/DOWN arrows to select a territory" << std::endl
-                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl
-                        << "Press BACKSPACE to return to previous menu" << std::endl;
+                        << "Use LEFT/RIGHT arrows to adjust number of armies" << std::endl;
 
     display_territory_select_menu(header, instructions_stream, /* deployments */ false, /* set_num_armies_to_move */ false);
   }
