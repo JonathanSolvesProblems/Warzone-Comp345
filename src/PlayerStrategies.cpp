@@ -516,7 +516,10 @@ Order *HumanPlayerStrategy::negotiate_controller(Player *player, GameModel *gm){
   return new NegotiateOrder(*player, *(source_territory->getOwner()));
 };
 
-const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, GameModel *gm){};
+const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, GameModel *gm) {
+  return std::vector<map::Territory *>(); // Not used, UI used instead.
+};
+
 const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player, GameModel *gm)
 {
   int key;
