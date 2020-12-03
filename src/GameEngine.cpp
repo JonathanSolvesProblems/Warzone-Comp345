@@ -997,6 +997,29 @@ void GameplayController::startupPhase()
   _game_model->current_player->set(first);
 
   assign_territories();
+
+  std::vector<Player *> players = _game_model->active_players->get();
+  for (Player *player : players)
+  {
+    _game_model->log->append(player->playerName + " strategy: (h, b, a, n)");
+    int key = Application::instance()->get_key(true);
+    if (key == 'h')
+    {
+      player->setStrategy(new HumanPlayerStrategy());
+    }
+    else if (key == 'b')
+    {
+      player->setStrategy(new BenevolentPlayerStrategy());
+    }
+    else if (key == 'a')
+    {
+      player->setStrategy(new AggressivePlayerStrategy());
+    }
+    else if (key == 'n')
+    {
+      player->setStrategy(new NeutralPlayerStrategy());
+    }
+  }
 }
 
 void GameplayController::assign_territories()
