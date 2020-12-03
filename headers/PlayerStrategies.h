@@ -28,11 +28,11 @@ public:
     HumanPlayerStrategy();
     ~HumanPlayerStrategy();
 
-    // begins the round
+    // begins round.
     virtual void beginRound(Player *player, GameModel *gm);
-    // issueOrder depending on one called.
+    // ends round.
     virtual void endRound(Player *player, GameModel *gm);
-    // sets up sorted by max.
+    // issueOrder depending on one called.
     virtual Order *issueOrder(Player *player, GameModel *gm);
     // sets up sorted by max.
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
@@ -40,9 +40,14 @@ public:
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 
 private:
+    // stores territories to defend.
     vector<map::Territory*> territories_to_defend;
+    // variable for tracking the index of the territory.
     int index_of_next_territory_to_defend = 0;
+    // method to choose order type.
     int choose_order_type(GameModel *gm );
+    
+    // controllers for orders (mvc architecture)
     Order *deploy_controller(Player *player, GameModel *gm);
     Order *advance_controller(Player *player, GameModel *gm);
     Order *blockade_controller(Player *player, GameModel *gm);
@@ -59,9 +64,13 @@ class AggressivePlayerStrategy : public PlayerStrategy {
 public:
     AggressivePlayerStrategy();
     ~AggressivePlayerStrategy();
+    // begins the round
     virtual void beginRound(Player *player, GameModel *gm);
+    // issueOrder depending on one called.
     virtual Order *issueOrder(Player *player, GameModel *gm);
+    // sets up sorted by max.
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
+    // sets up sorted by lowest.
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 private:
     vector<map::Territory*> findEnemies(Player *player, map::Territory *origin, vector<map::Territory*> known, vector<map::Territory*> path);
@@ -71,12 +80,19 @@ private:
     Order* issueAggressiveDeploy(Player *player);
     Order* issueAggressiveAdvance(Player *player,GameModel *gm);
     Order* issueAggressiveAirlift(Player *player);
+    // vector for neighborsToAttack
     vector<map::Territory*> neighborsToAttack;
+    // vector for pathToEnemy
     vector<map::Territory*> pathToEnemy;
+    // vector for backupTargetFriendlies
     map::Territory *backupTarget{nullptr};
+    // vector for backupTargetFriendlies
     vector<map::Territory *> backupTargetFriendlies;
+    // variable for current_player_armies
     int current_player_armies = 0;
+    // armiesToAdvance variable for tracking
     int armiesToAdvance = 0;
+    // variable for tracking advancedToFriendly.
     bool advancedToFriendly = false;
 };
 
@@ -88,9 +104,13 @@ class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
     BenevolentPlayerStrategy();
     ~BenevolentPlayerStrategy();
+    // issueOrder depending on one called.
     virtual Order *issueOrder(Player *player, GameModel *gm);
+    // begins round.
     virtual void beginRound(Player *player, GameModel *gm);
+    // sets up sorted by max.
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
+    // sets up sorted by lowest.
     virtual const std::vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 private:
     vector<int> numberArmiesToDeploy;
@@ -109,8 +129,12 @@ class NeutralPlayerStrategy : public PlayerStrategy {
 public:
     NeutralPlayerStrategy() {};
     ~NeutralPlayerStrategy() {};
+    // issueOrder depending on one called.
     virtual Order *issueOrder(Player *player, GameModel *gm);
+    // begins round.
     virtual void beginRound(Player *player, GameModel *gm);
+    // sets up sorted by max.
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
+    // sets up sorted by lowest.
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 };
