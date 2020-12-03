@@ -224,82 +224,78 @@ AirliftOrder::~AirliftOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AirliftOrder::validate() {
-	
-	//Check that the source and target belongs to the player that issued the order
-	if(_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _sourceTerritory->getArmees()) {
-		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())) {
-			return false;
-		}
-		return true;
+	if (_sourceTerritory->getOwner() != _issuingPlayer)
+	{
+		*_effect = "rejected (not owner)";
+		return false;
 	}
-	return false;
+
+	if(checkIfTruce(_issuingPlayer, _targetTerritory->getOwner())){
+		*_effect = "rejected (truce)";
+		return false;
+	}
+
+	if (_numberOfArmies > _sourceTerritory->getArmees()) {		
+		*_effect = "rejected (not enough armies)";
+		return false;
+	}
+
+	return true;
 }
 
 // Outputs the effect of the airlift order and executes it
 bool AirliftOrder::execute() {
-	if (validate()) {
-		if (_sourceTerritory->getArmees() < _numberOfArmies)
-			_numberOfArmies = _sourceTerritory->getArmees();
+	if (!validate()) return false;
+
 		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
 			//Remove from source and add to target
 			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
 			this->_targetTerritory->addArmees(this->_numberOfArmies);
-			_issuingPlayer->setArmees(_issuingPlayer->getArmees() - _numberOfArmies);
 			*_effect = "moved " + std::to_string(_numberOfArmies) + " from " + this->_sourceTerritory->getName() + " to " + this->_targetTerritory->getName();
-			return true;
 		}
 		else {
-			int troopsLost = 0;
-			int enemiesKilled = 0;
+			int troopsAlive = this->_numberOfArmies; // source armies
+			int enemiesAlive = this->_targetTerritory->getArmees(); // target armies
 
-			for(int i = 0; i < this->_numberOfArmies ; i++) {
+			for (int i = troopsAlive; i > 0 && enemiesAlive; i--)
+			{
 				int attackingOdds = rand() % 10 + 1;
-				if(attackingOdds <= 6) {
-					enemiesKilled++;
-					if(enemiesKilled == this->_targetTerritory->getArmees() ) {
-						break;
-					}
+				if (attackingOdds <= 6)
+				{
+					enemiesAlive--;
 				}
 			}
 
-			for(int i = 0; i < this->_targetTerritory->getArmees() ; i++) {
+			for (int i = enemiesAlive; i > 0 && troopsAlive; i--)
+			{
 				int defendingOdds = rand() % 10 + 1;
-				if(defendingOdds <= 7) {
-					troopsLost++;
-					if(troopsLost == this->_numberOfArmies ) {
-						break;
-					}
+				if (defendingOdds <= 7)
+				{
+					troopsAlive--;
 				}
 			}
+
+			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
+
 			//All enemies are dead, and you still have armies left
-			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
-				//Draw card
+			if(!enemiesAlive && troopsAlive){
 				this->_issuingPlayer->draw(*(Deck::instance()));
 				//change ownership to issuingPlayer
 				this->_targetTerritory->setOwner(this->_issuingPlayer);
 				//Change armies values
 				this->_sourceTerritory->removeArmees(_numberOfArmies);
-				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
-
-				*_effect = "successfully invaded " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName() + " with " + std::to_string(this->_numberOfArmies - troopsLost) + " armees";
+				*_effect = "successfully invaded " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName() + " with " + std::to_string(troopsAlive) + " armees";
 			}
-
 			//All your troops are dead, and your enemy has troops left
-			else if(troopsLost >= this->_numberOfArmies && enemiesKilled < this->_targetTerritory->getArmees() ){
+			else {
 				//Change armies values
-				this->_sourceTerritory->setArmees( this->_sourceTerritory->getArmees() - troopsLost);
-				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
-
-				*_effect = "failed invasion to" + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
+				this->_targetTerritory->setArmees(enemiesAlive);
+				*_effect = "failed invasion to " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
 			}
 		}
+
 		return true;
-	}
-
-	*_effect = "REJECTED";
-	return false;
 }
-
 // Overloads the stream insertion operator.
 ostream& operator<<(ostream& out, const AirliftOrder& airliftOrderToStream) {
 	out << static_cast <const Order&>(airliftOrderToStream); // upcast to Order to call their stream insertion operator
