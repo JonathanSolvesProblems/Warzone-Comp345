@@ -110,11 +110,15 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
   int number_of_armies = 0;
   while ((key = Application::instance()->get_key(true)) != ' ' || number_of_armies == 0)
   {
-    if (key == KEY_BACKSPACE) return issueOrder(player, gm);
+    if (key == KEY_BACKSPACE) {
+      gm->territory_list_items->deleteAll();
+      return issueOrder(player, gm);
+    }
     gm->error_message->set("");
-    if (key == ' ') {
-      gm->error_message->set("You must advance at least one armies!");
-      continue;
+    if (key == ' ')
+    {
+        gm->error_message->set("You must advance at least one armies!");
+        continue;
     }
 
     current_index = gm->selected_index->get();
@@ -243,7 +247,10 @@ Order *HumanPlayerStrategy::blockade_controller(Player *player, GameModel *gm){
   while ((key = Application::instance()->get_key(true)) != ' ')
   {
     if (key == KEY_BACKSPACE)
+    {
+      gm->territory_list_items->deleteAll();
       return issueOrder(player, gm);
+    }
     gm->error_message->set("");
 
     current_index = gm->selected_index->get();
@@ -291,7 +298,10 @@ Order *HumanPlayerStrategy::airlift_controller(Player *player, GameModel *gm) {
   while ((key = Application::instance()->get_key(true)) != ' ' || number_of_armies == 0)
   {
     if (key == KEY_BACKSPACE)
+    {
+      gm->territory_list_items->deleteAll();
       return issueOrder(player, gm);
+    }
     gm->error_message->set("");
     if (key == ' ')
     {
@@ -438,7 +448,10 @@ Order *HumanPlayerStrategy::bomb_controller(Player *player, GameModel *gm){
   while ((key = Application::instance()->get_key(true)) != ' ')
   {
     if (key == KEY_BACKSPACE)
+    {
+      gm->territory_list_items->deleteAll();
       return issueOrder(player, gm);
+    }
     gm->error_message->set("");
 
     current_index = gm->selected_index->get();
@@ -488,7 +501,10 @@ Order *HumanPlayerStrategy::negotiate_controller(Player *player, GameModel *gm){
   while ((key = Application::instance()->get_key(true)) != ' ')
   {
     if (key == KEY_BACKSPACE)
+    {
+      gm->territory_list_items->deleteAll();
       return issueOrder(player, gm);
+    }
     gm->error_message->set("");
 
     current_index = gm->selected_index->get();
