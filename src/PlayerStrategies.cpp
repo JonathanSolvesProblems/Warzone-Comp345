@@ -548,7 +548,11 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
   gm->territory_list_items->deleteAll();
   for (map::Territory *territory : player->owned_territories)
   {
-      std::cout << "MADE IT HERE";
+    clear();
+    refresh();
+    endwin();
+
+    std::cout << "MADE IT HERE";
     gm->territory_list_items->push_back(
       new ConcreteObservable<std::pair<map::Territory*, int>>(std::make_pair(territory, 0)));
   }
