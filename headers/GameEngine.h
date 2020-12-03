@@ -32,7 +32,7 @@
 #define MAP_SELECTION_VIEW 1
 #define GAMEPLAY_VIEW 2
 
-#define HIT_DA_BREAKS 60
+#define HIT_DA_BREAKS 120
 
 // forward declarations
 class MainMenuView;
