@@ -60,7 +60,7 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
 
   do {
     k = Application::instance()->get_key(true);
-    gm->error_message->set("");
+    gm->error_message->set("Key pressed " + (char)k);
     if (k == ' ') {
       return PASS;
     } else if ((k == 'a' && !must_deploy)) {
