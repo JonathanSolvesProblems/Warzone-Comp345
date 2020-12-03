@@ -254,7 +254,7 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
 
   while ((key = Application::instance()->get_key(true)) != ' ' || remaining > 0)
   {
-    gm->error_message->set("Key pressed " + (char)k);
+    gm->error_message->set("Key pressed " + (char)key);
     // gm->error_message->set("");
     if (key == ' ') {
       gm->error_message->set("You must deploy all of your armies!");
