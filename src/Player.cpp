@@ -58,6 +58,7 @@ Player::~Player()
 {
 	delete hand;
 	delete listOfOrders;
+	delete _strategy;
 
 	owned_territories.clear();
 

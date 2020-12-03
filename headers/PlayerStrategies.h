@@ -21,8 +21,8 @@ public:
 // (1) human player that requires user interaction to make decisions
 class HumanPlayerStrategy : public PlayerStrategy {
 public:
-    HumanPlayerStrategy() {};
-    ~HumanPlayerStrategy() {};
+    HumanPlayerStrategy();
+    ~HumanPlayerStrategy();
 
     virtual void beginRound(Player *player, GameModel *gm);
     virtual void endRound(Player *player, GameModel *gm);
@@ -48,8 +48,8 @@ cannot do so anymore)
 */
 class AggressivePlayerStrategy : public PlayerStrategy {
 public:
-    AggressivePlayerStrategy() {};
-    ~AggressivePlayerStrategy() {};
+    AggressivePlayerStrategy();
+    ~AggressivePlayerStrategy();
     virtual void beginRound(Player *player, GameModel *gm);
     virtual Order *issueOrder(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
@@ -77,8 +77,8 @@ or advances armies on its weakest countries, never advances to enemy territories
 */
 class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
-    BenevolentPlayerStrategy() {};
-    ~BenevolentPlayerStrategy() {};
+    BenevolentPlayerStrategy();
+    ~BenevolentPlayerStrategy();
     virtual Order *issueOrder(Player *player, GameModel *gm);
     virtual void beginRound(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);

@@ -361,6 +361,18 @@ Order *AggressivePlayerStrategy::issueAggressiveAirlift(Player *player)
   return new AirliftOrder(*player, *(playersTerritoriesSorted.at(0)), *backupTarget, playersTerritoriesSorted.at(0)->getArmees());
 }
 
+AggressivePlayerStrategy::AggressivePlayerStrategy() {};
+
+AggressivePlayerStrategy::~AggressivePlayerStrategy() {
+    delete backupTarget;
+};
+
+HumanPlayerStrategy::HumanPlayerStrategy() {};
+HumanPlayerStrategy::~HumanPlayerStrategy() {};
+
+BenevolentPlayerStrategy::BenevolentPlayerStrategy() {};
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {};
+
 Order *AggressivePlayerStrategy::issueAggressiveAdvance(Player *player, GameModel* gm)
 {
   map::Territory *max = playersTerritoriesSorted.at(0);
