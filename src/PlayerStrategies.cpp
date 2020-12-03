@@ -229,12 +229,10 @@ Order *HumanPlayerStrategy::blockade_controller(Player *player, GameModel *gm){
 
   // Prepare possible source territories (All territories owned by the player)
   gm->territory_list_items->clear();
-  for (map::Territory *territory : gm->map->getTerritories())
+  for (map::Territory *territory : player->owned_territories)
   {
-    if (territory->getOwner() != player) {
-      gm->territory_list_items->push_back(
-          new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
-    }
+    gm->territory_list_items->push_back(
+        new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
   }
   gm->selected_index->set(0);
 
