@@ -80,7 +80,9 @@ public:
   // remove from template chosen class.
   void remove(T); 
   // to clear observables.
-  void clear(); 
+  void clear();
+  // to clear and delete pointers
+  void deleteAll();
   // update method that calls notify, overloading update from observer class. Has to be defined.
   virtual void update(); 
 
@@ -190,6 +192,22 @@ template <class T>
 void VectorObservable<T>::clear() {
   silent_clear();
   notify();
+}
+
+// clears all data and notifies observers to do the same.
+template <class T>
+void VectorObservable<T>::deleteAll()
+{
+  while (state.size())
+  {
+    T obs = state.back();
+    state.pop_back();
+    if (obs)
+    {
+      obs->detach(this);
+      delete obs;
+    }
+  }
 }
 
 // detaches all observers from observable.
