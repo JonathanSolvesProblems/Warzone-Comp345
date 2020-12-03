@@ -5,8 +5,7 @@ class PlayerStrategy;
 #include <vector>
 #include "GameModels.h"
 #include "Orders.h"
-
-#include "curses.h"
+#include "Application.h"
 
 using std::vector;
 
@@ -24,18 +23,23 @@ class HumanPlayerStrategy : public PlayerStrategy {
 public:
     HumanPlayerStrategy() {};
     ~HumanPlayerStrategy() {};
+
+    virtual void beginRound(Player *player, GameModel *gm);
+    virtual void endRound(Player *player, GameModel *gm);
     virtual Order *issueOrder(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toAttack(Player *player, GameModel *gm);
     virtual const vector<map::Territory *> toDefend(Player *player, GameModel *gm);
 
 private:
-    int choose_order_type(GameModel *gm);
-    Order *deploy_controller(GameModel *gm);
-    Order *advance_controller(GameModel *gm);
-    Order *blockade_controller(GameModel *gm);
-    Order *airlift_controller(GameModel *gm);
-    Order *bomb_controller(GameModel *gm);
-    Order *negotiate_controller(GameModel *gm);
+    vector<map::Territory*> territories_to_defend;
+    int index_of_next_territory_to_defend = 0;
+    int choose_order_type(GameModel *gm );
+    Order *deploy_controller(Player *player, GameModel *gm);
+    Order *advance_controller(Player *player, GameModel *gm);
+    Order *blockade_controller(Player *player, GameModel *gm);
+    Order *airlift_controller(Player *player, GameModel *gm);
+    Order *bomb_controller(Player *player, GameModel *gm);
+    Order *negotiate_controller(Player *player, GameModel *gm);
 };
 
 /* an aggressive computer player that focuses

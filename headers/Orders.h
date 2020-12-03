@@ -86,7 +86,8 @@ class AdvanceOrder : public Order {
 public:
 	// Constructors
 	AdvanceOrder();
-	AdvanceOrder(Player& issuingPlayer, map::Territory& sourceTerritory, map::Territory& targetTerritory, int numberOfArmies);
+	AdvanceOrder(Player *issuingPlayer, map::Territory *sourceTerritory, map::Territory *targetTerritory, int numberOfArmies);
+	AdvanceOrder(Player &issuingPlayer, map::Territory &sourceTerritory, map::Territory &targetTerritory, int numberOfArmies);
 	AdvanceOrder(const AdvanceOrder& orderToCopy);
 	// Destructor
 	~AdvanceOrder();

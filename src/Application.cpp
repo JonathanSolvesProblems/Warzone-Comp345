@@ -50,11 +50,20 @@ Application::Application() {
 Application::~Application() {
 }
 
+int Application::get_key(bool block) {
+  nodelay(stdscr, !block);
+
+  int key = getch();
+
+  nodelay(stdscr, false);
+
+  return key;
+}
+
 void Application::mainloop(char esc_key) {
   curs_set(0);
   cbreak();
   noecho();
-  nodelay(stdscr, TRUE);
   keypad(stdscr, TRUE);
 
   std::stringstream escape_msg;
@@ -66,7 +75,7 @@ void Application::mainloop(char esc_key) {
     _activeView->display();
 
   int ch;
-  while ((ch = getch()) != esc_key)
+  while ((ch = get_key(false)) != esc_key)
   {
     if (_activeView)
       _activeView->notifyKeyboardEventPerformed(ch);
@@ -160,6 +169,22 @@ void WindowView::display() {
 void WindowView::print_centered(int line, std::string msg) {
   int offset = (width - msg.length()) / 2;
   if (offset < 0) offset = 0;
+  wmove(_window, line, offset);
+  wprintw(_window, msg.c_str());
+}
+
+void WindowView::print_centered_at_col(int line, int col, std::string msg) {
+  int offset = col - msg.length() / 2;
+  if (offset < 0)
+    offset = 0;
+  wmove(_window, line, offset);
+  wprintw(_window, msg.c_str());
+}
+
+void WindowView::print_right_aligned_at_col(int line, int col, std::string msg) {
+  int offset = col - msg.length();
+  if (offset < 0)
+    offset = 0;
   wmove(_window, line, offset);
   wprintw(_window, msg.c_str());
 }

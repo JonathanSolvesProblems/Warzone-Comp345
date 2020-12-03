@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Application.h
  * 
@@ -137,6 +139,8 @@ class Application
      */
     void mainloop(char esc_key);
 
+    int get_key(bool block);
+
     /* Register a View to an id so that it can be activated from any controller */
     void registerView(int view_id, View* view);
 
@@ -212,6 +216,8 @@ class WindowView : public View {
      *  std::string msg: A single-line of text to be displayed.
      */
     void print_centered(int line, std::string msg);
+    void print_centered_at_col(int line, int col, std::string msg);
+    void print_right_aligned_at_col(int line, int col, std::string msg);
 
   protected:
     int width, height, start_x, start_y;

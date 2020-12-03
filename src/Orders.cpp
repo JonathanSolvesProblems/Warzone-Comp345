@@ -84,6 +84,14 @@ AdvanceOrder::AdvanceOrder(Player& issuingPlayer, map::Territory& sourceTerritor
 	this->_numberOfArmies = numberOfArmies;
 }
 
+AdvanceOrder::AdvanceOrder(Player *issuingPlayer, map::Territory *sourceTerritory, map::Territory *targetTerritory, int numberOfArmies) : AdvanceOrder()
+{
+	this->_issuingPlayer = issuingPlayer;
+	this->_sourceTerritory = sourceTerritory;
+	this->_targetTerritory = targetTerritory;
+	this->_numberOfArmies = numberOfArmies;
+}
+
 // Copy constructor
 AdvanceOrder::AdvanceOrder(const AdvanceOrder& advanceOrderToCopy) : Order(advanceOrderToCopy) {
 	// deliberately empty
@@ -97,84 +105,83 @@ AdvanceOrder::~AdvanceOrder() {
 
 // Checks whether the order is valid, and returns true if it is
 bool AdvanceOrder::validate() {
-
-	if (!_sourceTerritory->hasNeighbour(_targetTerritory->getID()))
+	if (!(_sourceTerritory->hasNeighbour(_targetTerritory))) {
+		*_effect = "rejected (not a neighbour)";
 		return false;
-
-	if (_sourceTerritory->getOwner() == _issuingPlayer && _numberOfArmies <= _sourceTerritory->getArmees())
-	{
-		if(checkIfTruce(_issuingPlayer,_targetTerritory->getOwner())){
-			return false;
-		}
-		return true;
 	}
 
-	return false;
+	if (_sourceTerritory->getOwner() != _issuingPlayer)
+	{
+		*_effect = "rejected (not owner)";
+		return false;
+	}
+
+	if(checkIfTruce(_issuingPlayer, _targetTerritory->getOwner())){
+		*_effect = "rejected (truce)";
+		return false;
+	}
+
+	if (_numberOfArmies > _sourceTerritory->getArmees()) {		
+		*_effect = "rejected (not enough armies)";
+		return false;
+	}
+
+	return true;
 }
 
 // Outputs the effect of the advance order and executes it
 bool AdvanceOrder::execute() {
+	if (!validate()) return false;
 
+	if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
+		//Remove from source and add to target
+		this->_sourceTerritory->removeArmees(this->_numberOfArmies);
+		this->_targetTerritory->addArmees(this->_numberOfArmies);
+		*_effect = "moved " + std::to_string(_numberOfArmies) + " from " + this->_sourceTerritory->getName() + " to " + this->_targetTerritory->getName();
+	}
+	else {
+		int troopsAlive = this->_numberOfArmies; // source armies
+		int enemiesAlive = this->_targetTerritory->getArmees(); // target armies
 
-	if (validate()) {
-		
-		if (_sourceTerritory->getArmees() < _numberOfArmies)
-			_numberOfArmies = _sourceTerritory->getArmees();
-		if(_sourceTerritory->getOwner() == _targetTerritory->getOwner()) {
-			//Remove from source and add to target
-			this->_sourceTerritory->removeArmees(this->_numberOfArmies);
-			this->_targetTerritory->addArmees(this->_numberOfArmies);
-			*_effect = "moved " + std::to_string(_numberOfArmies) + " from " + this->_sourceTerritory->getName() + " to " + this->_targetTerritory->getName();
-			return true;
+		for (int i = troopsAlive; i > 0 && enemiesAlive; i--)
+		{
+			int attackingOdds = rand() % 10 + 1;
+			if (attackingOdds <= 6)
+			{
+				enemiesAlive--;
+			}
 		}
-		
+
+		for (int i = enemiesAlive; i > 0 && troopsAlive; i--)
+		{
+			int defendingOdds = rand() % 10 + 1;
+			if (defendingOdds <= 7)
+			{
+				troopsAlive--;
+			}
+		}
+
+		this->_sourceTerritory->removeArmees(this->_numberOfArmies);
+
+		//All enemies are dead, and you still have armies left
+		if(!enemiesAlive && troopsAlive){
+			this->_issuingPlayer->draw(*(Deck::instance()));
+			//change ownership to issuingPlayer
+			this->_targetTerritory->setOwner(this->_issuingPlayer);
+			//Change armies values
+			this->_sourceTerritory->removeArmees(_numberOfArmies);
+			*_effect = "successfully invaded " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName() + " with " + std::to_string(troopsAlive) + " armees";
+		}
+		//All your troops are dead, and your enemy has troops left
 		else {
-			int troopsLost = 0; // source armies
-			int enemiesKilled = 0; // target armies
-
-			for(int i = 0; i < this->_numberOfArmies ; i++) {
-				int attackingOdds = rand() % 10 + 1;
-				if(attackingOdds <= 6) {
-					enemiesKilled++;
-					if(enemiesKilled == this->_targetTerritory->getArmees() ) {
-						break;
-					}
-				}
-			}
-
-			for(int i = 0; i < this->_targetTerritory->getArmees() ; i++) {
-				int defendingOdds = rand() % 10 + 1;
-				if(defendingOdds <= 7) {
-					troopsLost++;
-					if(troopsLost == this->_numberOfArmies ) {
-						break;
-					}
-				}
-			}
-			//All enemies are dead, and you still have armies left
-			if(enemiesKilled >= this->_targetTerritory->getArmees() && troopsLost < this->_numberOfArmies ){
-				this->_issuingPlayer->draw(*(Deck::instance()));
-				//change ownership to issuingPlayer
-				this->_targetTerritory->setOwner(this->_issuingPlayer);
-				//Change armies values
-				this->_sourceTerritory->removeArmees(_numberOfArmies);
-				this->_targetTerritory->setArmees( this->_numberOfArmies - troopsLost);
-				*_effect = "successfully invaded " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName() + " with " + std::to_string(this->_numberOfArmies - troopsLost) + " armees";
-			}
-
-			//All your troops are dead, and your enemy has troops left
-			else if(troopsLost >= this->_numberOfArmies && enemiesKilled < this->_targetTerritory->getArmees() ){
-				//Change armies values
-				this->_sourceTerritory->setArmees( this->_sourceTerritory->getArmees() - troopsLost);
-				this->_targetTerritory->setArmees( this->_targetTerritory->getArmees() - enemiesKilled);
-				*_effect = "failed invasion to" + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
-			}
+			//Change armies values
+			this->_targetTerritory->setArmees(enemiesAlive);
+			*_effect = "failed invasion to " + this->_targetTerritory->getName() + " from " + this->_sourceTerritory->getName();
 		}
 		
 	}
-	
-	*_effect = "REJECTED";
-	return false;
+
+	return true;
 }
 
 // Overloads the stream insertion operator.
