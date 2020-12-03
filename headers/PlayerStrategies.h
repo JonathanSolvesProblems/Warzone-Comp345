@@ -9,9 +9,10 @@ class PlayerStrategy;
 
 using std::vector;
 
-// TODO
+
 class PlayerStrategy {
 public:
+    // begins the round
     virtual void beginRound(Player *player, GameModel *gm) = 0;
     virtual Order *issueOrder(Player *player, GameModel *gm) = 0;
     virtual const vector<map::Territory *> toAttack(Player *player,GameModel *gm) = 0;

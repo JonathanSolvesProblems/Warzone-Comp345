@@ -341,18 +341,6 @@ Order *AggressivePlayerStrategy::issueOrder(Player *player, GameModel *gm)
     map::Territory* m = playersTerritoriesSorted.at(0)->getNeighbours().at(rand() % playersTerritoriesSorted.at(0)->getNeighbours().size());
     return new AdvanceOrder(*player, *(playersTerritoriesSorted.at(0)), *m, playersTerritoriesSorted.at(0)->getArmees());
   }
-
-  // else if (pathToEnemy.size() > 0 && !advancedToFriendly)
-  // {
-  //   map::Territory *next = pathToEnemy.at(0);
-  //   pathToEnemy.erase(pathToEnemy.begin());
-  //   advancedToFriendly = true;
-  //   return new AdvanceOrder(*player, *(playersTerritoriesSorted.at(0)), *next, playersTerritoriesSorted.at(0)->getArmees());
-  // }
-  // else if (pathToEnemy.size() == 0)
-  // {
-  //   pathToEnemy = findEnemies(player, playersTerritoriesSorted.at(0), vector<map::Territory*>(), vector<map::Territory*>());
-  // }
   return nullptr;
 };
 
@@ -383,18 +371,11 @@ Order *AggressivePlayerStrategy::issueAggressiveAdvance(Player *player, GameMode
 
   if (neighbor->getArmees() == 0)
   {
-    gm->log->append("ARMIES IS ZERO--------------------------------------------------------------------------------");
-    //armiesToAdvance -= 1;
-    gm->log->append("NEIGHBOR: " +  neighbor->getName() + std::to_string(neighbor->getArmees()) +  "----------------------------------------------------------------------" );
-    gm->log->append("MAX: " +  max->getName() + "    " + std::to_string(max->getArmees()) + "----------------------------------------------------------------------" );
     return new AdvanceOrder(*(player), *max, *neighbor, 1);
   }
 
   else if ((enemyArmies * 2) < max->getArmees())
   {
-    gm->log->append("NOT ZERO ARMIES--------------------------------------------------------------------------------");
-    gm->log->append("NEIGHBOR: " +  neighbor->getName() + "----------------------------------------------------------------------" );
-    gm->log->append("MAX: " + max->getName() + "----------------------------------------------------------------------" );
     armiesToAdvance -= neighbor->getArmees() * 2;
     return new AdvanceOrder(*(player), *max, *neighbor, neighbor->getArmees() * 2);
   }
