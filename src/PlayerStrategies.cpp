@@ -538,6 +538,11 @@ const vector<map::Territory *> HumanPlayerStrategy::toAttack(Player *player, Gam
 
 const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player, GameModel *gm)
 {
+  clear();
+  refresh();
+  endwin();
+  std::cout << "MADE IT HERE";
+  exit(1);
   int key;
   int remaining = gm->current_player->get()->getArmees();
 
@@ -551,11 +556,6 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
   gm->current_step->set(1);
   gm->current_order_type->set(DEPLOY);
 
-  clear();
-  refresh();
-  endwin();
-  std::cout << "MADE IT HERE";
-  exit(1);
   while ((key = Application::instance()->get_key(true)) != ' ' || remaining > 0)
   {
     gm->error_message->set("");
