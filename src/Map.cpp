@@ -365,14 +365,11 @@ namespace map
 
   bool Territory::hasNeighbour(Territory *neighbour) const
   {
-    if (neighbour != nullptr)
-    {
-      return getNeighbour(neighbour->getID()) == neighbour;
+    for (Territory* t : *neighbours) {
+      if (t == neighbour) return true;
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
   Territory *Territory::addNeighbour(Territory *territory)

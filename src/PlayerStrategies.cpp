@@ -60,7 +60,6 @@ int HumanPlayerStrategy::choose_order_type(GameModel* gm) {
 
   do {
     k = Application::instance()->get_key(true);
-    gm->error_message->set("Key pressed " + (char)k);
     if (k == ' ') {
       return PASS;
     } else if ((k == 'a' && !must_deploy)) {
@@ -103,7 +102,7 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
         new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
   }
 
-  const std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> territories_list = gm->territory_list_items->get();
+  std::vector<ConcreteObservable<std::pair<map::Territory *, int>> *> territories_list = gm->territory_list_items->get();
 
   gm->current_step->set(1);
   int current_index = 0;
@@ -174,6 +173,12 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
         number_of_armies++;
       }
       obs->set(std::make_pair(pair.first, number_of_armies));
+    } else if (key == 'd') {
+      auto obs = territories_list.at(current_index);
+      auto pair = obs->get();
+      number_of_armies = pair.first->getArmees();
+
+      obs->set(std::make_pair(pair.first, number_of_armies));
     }
   }
   current_index = gm->selected_index->get();
@@ -187,6 +192,8 @@ Order *HumanPlayerStrategy::advance_controller(Player *player, GameModel *gm){
     gm->territory_list_items->push_back(
         new ConcreteObservable<std::pair<map::Territory *, int>>(std::make_pair(territory, 0)));
   }
+
+  territories_list = gm->territory_list_items->get();
 
   gm->current_step->set(2);
   while ((key = Application::instance()->get_key(true)) != ' ')
@@ -254,8 +261,7 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
 
   while ((key = Application::instance()->get_key(true)) != ' ' || remaining > 0)
   {
-    gm->error_message->set("Key pressed " + (char)key);
-    // gm->error_message->set("");
+    gm->error_message->set("");
     if (key == ' ') {
       gm->error_message->set("You must deploy all of your armies!");
       continue;
@@ -281,6 +287,16 @@ const std::vector<map::Territory *> HumanPlayerStrategy::toDefend(Player *player
       {
         obs->set(std::make_pair(pair.first, pair.second + 1));
         remaining -= 1;
+      }
+    }
+    else if (key == 'd')
+    {
+      auto obs = owned_territories_with_numbers.at(current_index);
+      auto pair = obs->get();
+      if (remaining > 0)
+      {
+        obs->set(std::make_pair(pair.first, pair.second + remaining));
+        remaining = 0;
       }
     }
     continue;
