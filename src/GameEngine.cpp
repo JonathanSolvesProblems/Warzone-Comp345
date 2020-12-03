@@ -367,6 +367,7 @@ bool MapSelectionController::keyboardEventPerformed(int key)
     //validate and load file
     std::string map_file = _menu_model->getSelection();
     MapLoader mapLoader;
+    ConquestFileReaderAdapter conquestFileReader;
 
     if (_game_model->map)
     {
@@ -375,16 +376,27 @@ bool MapSelectionController::keyboardEventPerformed(int key)
 
     _game_model->map = new map::Map();
 
-    if (mapLoader.loadFile(map_file, *_game_model->map) && _game_model->map->validate())
+    if (mapLoader.loadFile(map_file, *_game_model->map)&& _game_model->map->validate())
     {
       // load file under
       Application::instance()->activateView(GAMEPLAY_VIEW);
     }
-    // if the file is not valid output an error message
-    else
+
+           if (conquestFileReader.loadFile(map_file, *_game_model->map)) {
+            // load file under
+                Application::instance()->activateView(GAMEPLAY_VIEW);      
+        }
+    
+
+
+        else
     {
       _menu_model->error_message->set("This is a invalid file! Please choose another!");
     }
+    
+
+    // if the file is not valid output an error message
+    
 
     return true;
   }

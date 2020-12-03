@@ -1,99 +1,58 @@
 #include "MapLoader.h"
-
+#include <sstream>
+#include <string>       // std::string
+#include <iostream>
 using std::cout;
 using std::endl;
 
-/*THE VALIDATE SEMI WORKS, IT SAYS AND DISPLAYS THAT IT TRAVERSES TEH WHOLE GRAPH, BUT THE THEN RETURNS FALSE FOR CERTSAIN SUB GRAPHS, BUT IN THE DISPLAY OF 
-ALL TH ETERIRTORES AND COTNIENTS IT SHOWS ALL ITS NEIGTHBORS AND EVRTHING PROPERLY. 
+/*THE VALIDATE SEMI WORKS, IT SAYS AND DISPLAYS THAT IT TRAVERSES TEH WHOLE GRAPH, BUT THE THEN RETURNS FALSE FOR CERTSAIN SUB GRAPHS, BUT IN THE DISPLAY OF
+ALL TH ETERIRTORES AND COTNIENTS IT SHOWS ALL ITS NEIGTHBORS AND EVRTHING PROPERLY.
 */
 // THIS IS THE MAP LOADER DRIVER FILE THAT TAKES A MAP AND DISPLAYS THE CONTINENTS, THE TERRITORIES, THE AMOUNT OF NEIGHBOURS A TERRITORY HAS ALONG WITH THE CONTINENT
 // IT BELONGS TO WITH THE TERITORY BONUS.
 
 // NOTE** IF THE MAP FILE HAS SPACES AFTER THE LAST ELEMENT OF A LINE IT WONT ACCEPT IT AS FOLLOWING PROTOCOL AND WILL REJECT THE FILE
 
+
+// make it return a map object and 
+
 int main()
 {
 
+    // issue is the conquestfiledreader works, but i cant seem to get it to call the proper function and class inside the conquestfilereaderAdapter class. this is not reading anythignfor some reaosn 
     map::Map* test = new map::Map();
     MapLoader map;
 
-    if (map.loadFile("hello.map", *test) == true)
-    {
-        // remove 2 at the end
-        cout << "Continents  " << map.continents.size() << " \n";
 
-        cout << "Countries and Neighbours: "
-             << "\n";
-        for (int s = 0; s < map.borders.size(); s++)
-        {
-            cout << "Country: " << *test->getTerritory(s + 1) << " Has " << test->getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(test->getTerritory(s + 1)->getContinent()) << endl;
+
+    if (map.loadFile("conquest.map", *test)) {
+     
+        int count = 1;
+        while (test->getContinent(count)) {
+            cout << *test->getContinent(count) << endl;
+            count++;
+        }
+       
+        int count2 = 1;
+        while (test->getTerritory(count2)) {
+            cout << "Country: " << *test->getTerritory(count2) << " Has " << test->getTerritory(count2)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(test->getTerritory(count2)->getContinent()) << endl;
+            count2++;
         }
 
-        bool pas = test->validate();
-        if (pas == true)
-        {
-            cout << "success" << endl;
+        if (test->validate()) {
+            cout << "true";
         }
-
         else
-        {
-            cout << "failll" << endl;
-        }
+            cout << "false";
 
-        // have to run a forloop through all the neighbors to display if it is a neighbour
-
-        // try to figure out how to send a vector containign the IDs of the neighborung territoryeis
-
-        // to get the list of neighbours you can do a forloop  with a try catch and store the successful ones in the vector
-        // so the sequence is we display the terrotories the user has
-        // then we prompt for them to select a territory to make a decision on
-        // then we run this for loop to get the list of places you could attack
     }
 
-    else
-    {
-
-        cout << "Invalid file... System terminating" << endl;
+    else {
+    
+        cout << "not a valid file";
+    
     }
 
-    delete test;
-    test = new map::Map();
-
-    if (map.loadFile("france.map", *test) == true)
-    {
-        cout << "countries size : " << map.countries.size() << endl;
-
-        // remove 2 at the end
-        cout << "Continents  " << map.continents.size() << " \n";
-
-        cout << "Countries and Neighbours: "
-             << "\n";
-        for (int s = 0; s < map.borders.size(); s++)
-        {
-            cout << "Country: " << *test->getTerritory(s + 1) << " Has " << test->getTerritory(s + 1)->getNeighbourCount() << " Neighbouring Countries And Belongs to " << *(test->getTerritory(s + 1)->getContinent()) << endl;
-        }
-
-        if (test->validate())
-        {
-            cout << "done";
-        }
-        // have to run a forloop through all the neighbors to display if it is a neighbour
-
-        // try to figure out how to send a vector containign the IDs of the neighborung territoryeis
-
-        // to get the list of neighbours you can do a forloop  with a try catch and store the successful ones in the vector
-        // so the sequence is we display the terrotories the user has
-        // then we prompt for them to select a territory to make a decision on
-        // then we run this for loop to get the list of places you could attack
-    }
-
-    else
-    {
-
-        cout << "Invalid file... System terminating" << endl;
-    }
-
-    delete test;
 
     return 0;
 }
